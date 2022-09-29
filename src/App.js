@@ -1,6 +1,7 @@
 import "./App.css";
 import React, { useState } from "react";
 import Papa, { parse } from "papaparse";
+import db from "./firebase-config";
 
 const allowedExtensions = ["csv"];
 
@@ -26,6 +27,7 @@ function App() {
       const parsedData = csv?.data;
       const columns = parsedData;
       setData(columns);
+      console.log(columns);
     };
     reader.readAsText(file);
   };
@@ -33,11 +35,22 @@ function App() {
   return (
     <>
       <label htmlFor="csvInput" style={{ display: "block" }}>
-        Enter CSV File
+        Upload usage CSV file
       </label>
+
       <input
         onChange={handleFileChange}
         id="csvInput"
+        name="file"
+        type="File"
+      />
+      <label htmlFor="pricesInput" style={{ display: "block" }}>
+        enter prices CSV file
+      </label>
+
+      <input
+        onChange={handleFileChange}
+        id="pricesInput"
         name="file"
         type="File"
       />
