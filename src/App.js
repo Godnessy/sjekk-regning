@@ -1,24 +1,30 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
 import Papa, { parse } from "papaparse";
-import db from "./firebase-config";
 import prices from "./augustJSON.json";
+import Select from "react-select";
+import { db } from "./firebase-config";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import kommunes from "./Resources/kommuneList.json";
+import KommuneDropdown from "./Components/KommuneDropdown";
 
 /*TODO
 Backend:
+- Get a list of all the kommunes and add them to the DB with the area code for each. - 
 - Every day import data from API 
 - Parse the data into this format:
-Check which month this data is for then add it:
+- Check which month this data is for then add it:
 Day:
 Hour: Price
 Day: 
 Hour: Price
 
--POST into the correct month, if the month does not exist create it.
+- POST into the correct month, if the month does not exist create it.
 
 Frontend:
-- Get CSV from client -
-- Parse the CSV into a format that I can work with
+- Get CSV from client --
+- Parse the CSV into a format that I can work with 
+ - create a search of all kommunes and return an area code, save that area code to a var -- 
 - GET the relevant month out of the DB
 - Cross the info from the parsed CSV and the DB 
 - Calculate price for every hour of every day and save the results into a new object
@@ -37,8 +43,10 @@ function App() {
   const [usageData, setUsageData] = useState();
   const [priceData, setPriceData] = useState(prices);
   const [selectedMonth, setSelectedMonth] = useState();
+  const [kommuneList, setKommuneList] = useState(kommunes);
+  const [selectedKommune, setSelectedKommune] = useState();
 
-  const handleFileChange = (e) => {
+  const handleCsvFile = (e) => {
     setError("");
     if (e.target.files.length) {
       const inputFile = e.target.files[0];
@@ -47,7 +55,7 @@ function App() {
       console.log(`input file set`);
     }
   };
-  const handleParse = () => {
+  const parseCsvJson = () => {
     if (!file) return setError("Enter a valid file");
     const reader = new FileReader();
     reader.onload = async ({ target }) => {
@@ -88,7 +96,12 @@ function App() {
 
   useEffect(() => {
     createMonthList();
+    // setKommuneList(kommunes);
   }, []);
+
+  useEffect(() => {
+    console.log(selectedKommune.label, selectedKommune.value);
+  }, [selectedKommune]);
 
   return (
     <>
@@ -96,15 +109,10 @@ function App() {
         Upload usage CSV file
       </label>
 
-      <input
-        onChange={handleFileChange}
-        id="csvInput"
-        name="file"
-        type="File"
-      />
+      <input onChange={handleCsvFile} id="csvInput" name="file" type="File" />
 
       <div>
-        <button onClick={handleParse}>Parse</button>
+        <button onClick={parseCsvJson}>Parse</button>
       </div>
 
       <label htmlfor="months"> Choose a month: </label>
@@ -117,7 +125,15 @@ function App() {
           console.log(e.target.value);
         }}
       >
-        <option value=""> Valg en måned </option>
+        <option
+          value=""
+          onChange={(event) => {
+            console.log(event);
+          }}
+        >
+          {" "}
+          Valg en måned{" "}
+        </option>
         {monthList &&
           monthList.map((month) => (
             <option key={month} value={month}>
@@ -151,6 +167,13 @@ function App() {
           })}
 
       <div>{prices && prices.map((hour) => {})}</div>
+      <div className="dropDown">
+        <h4>Velg din kommune:</h4>
+        <KommuneDropdown
+          kommuneList={kommuneList}
+          setSelectedKommune={setSelectedKommune}
+        />
+      </div>
     </>
   );
 }
