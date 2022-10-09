@@ -1,3 +1,6 @@
+body{
+  margin: 1%;
+}
 .App {
   text-align: center;
 }
@@ -37,6 +40,18 @@
   }
 }
 
-.dropDown {
+.drop-down {
   width: 15%;
+}
+
+.zones-container{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr;
+}
+
+.usage-price-container{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
 }

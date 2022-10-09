@@ -1,12 +1,12 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
 import Papa, { parse } from "papaparse";
-import prices from "./augustJSON.json";
-import Select from "react-select";
 import { db } from "./firebase-config";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import AddDayToDB from "./Components/AddDayToDB";
 import kommunes from "./Resources/kommuneList.json";
 import KommuneDropdown from "./Components/KommuneDropdown";
+import prices from "./Resources/price_json/october.json";
 
 /*TODO
 Backend:
@@ -41,10 +41,11 @@ function App() {
   const [file, setFile] = useState("");
   const [monthList, setMonthList] = useState();
   const [usageData, setUsageData] = useState();
-  const [priceData, setPriceData] = useState(prices);
+  const [priceData, setPriceData] = useState();
   const [selectedMonth, setSelectedMonth] = useState();
   const [kommuneList, setKommuneList] = useState(kommunes);
   const [selectedKommune, setSelectedKommune] = useState();
+  const [totalMonthPrice, setTotalMonthPrice] = useState(0);
 
   const handleCsvFile = (e) => {
     setError("");
@@ -94,14 +95,39 @@ function App() {
     return setMonthList(monthArr);
   };
 
-  useEffect(() => {
-    createMonthList();
-    // setKommuneList(kommunes);
-  }, []);
+  const collectDayPrices = (prices, date) => {
+    const allPrices = prices[0];
+    return allPrices[date];
+  };
+
+  const createSelectedPriceZone = (selectedZone, priceObjForDay) => {
+    if (priceObjForDay) {
+      return priceObjForDay[selectedZone];
+    } else {
+      return "test";
+    }
+  };
+
+  const createPriceForHour = (zonePrices, time) => {
+    if (zonePrices) {
+      return zonePrices[time] / 100;
+    } else {
+      return 0;
+    }
+  };
+  const createTotalPricePrHour = (usage, priceForHour) => {
+    if (priceForHour) {
+      const totalPrice = priceForHour * Number(usage);
+      return totalPrice;
+    }
+    return 0;
+  };
 
   useEffect(() => {
-    console.log(selectedKommune.label, selectedKommune.value);
-  }, [selectedKommune]);
+    createMonthList();
+  }, []);
+
+  useEffect(() => {}, [selectedKommune]);
 
   return (
     <>
@@ -115,7 +141,7 @@ function App() {
         <button onClick={parseCsvJson}>Parse</button>
       </div>
 
-      <label htmlfor="months"> Choose a month: </label>
+      <label htmlFor="months"> Choose a month: </label>
       <select
         name="months"
         id="months"
@@ -125,15 +151,7 @@ function App() {
           console.log(e.target.value);
         }}
       >
-        <option
-          value=""
-          onChange={(event) => {
-            console.log(event);
-          }}
-        >
-          {" "}
-          Valg en måned{" "}
-        </option>
+        <option>Valg en måned</option>
         {monthList &&
           monthList.map((month) => (
             <option key={month} value={month}>
@@ -141,38 +159,60 @@ function App() {
             </option>
           ))}
       </select>
-      {error
-        ? error
-        : data.map((col, idx) => {
-            const titles = Object.keys(col);
-            const values = Object.values(col);
-            return (
-              <table>
-                <thead>
-                  <tr>
-                    <th>Dato</th>
-                    <th>Klokke</th>
-                    <th>Kwt brukt</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td> {values[0].split[0]}</td>
-                    <td> {values[0].split[1]}</td>
-                    <td>{values[2]}</td>
-                  </tr>
-                </tbody>
-              </table>
-            );
-          })}
-
-      <div>{prices && prices.map((hour) => {})}</div>
-      <div className="dropDown">
+      <div className="drop-down">
         <h4>Velg din kommune:</h4>
         <KommuneDropdown
           kommuneList={kommuneList}
           setSelectedKommune={setSelectedKommune}
         />
+        {selectedKommune && (
+          <h4> Din kommune tilhører sone: {selectedKommune.value}</h4>
+        )}
+      </div>
+      <div className="priceZone">
+        <div className="NO1"></div>
+        <div className="NO2"></div>
+        <div className="NO3"></div>
+        <div className="NO4"></div>
+        <div className="NO5"></div>
+      </div>
+      <div className="usage-price-container">
+        <div>
+          {error
+            ? error
+            : data.map((col, idx) => {
+                const titles = Object.keys(col);
+                const values = Object.values(col);
+                const date = values[0].split(" ")[0];
+                const time = values[0].split(" ")[1];
+                const usage = values[2].replace(",", ".");
+                const dayPrices = collectDayPrices(prices, date);
+                const selectedZonePrices = createSelectedPriceZone(
+                  selectedKommune.value,
+                  dayPrices
+                );
+                const priceForHour = createPriceForHour(
+                  selectedZonePrices,
+                  time
+                );
+                const totalPricePrHour = createTotalPricePrHour(
+                  usage,
+                  priceForHour
+                );
+
+                return (
+                  <p>{`On the ${date} at ${time} you used ${usage} Kwh, At a spot price of ${priceForHour} øre, this hour cost you: ${totalPricePrHour.toFixed(
+                    2
+                  )} nok`}</p>
+                );
+              })}
+        </div>
+        {/* <div>
+          <AddDayToDB
+            setPriceData={setPriceData}
+            selectedZone={selectedKommune ? selectedKommune.value : undefined}
+          />
+        </div> */}
       </div>
     </>
   );
