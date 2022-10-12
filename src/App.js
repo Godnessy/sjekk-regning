@@ -3,10 +3,11 @@ import React, { useState, useEffect } from "react";
 import Papa, { parse } from "papaparse";
 import { db } from "./firebase-config";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
-import AddDayToDB from "./Components/AddDayToDB";
+// import AddDayToDB from "./Components/AddDayToDB";
 import kommunes from "./Resources/kommuneList.json";
 import KommuneDropdown from "./Components/KommuneDropdown";
-import prices from "./Resources/price_json/october.json";
+import prices from "./Resources/price_json/september.json";
+import AddMonthToDB from "./Components/AddMonthToDB";
 
 /*TODO
 Backend:
@@ -36,17 +37,17 @@ Frontend:
 const allowedExtensions = ["csv"];
 
 function App() {
-  const [data, setData] = useState([]);
   const [error, setError] = useState("");
   const [file, setFile] = useState("");
   const [monthList, setMonthList] = useState();
-  const [usageData, setUsageData] = useState();
+  const [usageData, setUsageData] = useState([]);
   const [priceData, setPriceData] = useState();
   const [selectedMonth, setSelectedMonth] = useState();
   const [kommuneList, setKommuneList] = useState(kommunes);
   const [selectedKommune, setSelectedKommune] = useState();
   const [totalMonthPrice, setTotalMonthPrice] = useState(0);
 
+  let tempMonthPrice = 0;
   const handleCsvFile = (e) => {
     setError("");
     if (e.target.files.length) {
@@ -57,13 +58,19 @@ function App() {
     }
   };
   const parseCsvJson = () => {
+    if (!selectedKommune) {
+      setError("Please Select a kommune before clicking this button!");
+      return;
+    }
     if (!file) return setError("Enter a valid file");
+    setError();
     const reader = new FileReader();
     reader.onload = async ({ target }) => {
       const csv = Papa.parse(target.result, { header: true });
       const parsedData = csv?.data;
       const columns = parsedData;
-      setData(columns);
+      setUsageData(columns);
+      console.log(columns);
     };
     reader.readAsText(file);
   };
@@ -117,7 +124,8 @@ function App() {
   };
   const createTotalPricePrHour = (usage, priceForHour) => {
     if (priceForHour) {
-      const totalPrice = priceForHour * Number(usage);
+      const totalPrice = (priceForHour / 10) * Number(usage);
+      tempMonthPrice = tempMonthPrice += totalPrice;
       return totalPrice;
     }
     return 0;
@@ -126,6 +134,11 @@ function App() {
   useEffect(() => {
     createMonthList();
   }, []);
+
+  useEffect(() => {
+    setTotalMonthPrice(`${tempMonthPrice.toFixed(2)} kr`);
+    console.log("bla");
+  }, [tempMonthPrice]);
 
   useEffect(() => {}, [selectedKommune]);
 
@@ -169,18 +182,16 @@ function App() {
           <h4> Din kommune tilhører sone: {selectedKommune.value}</h4>
         )}
       </div>
-      <div className="priceZone">
-        <div className="NO1"></div>
-        <div className="NO2"></div>
-        <div className="NO3"></div>
-        <div className="NO4"></div>
-        <div className="NO5"></div>
+      <div>
+        <AddMonthToDB />
       </div>
+
+      <p>Total price for month: {totalMonthPrice}</p>
       <div className="usage-price-container">
         <div>
           {error
             ? error
-            : data.map((col, idx) => {
+            : usageData.map((col, idx) => {
                 const titles = Object.keys(col);
                 const values = Object.values(col);
                 const date = values[0].split(" ")[0];
@@ -201,7 +212,11 @@ function App() {
                 );
 
                 return (
-                  <p>{`On the ${date} at ${time} you used ${usage} Kwh, At a spot price of ${priceForHour} øre, this hour cost you: ${totalPricePrHour.toFixed(
+                  <p
+                    key={idx}
+                  >{`On the ${date} at ${time} you used ${usage} Kwh, At a spot price of ${priceForHour.toFixed(
+                    2
+                  )} øre, this hour cost you: ${totalPricePrHour.toFixed(
                     2
                   )} nok`}</p>
                 );
