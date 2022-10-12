@@ -11,20 +11,26 @@ function AddMonthToDB() {
       const { Dato, Time, NO1Price, NO2Price, NO3Price, NO4Price, NO5Price } =
         hour;
       let currentHour = `${Time.split("-")[0].slice(0, 2)}:00`;
-      console.log(currentHour);
+
       if (!monthPrices[Dato]) {
         monthPrices[Dato] = { NO1: {}, NO2: {}, NO3: {}, NO4: {}, NO5: {} };
+      } else if (currentHour == "00:00") {
+        monthPrices[Dato].NO1["00:00"] = Number(NO1Price);
+        monthPrices[Dato].NO2["00:00"] = Number(NO2Price);
+        monthPrices[Dato].NO3["00:00"] = Number(NO3Price);
+        monthPrices[Dato].NO4["00:00"] = Number(NO4Price);
+        monthPrices[Dato].NO5["00:00"] = Number(NO5Price);
       } else {
-        monthPrices[Dato].NO1[currentHour] = NO1Price;
-        monthPrices[Dato].NO2[currentHour] = NO2Price;
-        monthPrices[Dato].NO3[currentHour] = NO3Price;
-        monthPrices[Dato].NO4[currentHour] = NO4Price;
-        monthPrices[Dato].NO5[currentHour] = NO5Price;
+        // monthPrices[Dato].NO1[currentHour] = Number(NO1Price);
+        // monthPrices[Dato].NO2[currentHour] = Number(NO2Price);
+        // monthPrices[Dato].NO3[currentHour] = Number(NO3Price);
+        // monthPrices[Dato].NO4[currentHour] = Number(NO4Price);
+        // monthPrices[Dato].NO5[currentHour] = Number(NO5Price);
       }
     });
     monthPricesArr.push(monthPrices);
+    console.log(monthPricesArr);
   };
-  // console.log(monthPricesArr);
 
   useEffect(() => {
     createMonthPricesObj();
