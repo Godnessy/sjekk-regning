@@ -21,7 +21,6 @@ function AddMonthToDB() {
       monthPrices[Dato].NO5[currentHour] = Number(NO5Price);
     });
     monthPricesArr.push(monthPrices);
-    console.log(monthPricesArr);
   };
 
   useEffect(() => {
