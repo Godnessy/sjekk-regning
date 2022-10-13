@@ -55,3 +55,7 @@ body{
   flex-direction: row;
   justify-content: space-evenly;
 }
+
+.csv-input{
+  display:block;
+}
