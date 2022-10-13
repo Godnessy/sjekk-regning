@@ -54,7 +54,6 @@ function App() {
       const inputFile = e.target.files[0];
       const fileExtension = inputFile?.type.split("/")[1];
       setFile(inputFile);
-      console.log(`input file set`);
     }
   };
   const parseCsvJson = () => {
@@ -70,7 +69,6 @@ function App() {
       const parsedData = csv?.data;
       const columns = parsedData;
       setUsageData(columns);
-      console.log(columns);
     };
     reader.readAsText(file);
   };
@@ -117,14 +115,14 @@ function App() {
 
   const createPriceForHour = (zonePrices, time) => {
     if (zonePrices) {
-      return zonePrices[time] / 100;
+      return zonePrices[time] / 10;
     } else {
       return 0;
     }
   };
-  const createTotalPricePrHour = (usage, priceForHour) => {
+  const createTotalPricePrHour = (date, time, usage, priceForHour) => {
     if (priceForHour) {
-      const totalPrice = (priceForHour / 10) * Number(usage);
+      const totalPrice = (priceForHour / 100) * Number(usage);
       tempMonthPrice = tempMonthPrice += totalPrice;
       return totalPrice;
     }
@@ -137,8 +135,7 @@ function App() {
 
   useEffect(() => {
     setTotalMonthPrice(`${tempMonthPrice.toFixed(2)} kr`);
-    console.log("bla");
-  }, [tempMonthPrice]);
+  }, []);
 
   useEffect(() => {}, [selectedKommune]);
 
@@ -161,7 +158,6 @@ function App() {
         value={selectedMonth}
         onChange={(e) => {
           setSelectedMonth(e.target.value);
-          console.log(e.target.value);
         }}
       >
         <option>Valg en måned</option>
@@ -207,6 +203,8 @@ function App() {
                   time
                 );
                 const totalPricePrHour = createTotalPricePrHour(
+                  date,
+                  time,
                   usage,
                   priceForHour
                 );
@@ -222,12 +220,6 @@ function App() {
                 );
               })}
         </div>
-        {/* <div>
-          <AddDayToDB
-            setPriceData={setPriceData}
-            selectedZone={selectedKommune ? selectedKommune.value : undefined}
-          />
-        </div> */}
       </div>
     </>
   );
