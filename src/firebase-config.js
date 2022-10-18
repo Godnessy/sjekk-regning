@@ -1,25 +1,34 @@
+import firebase from "firebase/app";
+import { getAuth } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "@firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBbSCN0_7QKHc0OAN-YOG1Q6_FFR_nhj9g",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
 
-  authDomain: "minestrom-644e6.firebaseapp.com",
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
 
-  projectId: "minestrom-644e6",
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
 
-  storageBucket: "minestrom-644e6.appspot.com",
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
 
-  messagingSenderId: "281083162203",
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
 
-  appId: "1:281083162203:web:e162a8286b7af2e7db197e",
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
 
-  measurementId: "G-MG284QV72L",
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 
 const app = initializeApp(firebaseConfig);
 
 const analytics = getAnalytics(app);
+<<<<<<< HEAD
 
 export const db = getFirestore(app);
+=======
+export const auth = getAuth(app);
+
+export const db = getFirestore(app);
+export default app;
+>>>>>>> main
