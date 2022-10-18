@@ -2,7 +2,9 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./Pages/Home";
 import About from "./Pages/About";
 import Login from "./Pages/Login";
+import Signup from "./Pages/Signup";
 import Error from "./Pages/Error";
+import PrivateRoute from "./Components/PrivateRoute";
 
 function App() {
   return (
@@ -10,7 +12,15 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/home" element={<Home />} />
+          <Route path="/signup" element={<Signup />} />
+          <PrivateRoute
+            path="/home"
+            element={
+              <PrivateRoute>
+                <Home />
+              </PrivateRoute>
+            }
+          />
           <Route path="/about" element={<About />} />
           <Route path="*" element={<Error />} />
         </Routes>

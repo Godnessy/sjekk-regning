@@ -1,28 +1,30 @@
 import { React, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Login from "./Login";
 import { Form, Button, Card, Alert, Container } from "react-bootstrap";
-import { useAuth, currentUser } from "../context/AuthContext";
-
-function Login() {
+import { useAuth } from "../context/AuthContext";
+function Signup() {
   const emailref = useRef();
   const passwordref = useRef();
   const passwordConfirmRef = useRef();
-  const { login } = useAuth();
+  const { signup } = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
+
+    if (passwordref.current.value !== passwordConfirmRef.current.value) {
+      return setError("e-post og bekreft e-post adresser er ikke identiske");
+    }
     try {
       setError("");
       setLoading(true);
-      await login(emailref.current.value, passwordref.current.value);
+      await signup(emailref.current.value, passwordref.current.value);
       navigate("/home");
     } catch (error) {
-      setError(
-        "Feil konto navn / passord, prøv på nytt, eller klikk på Glemt passord for å tilbakestille det."
-      );
+      setError("Failed to Create an account" + error.message);
     }
     setLoading(false);
   }
@@ -30,12 +32,12 @@ function Login() {
   return (
     <>
       <Container
-        className="align-items-center mb-3 my-3 justify-content-center"
+        className="align-items-center justify-content-center"
         style={{ minHeight: "100vh" }}
       >
         <Card className="align-items-center" style={{ maxWidth: "60vh" }}>
           <Card.Body>
-            <h2 className="text-center mb-4">Logg inn</h2>
+            <h2 className="text-center mb-4">Registrering</h2>
             {error && <Alert variant="danger"> {error}</Alert>}
             <Form onSubmit={handleSubmit}>
               <Form.Group id="email">
@@ -46,16 +48,24 @@ function Login() {
                 <Form.Label>Passord</Form.Label>
                 <Form.Control type="password" ref={passwordref} required />
               </Form.Group>
+              <Form.Group id="password-confirm">
+                <Form.Label>Bekreft passord</Form.Label>
+                <Form.Control
+                  type="password"
+                  ref={passwordConfirmRef}
+                  required
+                />
+              </Form.Group>
               <Button type="submit" className="w-100 mt-2" disabled={loading}>
-                Logg inn
+                Registrer meg som ny bruker
               </Button>
             </Form>
           </Card.Body>
           <hr />
           <div>
             <h6 className="w100 text-center mt-2">
-              Har du ikke en konto?
-              <Link to="/signup"> Opprette ny konto</Link>
+              Allerede har en konto?
+              <Link to="/"> Logge inn</Link>
             </h6>
           </div>
           <div className="signup-form"></div>
@@ -65,4 +75,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Signup;

@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
 import Papa, { parse } from "papaparse";
+import { Button } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
 import { db } from "../firebase-config.js";
+import { useAuth } from "../context/AuthContext.js";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 // import AddDayToDB from "./Components/AddDayToDB";
 import kommunes from "../Resources/kommuneList.json";
+
 import KommuneDropdown from "../Components/KommuneDropdown";
 import prices from "../Resources/price_json/september.json";
 import AddMonthToDB from "../Components/AddMonthToDB";
@@ -19,6 +23,8 @@ function Home() {
   const [kommuneList, setKommuneList] = useState(kommunes);
   const [selectedKommune, setSelectedKommune] = useState();
   const [totalMonthPrice, setTotalMonthPrice] = useState(0);
+  const { currentUser, logout } = useAuth();
+  const navigate = useNavigate();
 
   let tempMonthPrice = 0;
   const handleCsvFile = (e) => {
@@ -112,8 +118,25 @@ function Home() {
 
   useEffect(() => {}, [selectedKommune]);
 
+  async function handleLogout() {
+    setError("");
+    try {
+      await logout();
+      navigate("/");
+    } catch (error) {
+      setError("Failed to logout");
+    }
+  }
+
   return (
     <>
+      <div>
+        <h6 className="w100 text-center mt-2">
+          <Button className="" onClick={handleLogout}>
+            Logg ut{" "}
+          </Button>
+        </h6>
+      </div>
       <div className=""></div>
       <label htmlFor="csvInput" style={{ display: "block" }}>
         Upload usage CSV file
