@@ -1,28 +1,28 @@
 import { React, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Form, Button, Card, Alert, Container } from "react-bootstrap";
-import { useAuth, currentUser } from "../context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 
-function Login() {
+function ForgotPassword() {
   const emailref = useRef();
-  const passwordref = useRef();
-  const passwordConfirmRef = useRef();
-  const { login } = useAuth();
+  const { resetPassword } = useAuth();
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
     try {
       setError("");
       setLoading(true);
-      await login(emailref.current.value, passwordref.current.value);
-      navigate("/home");
+      setMessage("");
+      await resetPassword(emailref.current.value);
+      setMessage("Vi har sendt deg en e-post dersom du har en konto!");
     } catch (error) {
       setError(
-        "Feil konto navn / passord, prøv på nytt, eller klikk på Glemt passord for å tilbakestille det."
+        "Denne e-postadressen eksisterer ikke, prøv igjen eller opprett en ny konto."
       );
+      console.log(error.message);
     }
     setLoading(false);
   }
@@ -35,23 +35,20 @@ function Login() {
       >
         <Card className="align-items-center" style={{ maxWidth: "60vh" }}>
           <Card.Body>
-            <h2 className="text-center mb-4">Logg inn</h2>
+            <h2 className="text-center mb-4">Reset Passord</h2>
             {error && <Alert variant="danger"> {error}</Alert>}
+            {message && <Alert variant="success"> {message}</Alert>}
             <Form onSubmit={handleSubmit}>
               <Form.Group id="email">
                 <Form.Label>E-postadresse</Form.Label>
                 <Form.Control type="email" ref={emailref} required />
               </Form.Group>
-              <Form.Group id="password">
-                <Form.Label>Passord</Form.Label>
-                <Form.Control type="password" ref={passwordref} required />
-              </Form.Group>
               <Button type="submit" className="w-100 mt-2" disabled={loading}>
-                Logg inn
+                Reset passord!
               </Button>
             </Form>
             <div className="w100 text-center mt-3">
-              <Link to="/forgot-password">Glemt passord?</Link>
+              <Link to="/">Logg in</Link>
             </div>
           </Card.Body>
           <hr />
@@ -68,4 +65,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default ForgotPassword;

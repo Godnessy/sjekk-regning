@@ -5,6 +5,7 @@ import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
 import Error from "./Pages/Error";
 import PrivateRoute from "./Components/PrivateRoute";
+import ForgotPassword from "./Components/ForgotPassword";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             }
           />
           <Route path="/about" element={<About />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="*" element={<Error />} />
         </Routes>
       </Router>
