@@ -9,10 +9,9 @@ import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import kommunes from "../Resources/kommuneList.json";
 
 import KommuneDropdown from "../Components/KommuneDropdown";
-import prices from "../Resources/price_json/september.json";
+import prices from "../Resources/price_json/October.json";
 import AddMonthToDB from "../Components/AddMonthToDB";
 const allowedExtensions = ["csv"];
-
 function Home() {
   const [error, setError] = useState("");
   const [file, setFile] = useState("");
@@ -27,6 +26,7 @@ function Home() {
   const navigate = useNavigate();
 
   let tempMonthPrice = 0;
+
   const handleCsvFile = (e) => {
     setError("");
     if (e.target.files.length) {
@@ -46,8 +46,8 @@ function Home() {
     reader.onload = async ({ target }) => {
       const csv = Papa.parse(target.result, { header: true });
       const parsedData = csv?.data;
-      const columns = parsedData;
-      setUsageData(columns);
+      const organizedDataFormat = parsedData;
+      calculateMonthlyValues(organizedDataFormat);
     };
     reader.readAsText(file);
   };
@@ -80,8 +80,7 @@ function Home() {
   };
 
   const collectDayPrices = (prices, date) => {
-    const allPrices = prices[0];
-    return allPrices[date];
+    return prices[date];
   };
 
   const createSelectedPriceZone = (selectedZone, priceObjForDay) => {
@@ -94,7 +93,7 @@ function Home() {
 
   const createPriceForHour = (zonePrices, time) => {
     if (zonePrices) {
-      return zonePrices[time] / 10;
+      return Number(zonePrices[time]);
     } else {
       return 0;
     }
@@ -103,6 +102,7 @@ function Home() {
     if (priceForHour) {
       const totalPrice = (priceForHour / 100) * Number(usage);
       tempMonthPrice = tempMonthPrice += totalPrice;
+
       return totalPrice;
     }
     return 0;
@@ -112,13 +112,10 @@ function Home() {
     createMonthList();
   }, []);
 
-  useEffect(() => {
-    setTotalMonthPrice(`${tempMonthPrice.toFixed(2)} kr`);
-  }, []);
-
   useEffect(() => {}, [selectedKommune]);
+  useEffect(() => {}, [totalMonthPrice]);
 
-  async function handleLogout() {
+  async function handleLogout(usageData) {
     setError("");
     try {
       await logout();
@@ -126,6 +123,52 @@ function Home() {
     } catch (error) {
       setError("Failed to logout");
     }
+  }
+
+  function calculateMonthlyValues(usageData) {
+    const dataForHour = usageData.map((col, idx) => {
+      const values = Object.values(col);
+      const date = values[0].split(" ")[0];
+      const time = values[0].split(" ")[1];
+      const usage = values[2].replace(",", ".");
+      const dayPrices = collectDayPrices(prices, date);
+      const selectedZonePrices = createSelectedPriceZone(
+        selectedKommune.value,
+        dayPrices
+      );
+      const priceForHour = createPriceForHour(selectedZonePrices, time);
+      const totalPricePrHour = createTotalPricePrHour(usage, priceForHour);
+      return {
+        values,
+        date,
+        time,
+        usage,
+        dayPrices,
+        selectedZonePrices,
+        priceForHour,
+        totalPricePrHour,
+      };
+    });
+
+    const totalMonthPrice = dataForHour.reduce((result, item) => {
+      return result + item.totalPricePrHour;
+    }, 0);
+
+    setTotalMonthPrice(totalMonthPrice);
+    setUsageData(dataForHour);
+  }
+
+  function renderHourlyInfo(dataForHour) {
+    return dataForHour.map((day) => {
+      const { date, time, usage, priceForHour, totalPricePrHour } = day;
+      return (
+        <p
+          key={date + time}
+        >{`On the ${date} at ${time} you used ${usage} Kwh, At a spot price of ${priceForHour.toFixed(
+          2
+        )} øre, this hour cost you: ${totalPricePrHour.toFixed(2)} nok`}</p>
+      );
+    });
   }
 
   return (
@@ -179,42 +222,9 @@ function Home() {
         <AddMonthToDB />
       </div>
 
-      <p>Total price for month: {totalMonthPrice}</p>
+      <p>Total price for month: {totalMonthPrice.toFixed(2)}</p>
       <div className="usage-price-container">
-        <div>
-          {error
-            ? error
-            : usageData.map((col, idx) => {
-                const titles = Object.keys(col);
-                const values = Object.values(col);
-                const date = values[0].split(" ")[0];
-                const time = values[0].split(" ")[1];
-                const usage = values[2].replace(",", ".");
-                const dayPrices = collectDayPrices(prices, date);
-                const selectedZonePrices = createSelectedPriceZone(
-                  selectedKommune.value,
-                  dayPrices
-                );
-                const priceForHour = createPriceForHour(
-                  selectedZonePrices,
-                  time
-                );
-                const totalPricePrHour = createTotalPricePrHour(
-                  usage,
-                  priceForHour
-                );
-
-                return (
-                  <p
-                    key={idx}
-                  >{`On the ${date} at ${time} you used ${usage} Kwh, At a spot price of ${priceForHour.toFixed(
-                    2
-                  )} øre, this hour cost you: ${totalPricePrHour.toFixed(
-                    2
-                  )} nok`}</p>
-                );
-              })}
-        </div>
+        <div>{renderHourlyInfo(usageData)}</div>
       </div>
     </>
   );
