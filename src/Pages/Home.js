@@ -23,6 +23,8 @@ function Home() {
   const [totalMonthPrice, setTotalMonthPrice] = useState(0);
   const { currentUser, logout } = useAuth();
   const [surcharge, setsurcharge] = useState(0);
+  const [networkDayPrice, setNetworkDayPrice] = useState(0);
+  const [networkNightPrice, setNetworkNightPrice] = useState(0);
   const navigate = useNavigate();
 
   let tempMonthPrice = 0;
@@ -183,12 +185,12 @@ function Home() {
         <div>
           <h6 className="w100 text-center mt-2">
             <Button className="" onClick={handleLogout}>
-              Logg ut{" "}
+              Logg ut
             </Button>
           </h6>
         </div>
         <div className="inputs-container d-flex">
-          <div>
+          <div className="ms-3">
             <label htmlFor="csvInput" style={{ display: "block" }}>
               Upload usage CSV file
             </label>
@@ -199,10 +201,6 @@ function Home() {
               name="file"
               type="File"
             />
-
-            <div>
-              <button onClick={parseCsvJson}>Parse</button>
-            </div>
 
             <label htmlFor="months"> Choose a month: </label>
             <select
@@ -246,8 +244,41 @@ function Home() {
               <h4>Øre</h4>
             </div>
           </div>
-          <p>Total price for month: {totalMonthPrice.toFixed(2)}</p>
+          <h2 className="m-5 ">
+            Total price for month: {totalMonthPrice.toFixed(2)}
+          </h2>
+          <div>
+            <h2>Nettleie</h2>
+            <p>Kommer Snart!</p>
+            {/* <div>
+              <p>Dag pris</p>
+              <input
+                className="network-charge-input"
+                type="text"
+                value={networkDayPrice}
+                onChange={(e) => {
+                  setNetworkDayPrice(e.target.value);
+                }}
+              />
+              Øre
+            </div>
+            <div>
+              <p>Natt pris</p>
+              <input
+                className="network-charge-input"
+                type="text"
+                value={networkNightPrice}
+                onChange={(e) => {
+                  setNetworkNightPrice(e.target.value);
+                }}
+              />
+              Øre
+            </div> */}
+          </div>
         </div>
+      </div>
+      <div>
+        <button onClick={parseCsvJson}>Regne ut!</button>
       </div>
       <div className="usage-price-container">
         <div>{renderHourlyInfo(usageData)}</div>
