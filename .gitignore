@@ -21,12 +21,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-src/images/user1.jpg
-src/images/user2.jpg
-src/images/user3.jpg
-src/images/user4.jpg
-src/images/user5.jpg
-src/images/user6.jpg
 src/Resources/price_history/all_prices_september_CSV.csv
 src/Resources/price_history/all_prices_september.json
 src/Resources/price_history/October/01-10-22.json
@@ -48,3 +42,9 @@ src/Resources/price_history/October/16-10-22.json
 src/Resources/price_json/october.json
 src/Resources/price_json/september.json
 src/Resources/usage_csv/september.csv
+src/images/user1.jpg
+src/images/user2.jpg
+src/images/user3.jpg
+src/images/user4.jpg
+src/images/user5.jpg
+src/images/user6.jpg

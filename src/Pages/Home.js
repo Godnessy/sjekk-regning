@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Papa, { parse } from "papaparse";
 import { Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,12 +7,10 @@ import { useAuth } from "../context/AuthContext.js";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 // import AddDayToDB from "./Components/AddDayToDB";
 import kommunes from "../Resources/kommuneList.json";
-
 import KommuneDropdown from "../Components/KommuneDropdown";
-import prices from "../Resources/price_json/september.json";
+import prices from "../Resources/price_json/october.json";
 import AddMonthToDB from "../Components/AddMonthToDB";
 const allowedExtensions = ["csv"];
-
 function Home() {
   const [error, setError] = useState("");
   const [file, setFile] = useState("");
@@ -24,9 +22,13 @@ function Home() {
   const [selectedKommune, setSelectedKommune] = useState();
   const [totalMonthPrice, setTotalMonthPrice] = useState(0);
   const { currentUser, logout } = useAuth();
+  const [surcharge, setsurcharge] = useState(0);
+  const [networkDayPrice, setNetworkDayPrice] = useState(0);
+  const [networkNightPrice, setNetworkNightPrice] = useState(0);
   const navigate = useNavigate();
 
   let tempMonthPrice = 0;
+
   const handleCsvFile = (e) => {
     setError("");
     if (e.target.files.length) {
@@ -46,8 +48,8 @@ function Home() {
     reader.onload = async ({ target }) => {
       const csv = Papa.parse(target.result, { header: true });
       const parsedData = csv?.data;
-      const columns = parsedData;
-      setUsageData(columns);
+      const organizedDataFormat = parsedData;
+      calculateMonthlyValues(organizedDataFormat);
     };
     reader.readAsText(file);
   };
@@ -80,12 +82,13 @@ function Home() {
   };
 
   const collectDayPrices = (prices, date) => {
-    const allPrices = prices[0];
-    return allPrices[date];
+    console.log(date, prices);
+    return prices[date];
   };
 
   const createSelectedPriceZone = (selectedZone, priceObjForDay) => {
     if (priceObjForDay) {
+      console.log(priceObjForDay);
       return priceObjForDay[selectedZone];
     } else {
       return "test";
@@ -94,15 +97,20 @@ function Home() {
 
   const createPriceForHour = (zonePrices, time) => {
     if (zonePrices) {
-      return zonePrices[time] / 10;
+      const basePrice = Number(zonePrices[time]);
+      const calculatedPrice = basePrice + Number(surcharge);
+      console.log(basePrice, surcharge, calculatedPrice);
+      return calculatedPrice;
     } else {
       return 0;
     }
   };
   const createTotalPricePrHour = (usage, priceForHour) => {
     if (priceForHour) {
-      const totalPrice = (priceForHour / 100) * Number(usage);
+      const basePrice = priceForHour;
+      const totalPrice = (basePrice / 100) * Number(usage);
       tempMonthPrice = tempMonthPrice += totalPrice;
+
       return totalPrice;
     }
     return 0;
@@ -112,13 +120,10 @@ function Home() {
     createMonthList();
   }, []);
 
-  useEffect(() => {
-    setTotalMonthPrice(`${tempMonthPrice.toFixed(2)} kr`);
-  }, []);
-
   useEffect(() => {}, [selectedKommune]);
+  useEffect(() => {}, [totalMonthPrice]);
 
-  async function handleLogout() {
+  async function handleLogout(usageData) {
     setError("");
     try {
       await logout();
@@ -128,93 +133,155 @@ function Home() {
     }
   }
 
+  function calculateMonthlyValues(usageData) {
+    const dataForHour = usageData.map((col, idx) => {
+      const values = Object.values(col);
+      const date = values[0].split(" ")[0];
+      const time = values[0].split(" ")[1];
+      const usage = values[2].replace(",", ".");
+      const dayPrices = collectDayPrices(prices, date);
+      const selectedZonePrices = createSelectedPriceZone(
+        selectedKommune.value,
+        dayPrices
+      );
+      const priceForHour = createPriceForHour(selectedZonePrices, time);
+      const totalPricePrHour = createTotalPricePrHour(usage, priceForHour);
+      return {
+        values,
+        date,
+        time,
+        usage,
+        dayPrices,
+        selectedZonePrices,
+        priceForHour,
+        totalPricePrHour,
+      };
+    });
+
+    const totalMonthPrice = dataForHour.reduce((result, item) => {
+      return result + item.totalPricePrHour;
+    }, 0);
+
+    setTotalMonthPrice(totalMonthPrice);
+    setUsageData(dataForHour);
+  }
+
+  function renderHourlyInfo(dataForHour) {
+    return dataForHour.map((day) => {
+      const { date, time, usage, priceForHour, totalPricePrHour } = day;
+      return (
+        <p
+          key={date + time}
+        >{`On the ${date} at ${time} you used ${usage} Kwh, At a spot price of ${priceForHour.toFixed(
+          2
+        )} øre, this hour cost you: ${totalPricePrHour.toFixed(2)} nok`}</p>
+      );
+    });
+  }
+
   return (
     <>
       <div>
-        <h6 className="w100 text-center mt-2">
-          <Button className="" onClick={handleLogout}>
-            Logg ut{" "}
-          </Button>
-        </h6>
-      </div>
-      <div className=""></div>
-      <label htmlFor="csvInput" style={{ display: "block" }}>
-        Upload usage CSV file
-      </label>
-
-      <input onChange={handleCsvFile} id="csvInput" name="file" type="File" />
-
-      <div>
-        <button onClick={parseCsvJson}>Parse</button>
-      </div>
-
-      <label htmlFor="months"> Choose a month: </label>
-      <select
-        name="months"
-        id="months"
-        value={selectedMonth}
-        onChange={(e) => {
-          setSelectedMonth(e.target.value);
-        }}
-      >
-        <option>Valg en måned</option>
-        {monthList &&
-          monthList.map((month) => (
-            <option key={month} value={month}>
-              {month}
-            </option>
-          ))}
-      </select>
-      <div className="drop-down">
-        <h4>Velg din kommune:</h4>
-        <KommuneDropdown
-          kommuneList={kommuneList}
-          setSelectedKommune={setSelectedKommune}
-        />
-        {selectedKommune && (
-          <h4> Din kommune tilhører sone: {selectedKommune.value}</h4>
-        )}
-      </div>
-      <div>
-        <AddMonthToDB />
-      </div>
-
-      <p>Total price for month: {totalMonthPrice}</p>
-      <div className="usage-price-container">
         <div>
-          {error
-            ? error
-            : usageData.map((col, idx) => {
-                const titles = Object.keys(col);
-                const values = Object.values(col);
-                const date = values[0].split(" ")[0];
-                const time = values[0].split(" ")[1];
-                const usage = values[2].replace(",", ".");
-                const dayPrices = collectDayPrices(prices, date);
-                const selectedZonePrices = createSelectedPriceZone(
-                  selectedKommune.value,
-                  dayPrices
-                );
-                const priceForHour = createPriceForHour(
-                  selectedZonePrices,
-                  time
-                );
-                const totalPricePrHour = createTotalPricePrHour(
-                  usage,
-                  priceForHour
-                );
-
-                return (
-                  <p
-                    key={idx}
-                  >{`On the ${date} at ${time} you used ${usage} Kwh, At a spot price of ${priceForHour.toFixed(
-                    2
-                  )} øre, this hour cost you: ${totalPricePrHour.toFixed(
-                    2
-                  )} nok`}</p>
-                );
-              })}
+          <h6 className="w100 text-center mt-2">
+            <Button className="" onClick={handleLogout}>
+              Logg ut
+            </Button>
+          </h6>
         </div>
+        <div className="inputs-container d-flex">
+          <div className="ms-3">
+            <label htmlFor="csvInput" style={{ display: "block" }}>
+              Upload usage CSV file
+            </label>
+
+            <input
+              onChange={handleCsvFile}
+              id="csvInput"
+              name="file"
+              type="File"
+            />
+
+            <label htmlFor="months"> Choose a month: </label>
+            <select
+              name="months"
+              id="months"
+              value={selectedMonth}
+              onChange={(e) => {
+                setSelectedMonth(e.target.value);
+              }}
+            >
+              <option>Valg en måned</option>
+              {monthList &&
+                monthList.map((month) => (
+                  <option key={month} value={month}>
+                    {month}
+                  </option>
+                ))}
+            </select>
+            <div className="drop-down d-flex">
+              <h4 className="me-3">Velg din kommune:</h4>
+              <div className="w-5">
+                <KommuneDropdown
+                  kommuneList={kommuneList}
+                  setSelectedKommune={setSelectedKommune}
+                />
+                {selectedKommune && (
+                  <h4> Din kommune tilhører sone: {selectedKommune.value}</h4>
+                )}
+              </div>
+            </div>
+            <div className="surcharge d-flex">
+              <h3 className="me-2">Påslag</h3>
+              <input
+                className="surcharge-input"
+                type="text"
+                value={surcharge}
+                onChange={(e) => {
+                  setsurcharge(e.target.value);
+                }}
+              />
+              <h4>Øre</h4>
+            </div>
+          </div>
+          <h2 className="m-5 ">
+            Total price for month: {totalMonthPrice.toFixed(2)}
+          </h2>
+          <div>
+            <h2>Nettleie</h2>
+            <p>Kommer Snart!</p>
+            {/* <div>
+              <p>Dag pris</p>
+              <input
+                className="network-charge-input"
+                type="text"
+                value={networkDayPrice}
+                onChange={(e) => {
+                  setNetworkDayPrice(e.target.value);
+                }}
+              />
+              Øre
+            </div>
+            <div>
+              <p>Natt pris</p>
+              <input
+                className="network-charge-input"
+                type="text"
+                value={networkNightPrice}
+                onChange={(e) => {
+                  setNetworkNightPrice(e.target.value);
+                }}
+              />
+              Øre
+            </div> */}
+          </div>
+        </div>
+      </div>
+      <div>
+        <button onClick={parseCsvJson}>Regne ut!</button>
+      </div>
+      <div className="usage-price-container">
+        <div>{renderHourlyInfo(usageData)}</div>
       </div>
     </>
   );
