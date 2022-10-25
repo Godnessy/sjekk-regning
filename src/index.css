@@ -7,9 +7,6 @@ body {
   
 }
 
-.drop-down {
-  width: 15%;
-}
 
 .zones-container{
   display: grid;
@@ -25,4 +22,11 @@ body {
 
 .csv-input{
   display:block;
+}
+
+.surcharge-input {
+  width: 5%;
+  height: 3%;
+  position: relative;
+  top:15%;
 }
