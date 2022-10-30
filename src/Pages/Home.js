@@ -48,10 +48,10 @@ function Home() {
   };
   const parseCsvJson = () => {
     if (!selectedKommune) {
-      setError("Please Select a kommune before clicking this button!");
+      setError("Velg kommune fra listen");
       return;
     }
-    if (!file) return setError("Enter a valid file");
+    if (!file) return setError("Filen er ikke gyldig");
     setError();
     const reader = new FileReader();
     reader.onload = async ({ target }) => {
@@ -269,6 +269,7 @@ function Home() {
                   <h4> Din kommune tilhører sone: {selectedKommune.value}</h4>
                 )}
               </div>
+              {error && <h2 className="text-danger d-flex ">{error} </h2>}
             </div>
             <div className="surcharge d-flex">
               <h3 className="me-2">Påslag</h3>
