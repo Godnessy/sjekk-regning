@@ -8,8 +8,9 @@ import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 // import AddDayToDB from "./Components/AddDayToDB";
 import kommunes from "../Resources/kommuneList.json";
 import KommuneDropdown from "../Components/KommuneDropdown";
-import prices from "../Resources/price_json/october.json";
+import prices from "../Resources/price_json/October.json";
 import AddMonthToDB from "../Components/AddMonthToDB";
+import DailyPrices from "../Components/DailyPrices.js";
 const allowedExtensions = ["csv"];
 function Home() {
   const [error, setError] = useState("");
@@ -23,8 +24,13 @@ function Home() {
   const [totalMonthPrice, setTotalMonthPrice] = useState(0);
   const { currentUser, logout } = useAuth();
   const [surcharge, setsurcharge] = useState(0);
+  const [monthlyAverage, setMonthlyAverage] = useState();
+  const [govSupport, setGovSupport] = useState(0);
+  const [myGovSupport, setMyGovSupport] = useState(0);
   const [networkDayPrice, setNetworkDayPrice] = useState(0);
   const [networkNightPrice, setNetworkNightPrice] = useState(0);
+  const [dailyData, setDailyData] = useState();
+
   const navigate = useNavigate();
 
   let tempMonthPrice = 0;
@@ -82,13 +88,11 @@ function Home() {
   };
 
   const collectDayPrices = (prices, date) => {
-    console.log(date, prices);
     return prices[date];
   };
 
   const createSelectedPriceZone = (selectedZone, priceObjForDay) => {
     if (priceObjForDay) {
-      console.log(priceObjForDay);
       return priceObjForDay[selectedZone];
     } else {
       return "test";
@@ -99,7 +103,6 @@ function Home() {
     if (zonePrices) {
       const basePrice = Number(zonePrices[time]);
       const calculatedPrice = basePrice + Number(surcharge);
-      console.log(basePrice, surcharge, calculatedPrice);
       return calculatedPrice;
     } else {
       return 0;
@@ -134,6 +137,8 @@ function Home() {
   }
 
   function calculateMonthlyValues(usageData) {
+    let hourCounter = 0;
+    let averagePriceforZone = 0;
     const dataForHour = usageData.map((col, idx) => {
       const values = Object.values(col);
       const date = values[0].split(" ")[0];
@@ -146,6 +151,18 @@ function Home() {
       );
       const priceForHour = createPriceForHour(selectedZonePrices, time);
       const totalPricePrHour = createTotalPricePrHour(usage, priceForHour);
+      hourCounter++;
+      const dayAveragePrice = Object.values(selectedZonePrices).reduce(
+        (result, price) => {
+          if (isNaN(price)) {
+            return;
+          } else {
+            return (result + price / 100) / hourCounter;
+          }
+        },
+        0
+      );
+
       return {
         values,
         date,
@@ -157,26 +174,45 @@ function Home() {
         totalPricePrHour,
       };
     });
-
     const totalMonthPrice = dataForHour.reduce((result, item) => {
       return result + item.totalPricePrHour;
     }, 0);
-
+    setMonthlyAverage((totalMonthPrice / hourCounter).toFixed(2));
     setTotalMonthPrice(totalMonthPrice);
     setUsageData(dataForHour);
   }
 
   function renderHourlyInfo(dataForHour) {
-    return dataForHour.map((day) => {
-      const { date, time, usage, priceForHour, totalPricePrHour } = day;
-      return (
-        <p
-          key={date + time}
-        >{`On the ${date} at ${time} you used ${usage} Kwh, At a spot price of ${priceForHour.toFixed(
-          2
-        )} øre, this hour cost you: ${totalPricePrHour.toFixed(2)} nok`}</p>
-      );
-    });
+    return (
+      <div>
+        <h2>Time for time</h2>
+        <table className="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">Dato</th>
+              <th scope="col">Time</th>
+              <th scope="col">Kwt brukt</th>
+              <th scope="col">Pris pr Time</th>
+              <th scope="col">Total pris</th>
+            </tr>
+          </thead>
+          <tbody>
+            {dataForHour.map((day) => {
+              const { date, time, usage, priceForHour, totalPricePrHour } = day;
+              return (
+                <tr key={date + time}>
+                  <th scope="row">{date}</th>
+                  <td>{time}</td>
+                  <td>{usage}</td>
+                  <td>{priceForHour.toFixed(2)} Øre</td>
+                  <td>{`${totalPricePrHour.toFixed(2)} nok`}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    );
   }
 
   return (
@@ -190,7 +226,7 @@ function Home() {
           </h6>
         </div>
         <div className="inputs-container d-flex">
-          <div className="ms-3">
+          <div className="ms-3 border border-dark p-3">
             <label htmlFor="csvInput" style={{ display: "block" }}>
               Upload usage CSV file
             </label>
@@ -213,8 +249,8 @@ function Home() {
             >
               <option>Valg en måned</option>
               {monthList &&
-                monthList.map((month) => (
-                  <option key={month} value={month}>
+                monthList.map((month, index) => (
+                  <option key={index} value={month}>
                     {month}
                   </option>
                 ))}
@@ -244,12 +280,17 @@ function Home() {
               <h4>Øre</h4>
             </div>
           </div>
-          <h2 className="m-5 ">
-            Total price for month: {totalMonthPrice.toFixed(2)}
-          </h2>
-          <div>
+          <div className="d-flex flex-column">
+            <h2 className="m-5 ">Total pris: {totalMonthPrice.toFixed(2)}</h2>
+            <p className="m-5">
+              {monthlyAverage && ` Måned snittpris: ${monthlyAverage}`}
+            </p>
+            <p className="m-5">Strømstøtte på snittpris:</p>
+            <p className="m-5">Din strømstøtte:</p>
+          </div>
+          <div className="">
             <h2>Nettleie</h2>
-            <p>Kommer Snart!</p>
+            <h4>Kommer Snart!</h4>
             {/* <div>
               <p>Dag pris</p>
               <input
@@ -271,17 +312,20 @@ function Home() {
                 onChange={(e) => {
                   setNetworkNightPrice(e.target.value);
                 }}
-              />
+                />
               Øre
             </div> */}
           </div>
         </div>
       </div>
       <div>
-        <button onClick={parseCsvJson}>Regne ut!</button>
+        <button onClick={parseCsvJson} className="ms-5 my-3">
+          Regne ut!
+        </button>
       </div>
-      <div className="usage-price-container">
+      <div className="usage-price-container d-flex">
         <div>{renderHourlyInfo(usageData)}</div>
+        {<DailyPrices dataForHour={usageData} />}
       </div>
     </>
   );
