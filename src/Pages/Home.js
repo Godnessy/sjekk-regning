@@ -11,6 +11,9 @@ import KommuneDropdown from "../Components/KommuneDropdown";
 import prices from "../Resources/price_json/October.json";
 import AddMonthToDB from "../Components/AddMonthToDB";
 import DailyPrices from "../Components/DailyPrices.js";
+import HourlyPrices from "../Components/HourlyPrices.js";
+import NetworkUsage from "../Components/NetworkUsage.js";
+
 const allowedExtensions = ["csv"];
 function Home() {
   const [error, setError] = useState("");
@@ -78,13 +81,14 @@ function Home() {
       "November",
       "December",
     ];
-    let monthArr = [];
+    let monthArr = new Set();
     for (let i = 0; i < currentMonth + 1; i++) {
       const m = date.getMonth();
-      monthArr.push(monthNames[m]);
+      monthArr.add(monthNames[m]);
+      console.log(monthArr);
       date.setMonth(date.getMonth() - 1);
     }
-    return setMonthList(monthArr);
+    return setMonthList(Array.from(monthArr));
   };
 
   const collectDayPrices = (prices, date) => {
@@ -182,38 +186,38 @@ function Home() {
     setUsageData(dataForHour);
   }
 
-  function renderHourlyInfo(dataForHour) {
-    return (
-      <div>
-        <h2>Time for time</h2>
-        <table className="table table-striped">
-          <thead>
-            <tr>
-              <th scope="col">Dato</th>
-              <th scope="col">Time</th>
-              <th scope="col">Kwt brukt</th>
-              <th scope="col">Pris pr Time</th>
-              <th scope="col">Total pris</th>
-            </tr>
-          </thead>
-          <tbody>
-            {dataForHour.map((day) => {
-              const { date, time, usage, priceForHour, totalPricePrHour } = day;
-              return (
-                <tr key={date + time}>
-                  <th scope="row">{date}</th>
-                  <td>{time}</td>
-                  <td>{usage}</td>
-                  <td>{priceForHour.toFixed(2)} Øre</td>
-                  <td>{`${totalPricePrHour.toFixed(2)} nok`}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    );
-  }
+  // function renderHourlyInfo(dataForHour) {
+  //   return (
+  //     <div>
+  //       <h2>Time for time</h2>
+  //       <table className="table table-striped">
+  //         <thead>
+  //           <tr>
+  //             <th scope="col">Dato</th>
+  //             <th scope="col">Time</th>
+  //             <th scope="col">Kwt brukt</th>
+  //             <th scope="col">Pris pr Time</th>
+  //             <th scope="col">Total pris</th>
+  //           </tr>
+  //         </thead>
+  //         <tbody>
+  //           {dataForHour.map((day) => {
+  //             const { date, time, usage, priceForHour, totalPricePrHour } = day;
+  //             return (
+  //               <tr key={date + time}>
+  //                 <th scope="row">{date}</th>
+  //                 <td>{time}</td>
+  //                 <td>{usage}</td>
+  //                 <td>{priceForHour.toFixed(2)} Øre</td>
+  //                 <td>{`${totalPricePrHour.toFixed(2)} nok`}</td>
+  //               </tr>
+  //             );
+  //           })}
+  //         </tbody>
+  //       </table>
+  //     </div>
+  //   );
+  // }
 
   return (
     <>
@@ -324,8 +328,8 @@ function Home() {
         </button>
       </div>
       <div className="usage-price-container d-flex">
-        <div>{renderHourlyInfo(usageData)}</div>
-        {<DailyPrices dataForHour={usageData} />}
+        <HourlyPrices dataForHour={usageData} />
+        <DailyPrices dataForHour={usageData} />
       </div>
     </>
   );
