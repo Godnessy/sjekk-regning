@@ -85,7 +85,6 @@ function Home() {
     for (let i = 0; i < currentMonth + 1; i++) {
       const m = date.getMonth();
       monthArr.add(monthNames[m]);
-      console.log(monthArr);
       date.setMonth(date.getMonth() - 1);
     }
     return setMonthList(Array.from(monthArr));
