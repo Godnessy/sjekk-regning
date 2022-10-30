@@ -8,9 +8,8 @@ import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 // import AddDayToDB from "./Components/AddDayToDB";
 import kommunes from "../Resources/kommuneList.json";
 import KommuneDropdown from "../Components/KommuneDropdown";
-import prices from "../Resources/price_json/october.json";
+import prices from "../Resources/price_json/October.json";
 import AddMonthToDB from "../Components/AddMonthToDB";
-import { type } from "@testing-library/user-event/dist/type/index.js";
 import DailyPrices from "../Components/DailyPrices.js";
 const allowedExtensions = ["csv"];
 function Home() {
@@ -250,8 +249,8 @@ function Home() {
             >
               <option>Valg en måned</option>
               {monthList &&
-                monthList.map((month) => (
-                  <option key={month} value={month}>
+                monthList.map((month, index) => (
+                  <option key={index} value={month}>
                     {month}
                   </option>
                 ))}

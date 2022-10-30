@@ -4,7 +4,6 @@ function DailyPrices({ dataForHour }) {
   const [dailyData, setDailyData] = useState([]);
 
   function calculateDailyValues(dataForHour) {
-    let dailyData = [];
     let dailyDataObj = {};
     let prevUsage = 0;
     let prevPrice = 0;
