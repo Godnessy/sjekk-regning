@@ -7,7 +7,6 @@ body {
   
 }
 
-
 .zones-container{
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
@@ -23,16 +22,86 @@ body {
 .csv-input{
   display:block;
 }
+.drop-down{
+  width: 100%;
+}
 
 .surcharge-input {
-  width: 5%;
-  height: 3%;
-  position: relative;
-  top:15%;
+  width: 8%;
+  height: 80%;
+  position: relative; 
+}
+
+.fee{
+  width: 12%;
 }
 .network-charge-input {
   width: 10%;
-  height: 3%;
+  height: 10%;
   position: relative;
   top:15%;
+}
+
+.logo{
+ width: 6em;
+}
+
+.login-card{
+  
+}
+
+.navbar {
+  height: 5em;
+}
+
+.calculate{
+position: relative;
+left: 40%;
+}
+
+.surcharge-title{
+  position: relative;
+  bottom:0.25em;
+}
+
+.login-example-pic{
+  width: 80%;
+  margin-left:20%;
+  border-radius: 1%;
+  height: 30em;
+}
+
+.login-banner{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-title{
+ position: relative;
+ top:10em;
+ left: 5em;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ color: #F5DEB3
+}
+
+.csv-modal{
+     cursor:pointer;
+     color:blue;
+     text-decoration:underline;
+}
+
+.inst-pic{
+  width: 100%;
+}
+
+
+.csv-flow-title{
+font-size: 2em;
+}
+
+.login-container{
+  display: flex;
 }

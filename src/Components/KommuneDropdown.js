@@ -2,7 +2,6 @@ import React from "react";
 import Select from "react-select";
 
 function KommuneDropdown({ kommuneList, setSelectedKommune }) {
-  //   console.log(kommuneList);
   const dropDownValues = [];
 
   Object.entries(kommuneList).forEach(([kommuneName, areaCode]) =>

@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import Papa, { parse } from "papaparse";
-import { Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { db } from "../firebase-config.js";
 import { useAuth } from "../context/AuthContext.js";
@@ -13,6 +12,8 @@ import AddMonthToDB from "../Components/AddMonthToDB";
 import DailyPrices from "../Components/DailyPrices.js";
 import HourlyPrices from "../Components/HourlyPrices.js";
 import NetworkUsage from "../Components/NetworkUsage.js";
+import Navbar from "../Components/Navbar.js";
+import Instructions from "../Components/Instructions.js";
 
 const allowedExtensions = ["csv"];
 function Home() {
@@ -24,9 +25,10 @@ function Home() {
   const [selectedMonth, setSelectedMonth] = useState();
   const [kommuneList, setKommuneList] = useState(kommunes);
   const [selectedKommune, setSelectedKommune] = useState();
-  const [totalMonthPrice, setTotalMonthPrice] = useState(0);
+  const [totalMonthPrice, setTotalMonthPrice] = useState();
   const { currentUser, logout } = useAuth();
   const [surcharge, setsurcharge] = useState(0);
+  const [fee, setFee] = useState(0);
   const [monthlyAverage, setMonthlyAverage] = useState();
   const [govSupport, setGovSupport] = useState(0);
   const [myGovSupport, setMyGovSupport] = useState(0);
@@ -185,63 +187,31 @@ function Home() {
     setUsageData(dataForHour);
   }
 
-  // function renderHourlyInfo(dataForHour) {
-  //   return (
-  //     <div>
-  //       <h2>Time for time</h2>
-  //       <table className="table table-striped">
-  //         <thead>
-  //           <tr>
-  //             <th scope="col">Dato</th>
-  //             <th scope="col">Time</th>
-  //             <th scope="col">Kwt brukt</th>
-  //             <th scope="col">Pris pr Time</th>
-  //             <th scope="col">Total pris</th>
-  //           </tr>
-  //         </thead>
-  //         <tbody>
-  //           {dataForHour.map((day) => {
-  //             const { date, time, usage, priceForHour, totalPricePrHour } = day;
-  //             return (
-  //               <tr key={date + time}>
-  //                 <th scope="row">{date}</th>
-  //                 <td>{time}</td>
-  //                 <td>{usage}</td>
-  //                 <td>{priceForHour.toFixed(2)} Øre</td>
-  //                 <td>{`${totalPricePrHour.toFixed(2)} nok`}</td>
-  //               </tr>
-  //             );
-  //           })}
-  //         </tbody>
-  //       </table>
-  //     </div>
-  //   );
-  // }
-
   return (
     <>
+      <Navbar logOut={handleLogout} />
       <div>
         <div>
-          <h6 className="w100 text-center mt-2">
-            <Button className="" onClick={handleLogout}>
-              Logg ut
-            </Button>
-          </h6>
+          <h6 className="w100 text-center mt-2"></h6>
         </div>
         <div className="inputs-container d-flex">
-          <div className="ms-3 border border-dark p-3">
-            <label htmlFor="csvInput" style={{ display: "block" }}>
-              Upload usage CSV file
-            </label>
+          <div className="ms-3 border border-dark p-3 card">
+            <div className="csv-part">
+              <label htmlFor="csvInput" style={{ display: "block" }}>
+                Laste opp måleverdier CSV fil fra Elhub:
+              </label>
+              <Instructions></Instructions>
 
-            <input
-              onChange={handleCsvFile}
-              id="csvInput"
-              name="file"
-              type="File"
-            />
+              <input
+                onChange={handleCsvFile}
+                id="csvInput"
+                name="file"
+                type="File"
+              />
+            </div>
 
-            <label htmlFor="months"> Choose a month: </label>
+            {/* Month selector to be implemented later when functionality works */}
+            {/* <label htmlFor="months"> Choose a month: </label>
             <select
               name="months"
               id="months"
@@ -257,11 +227,13 @@ function Home() {
                     {month}
                   </option>
                 ))}
-            </select>
+            </select> */}
+            <hr />
             <div className="drop-down d-flex">
               <h4 className="me-3">Velg din kommune:</h4>
-              <div className="w-5">
+              <div className="d-flex w-100 flex-column">
                 <KommuneDropdown
+                  className="kommune-select"
                   kommuneList={kommuneList}
                   setSelectedKommune={setSelectedKommune}
                 />
@@ -269,10 +241,11 @@ function Home() {
                   <h4> Din kommune tilhører sone: {selectedKommune.value}</h4>
                 )}
               </div>
-              {error && <h2 className="text-danger d-flex ">{error} </h2>}
+              {error && <p className="text-danger d-flex ">{error} </p>}
             </div>
+            <hr />
             <div className="surcharge d-flex">
-              <h3 className="me-2">Påslag</h3>
+              <h3 className="me-2 surcharge-title">Påslag</h3>
               <input
                 className="surcharge-input"
                 type="text"
@@ -283,47 +256,35 @@ function Home() {
               />
               <h4>Øre</h4>
             </div>
-          </div>
-          <div className="d-flex flex-column">
-            <h2 className="m-5 ">Total pris: {totalMonthPrice.toFixed(2)}</h2>
-            <p className="m-5">
-              {monthlyAverage && ` Måned snittpris: ${monthlyAverage}`}
-            </p>
-            <p className="m-5">Strømstøtte på snittpris:</p>
-            <p className="m-5">Din strømstøtte:</p>
-          </div>
-          <div className="">
-            <h2>Nettleie</h2>
-            <h4>Kommer Snart!</h4>
-            {/* <div>
-              <p>Dag pris</p>
+            <div className="surcharge d-flex">
+              <h3 className="me-2 surcharge-title">Månedspris</h3>
               <input
-                className="network-charge-input"
+                className="surcharge-input fee"
                 type="text"
-                value={networkDayPrice}
+                value={fee}
                 onChange={(e) => {
-                  setNetworkDayPrice(e.target.value);
+                  setFee(e.target.value);
                 }}
               />
-              Øre
+              <h4>Kr</h4>
             </div>
-            <div>
-              <p>Natt pris</p>
-              <input
-                className="network-charge-input"
-                type="text"
-                value={networkNightPrice}
-                onChange={(e) => {
-                  setNetworkNightPrice(e.target.value);
-                }}
-                />
-              Øre
-            </div> */}
+          </div>
+          {totalMonthPrice && (
+            <div className="d-flex flex-column">
+              <h2 className="m-5 ">Total pris: {totalMonthPrice.toFixed(2)}</h2>
+            </div>
+          )}
+          <div className="ms-5">
+            <h2>Nettleie</h2>
+            <h4>Kommer Snart!</h4>
           </div>
         </div>
       </div>
       <div>
-        <button onClick={parseCsvJson} className="ms-5 my-3">
+        <button
+          className="calculate btn btn-success ms-5 my-3 "
+          onClick={parseCsvJson}
+        >
           Regne ut!
         </button>
       </div>

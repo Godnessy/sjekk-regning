@@ -33,8 +33,8 @@ function DailyPrices({ dataForHour }) {
   }, [dataForHour]);
 
   return (
-    <div>
-      <h2>Bruk og kostnad pr day</h2>
+    <div className="card p-2 vh-10">
+      <h2>Bruk og kostnad pr dag</h2>
       <table className="table table-striped">
         <thead>
           <tr>

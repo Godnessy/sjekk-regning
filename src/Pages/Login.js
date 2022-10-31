@@ -1,7 +1,17 @@
 import { React, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Form, Button, Card, Alert, Container } from "react-bootstrap";
+import {
+  Col,
+  Row,
+  Form,
+  Button,
+  Card,
+  Alert,
+  Container,
+} from "react-bootstrap";
 import { useAuth, currentUser } from "../context/AuthContext";
+import example from "../Resources/images/example.png";
+import Navbar from "../Components/Navbar";
 
 function Login() {
   const emailref = useRef();
@@ -29,13 +39,15 @@ function Login() {
 
   return (
     <>
-      <Container
-        className="align-items-center mb-3 my-3 justify-content-center"
-        style={{ minHeight: "100vh" }}
-      >
-        <Card className="align-items-center" style={{ maxWidth: "60vh" }}>
+      <Navbar />
+      <div className="login-banner"></div>
+
+      <div className="login-container">
+        <Card className="align-items-center my-5 w-50 login-card">
           <Card.Body>
-            <h2 className="text-center mb-4">Logg inn</h2>
+            <h2 className="text-center my-4">
+              Logg inn for å sjekke regningen!
+            </h2>
             {error && <Alert variant="danger"> {error}</Alert>}
             <Form onSubmit={handleSubmit}>
               <Form.Group id="email">
@@ -61,9 +73,13 @@ function Login() {
               <Link to="/signup"> Opprette ny konto</Link>
             </div>
           </div>
-          <div className="signup-form"></div>
         </Card>
-      </Container>
+
+        <div className="login-title">
+          <h2>Sjekk strøm regningen din enkelt!</h2>
+          <p>Bruk CSV filen fra Elhub og finne ut hvis regning stemmer</p>
+        </div>
+      </div>
     </>
   );
 }
