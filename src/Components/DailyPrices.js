@@ -33,9 +33,9 @@ function DailyPrices({ dataForHour }) {
   }, [dataForHour]);
 
   return (
-    <div className="card p-2 vh-10">
-      <h2>Bruk og kostnad pr dag</h2>
-      <table className="table table-striped">
+    <div className="card daily-prices p-2 vh-10">
+      <h2 className="text-decoration-underline">Forbruk og kostnad pr dag</h2>
+      <table className="table daily-table table-striped">
         <thead>
           <tr>
             <th scope="col">Dato</th>

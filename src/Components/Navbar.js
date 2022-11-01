@@ -10,9 +10,9 @@ function Navbar({ logOut }) {
       <a class="navbar-brand" href="#">
         <img src={logo} alt="SjekkRegning.no" className="logo ms-4" />
       </a>
-      <Button className="" onClick={logOut}>
+      {/* <Button className="" onClick={logOut}>
         Logg ut
-      </Button>
+      </Button> */}
     </nav>
   );
 }

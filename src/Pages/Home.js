@@ -14,13 +14,14 @@ import HourlyPrices from "../Components/HourlyPrices.js";
 import NetworkUsage from "../Components/NetworkUsage.js";
 import Navbar from "../Components/Navbar.js";
 import Instructions from "../Components/Instructions.js";
+import Results from "../Components/Results.js";
 
 const allowedExtensions = ["csv"];
 function Home() {
   const [error, setError] = useState("");
   const [file, setFile] = useState("");
   const [monthList, setMonthList] = useState();
-  const [usageData, setUsageData] = useState([]);
+  const [usageData, setUsageData] = useState();
   const [priceData, setPriceData] = useState();
   const [selectedMonth, setSelectedMonth] = useState();
   const [kommuneList, setKommuneList] = useState(kommunes);
@@ -35,10 +36,15 @@ function Home() {
   const [networkDayPrice, setNetworkDayPrice] = useState(0);
   const [networkNightPrice, setNetworkNightPrice] = useState(0);
   const [dailyData, setDailyData] = useState();
+  const [totalKwh, setTotalKwh] = useState();
+  const [month, setMonth] = useState();
 
   const navigate = useNavigate();
 
   let tempMonthPrice = 0;
+  let totalUsage = 0;
+  let hoursCounter = 0;
+  let totalHourPrice = 0;
 
   const handleCsvFile = (e) => {
     setError("");
@@ -50,11 +56,11 @@ function Home() {
   };
   const parseCsvJson = () => {
     if (!selectedKommune) {
-      setError("Velg kommune fra listen");
+      setError(<h2>Velg kommune fra listen</h2>);
       return;
     }
-    if (!file) return setError("Filen er ikke gyldig");
-    setError();
+    if (!file) return setError(<h2>Finner ikke CSV filen</h2>);
+    setError("");
     const reader = new FileReader();
     reader.onload = async ({ target }) => {
       const csv = Papa.parse(target.result, { header: true });
@@ -154,6 +160,8 @@ function Home() {
         selectedKommune.value,
         dayPrices
       );
+      totalUsage = totalUsage + Number(usage);
+      hoursCounter++;
       const priceForHour = createPriceForHour(selectedZonePrices, time);
       const totalPricePrHour = createTotalPricePrHour(usage, priceForHour);
       hourCounter++;
@@ -185,115 +193,233 @@ function Home() {
     setMonthlyAverage((totalMonthPrice / hourCounter).toFixed(2));
     setTotalMonthPrice(totalMonthPrice);
     setUsageData(dataForHour);
+    setTotalKwh(totalUsage);
   }
 
-  return (
-    <>
-      <Navbar logOut={handleLogout} />
-      <div>
-        <div>
-          <h6 className="w100 text-center mt-2"></h6>
-        </div>
-        <div className="inputs-container d-flex">
-          <div className="ms-3 border border-dark p-3 card">
-            <div className="csv-part">
-              <label htmlFor="csvInput" style={{ display: "block" }}>
-                Laste opp måleverdier CSV fil fra Elhub:
-              </label>
-              <Instructions></Instructions>
+  if (!usageData) {
+    return (
+      <>
+        <Navbar logOut={handleLogout} />
+        <div className="d-flex justify-content-center my-5">
+          <div className="inputs-container d-flex">
+            <div className="ms-3 border border-dark p-3 card">
+              <div className="csv-part">
+                <label htmlFor="csvInput" style={{ display: "block" }}>
+                  <p className="input-text">
+                    1. Laste opp måleverdier CSV fil fra Elhub:{" "}
+                  </p>
+                </label>
+                <Instructions></Instructions>
 
-              <input
-                onChange={handleCsvFile}
-                id="csvInput"
-                name="file"
-                type="File"
-              />
-            </div>
-
-            {/* Month selector to be implemented later when functionality works */}
-            {/* <label htmlFor="months"> Choose a month: </label>
-            <select
-              name="months"
-              id="months"
-              value={selectedMonth}
-              onChange={(e) => {
-                setSelectedMonth(e.target.value);
-              }}
-            >
-              <option>Valg en måned</option>
-              {monthList &&
-                monthList.map((month, index) => (
-                  <option key={index} value={month}>
-                    {month}
-                  </option>
-                ))}
-            </select> */}
-            <hr />
-            <div className="drop-down d-flex">
-              <h4 className="me-3">Velg din kommune:</h4>
-              <div className="d-flex w-100 flex-column">
-                <KommuneDropdown
-                  className="kommune-select"
-                  kommuneList={kommuneList}
-                  setSelectedKommune={setSelectedKommune}
+                <input
+                  onChange={handleCsvFile}
+                  id="csvInput"
+                  name="file"
+                  type="File"
                 />
-                {selectedKommune && (
-                  <h4> Din kommune tilhører sone: {selectedKommune.value}</h4>
-                )}
               </div>
-              {error && <p className="text-danger d-flex ">{error} </p>}
-            </div>
-            <hr />
-            <div className="surcharge d-flex">
-              <h3 className="me-2 surcharge-title">Påslag</h3>
-              <input
-                className="surcharge-input"
-                type="text"
-                value={surcharge}
+              <hr />
+              {/* Month selector to be implemented later when functionality works */}
+              <label htmlFor="months">
+                <h3>2. Velg måned:</h3>{" "}
+              </label>
+              <select
+                name="months"
+                id="months"
+                value={selectedMonth}
                 onChange={(e) => {
-                  setsurcharge(e.target.value);
+                  setSelectedMonth(e.target.value);
                 }}
-              />
-              <h4>Øre</h4>
+              >
+                <option>Valg en måned</option>
+                {monthList &&
+                  monthList.map((month, index) => (
+                    <option key={index} value={month}>
+                      {month}
+                    </option>
+                  ))}
+              </select>
+              <hr />
+              <div className="drop-down d-flex flex-column">
+                <h4 className="me-3">3. Velg din kommune:</h4>
+                <div className="d-flex w-100 flex-column">
+                  <KommuneDropdown
+                    className="kommune-select"
+                    kommuneList={kommuneList}
+                    setSelectedKommune={setSelectedKommune}
+                  />
+                  {selectedKommune && (
+                    <h4> Din kommune tilhører sone: {selectedKommune.value}</h4>
+                  )}
+                </div>
+                {error && <p className="text-danger d-flex ">{error} </p>}
+              </div>
+              <hr />
+              <div className="d-flex justify">
+                <div className="d-flex flex-column">
+                  <div className="d-flex surcharge">
+                    <h3 className="me-2 surcharge-title">Påslag</h3>
+                    <input
+                      className="surcharge-input"
+                      type="text"
+                      value={surcharge}
+                      onChange={(e) => {
+                        setsurcharge(e.target.value);
+                      }}
+                    />
+                    <h4>Øre</h4>
+                  </div>
+                  <div className="surcharge d-flex">
+                    <h3 className="me-2 surcharge-title">Månedspris</h3>
+                    <input
+                      className="surcharge-input fee"
+                      type="text"
+                      value={fee}
+                      onChange={(e) => {
+                        setFee(e.target.value);
+                      }}
+                    />
+                    <h4>Kr</h4>
+                  </div>
+                </div>
+                <div className="calculate-btn">
+                  <button
+                    className="calculate btn btn-success ms-5 my-3 "
+                    onClick={parseCsvJson}
+                  >
+                    Regne ut!
+                  </button>
+                </div>
+              </div>
             </div>
-            <div className="surcharge d-flex">
-              <h3 className="me-2 surcharge-title">Månedspris</h3>
-              <input
-                className="surcharge-input fee"
-                type="text"
-                value={fee}
-                onChange={(e) => {
-                  setFee(e.target.value);
-                }}
-              />
-              <h4>Kr</h4>
-            </div>
-          </div>
-          {totalMonthPrice && (
-            <div className="d-flex flex-column">
-              <h2 className="m-5 ">Total pris: {totalMonthPrice.toFixed(2)}</h2>
-            </div>
-          )}
-          <div className="ms-5">
-            <h2>Nettleie</h2>
-            <h4>Kommer Snart!</h4>
           </div>
         </div>
-      </div>
-      <div>
-        <button
-          className="calculate btn btn-success ms-5 my-3 "
-          onClick={parseCsvJson}
-        >
-          Regne ut!
-        </button>
-      </div>
-      <div className="usage-price-container d-flex">
-        <HourlyPrices dataForHour={usageData} />
-        <DailyPrices dataForHour={usageData} />
-      </div>
-    </>
-  );
+      </>
+    );
+  } else {
+    return (
+      <>
+        <Navbar logOut={handleLogout} />
+
+        <div className="page-container">
+          <div className="inputs-container justify-content-center my-2 d-flex">
+            <div className="ms-3 border border-dark p-3 card">
+              <div className="csv-part">
+                <label htmlFor="csvInput" style={{ display: "block" }}>
+                  <p className="input-text">
+                    1. Laste opp måleverdier CSV fil fra Elhub:
+                  </p>
+                </label>
+                <Instructions></Instructions>
+
+                <input
+                  onChange={handleCsvFile}
+                  id="csvInput"
+                  name="file"
+                  type="File"
+                />
+              </div>
+              <hr />
+              {/* Month selector to be implemented later when functionality works */}
+              <label htmlFor="months">
+                <h3>2. Velg måned:</h3>{" "}
+              </label>
+              <select
+                name="months"
+                id="months"
+                value={selectedMonth}
+                onChange={(e) => {
+                  setSelectedMonth(e.target.value);
+                }}
+              >
+                <option>Valg en måned</option>
+                {monthList &&
+                  monthList.map((month, index) => (
+                    <option key={index} value={month}>
+                      {month}
+                    </option>
+                  ))}
+              </select>
+              <hr />
+              <div className="drop-down d-flex flex-column">
+                <h4 className="me-3">3. Velg din kommune:</h4>
+                <div className="d-flex w-100 flex-column">
+                  <KommuneDropdown
+                    className="kommune-select"
+                    kommuneList={kommuneList}
+                    setSelectedKommune={setSelectedKommune}
+                  />
+                  {selectedKommune && (
+                    <h4> Din kommune tilhører sone: {selectedKommune.value}</h4>
+                  )}
+                </div>
+                {error && <p className="text-danger d-flex ">{error} </p>}
+              </div>
+              <hr />
+              <div className="d-flex justify">
+                <div className="d-flex flex-column">
+                  <div className="d-flex surcharge">
+                    <h3 className="me-2 surcharge-title">Påslag</h3>
+                    <input
+                      className="surcharge-input"
+                      type="text"
+                      value={surcharge}
+                      onChange={(e) => {
+                        setsurcharge(e.target.value);
+                      }}
+                    />
+                    <h4>Øre</h4>
+                  </div>
+                  <div className="surcharge d-flex">
+                    <h3 className="me-2 surcharge-title">Månedspris</h3>
+                    <input
+                      className="surcharge-input fee"
+                      type="text"
+                      value={fee}
+                      onChange={(e) => {
+                        setFee(e.target.value);
+                      }}
+                    />
+                    <h4>Kr</h4>
+                  </div>
+                </div>
+                <div className="calculate-btn">
+                  <button
+                    className="calculate btn btn-success ms-5 my-3 "
+                    onClick={parseCsvJson}
+                  >
+                    Regne ut!
+                  </button>
+                </div>
+              </div>
+            </div>
+            {totalMonthPrice && (
+              <Results
+                totalMonthPrice={totalMonthPrice}
+                fee={fee}
+                totalUsage={totalKwh}
+                month={selectedMonth}
+              />
+            )}
+          </div>
+        </div>
+
+        <div className="usage-price-container my-2 d-flex">
+          <div className="ms-3">
+            {usageData && <HourlyPrices dataForHour={usageData} />}
+          </div>
+          <div className="me-4">
+            {usageData && (
+              <DailyPrices
+                dataForHour={usageData}
+                totalMonthPrice={totalMonthPrice}
+              />
+            )}
+          </div>
+        </div>
+      </>
+    );
+  }
 }
 
 export default Home;

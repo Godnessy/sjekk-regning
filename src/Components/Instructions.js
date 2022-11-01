@@ -14,10 +14,21 @@ function Instructions() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  //TODO:
+  //-on main page make CSV part of form bigger and add 1 2 3 to step following the flow, change Regne ut position to inside the form
+  //and make the button bigger
+  //-Add a background and more pop to total pris (add Din Regning:) when the button is clicked
+  //-Add details in the middle between day and hourly to explain what people see.
+
+  //Modal:
+  //--make the divs smaller so people can see
+  //-Make an arrow pointing down so people will know there is more
+  // add Steg X/Y so people know
+
   return (
     <>
       <p variant="primary" className="csv-modal" onClick={handleShow}>
-        Hvordan får jeg denne filen?
+        Vet ikke hvor den finnes? Her finner du en guide med bilder.
       </p>
 
       <Modal
@@ -26,10 +37,21 @@ function Instructions() {
         className="modal modal-xl"
         aria-labelledby="example-custom-modal-styling-title"
       >
-        <Modal.Header closeButton></Modal.Header>
+        <Modal.Header closeButton className="text-danger">
+          For å bergene fakturen for deg må vi få målevardiene fra deg, Vi har
+          samlet bilder av den nøyaktige banen du må følge for å få filen
+          enkelt!
+        </Modal.Header>
         <Modal.Body>
           <div className="d-flex flex-column">
             <Card className="mb-3 border border-5 border-dark">
+              <Card.Title className="ms-3">
+                Først må du gå til{" "}
+                <a href="http://elhub.no" target="_blank">
+                  Elhub
+                </a>{" "}
+                sin nettside
+              </Card.Title>
               <Card.Body>
                 <img className="inst-pic" src={pic1} alt="" srcset="" />
               </Card.Body>
