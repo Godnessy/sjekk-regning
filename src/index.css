@@ -12,7 +12,10 @@ body {
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   grid-template-rows: 1fr;
 }
-
+/* 
+.inputs-container{
+  height: 10em !important;
+} */
 .usage-price-container{
   display: flex;
   flex-direction: row;
@@ -55,8 +58,9 @@ body {
 }
 
 .calculate{
+  font-size: 2em !important;
 position: relative;
-left: 40%;
+left: 0%;
 }
 
 .surcharge-title{
@@ -87,7 +91,12 @@ left: 40%;
  color: #F5DEB3
 }
 
+.input-text{
+  font-size: 2em;
+}
+
 .csv-modal{
+  font-size: 1.5em;
      cursor:pointer;
      color:blue;
      text-decoration:underline;
@@ -104,4 +113,8 @@ font-size: 2em;
 
 .login-container{
   display: flex;
+}
+
+.results-card{
+  background-color: lightgreen;
 }
