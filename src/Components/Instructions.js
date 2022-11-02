@@ -38,15 +38,13 @@ function Instructions() {
         aria-labelledby="example-custom-modal-styling-title"
       >
         <Modal.Header closeButton className="text-danger">
-          For å bergene fakturen for deg må vi få målevardiene fra deg, Vi har
-          samlet bilder av den nøyaktige banen du må følge for å få filen
-          enkelt!
+          <h2>Slik får du frem filen som inneholder bruksverdiene dine:</h2>
         </Modal.Header>
         <Modal.Body>
           <div className="d-flex flex-column">
             <Card className="mb-3 border border-5 border-dark">
               <Card.Title className="ms-3">
-                Først må du gå til{" "}
+                1. Først må du gå til{" "}
                 <a href="http://elhub.no" target="_blank">
                   Elhub
                 </a>{" "}
