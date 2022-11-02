@@ -1,6 +1,7 @@
 import React from "react";
 
-function HourlyPrices({ dataForHour }) {
+function HourlyPrices({ dataForHour, hoursCounter, avgPrice }) {
+  let totalPrice = 0;
   return (
     <div className="card p-2">
       <h2 className="text-decoration-underline">
@@ -11,14 +12,15 @@ function HourlyPrices({ dataForHour }) {
           <tr>
             <th scope="col">Dato</th>
             <th scope="col">Time</th>
-            <th scope="col">Kwt brukt</th>
-            <th scope="col">Pris pr Time</th>
+            <th scope="col">Forbruk kWh</th>
+            <th scope="col">kWh pris</th>
             <th scope="col">Total pris</th>
           </tr>
         </thead>
         <tbody>
           {dataForHour.map((day) => {
             const { date, time, usage, priceForHour, totalPricePrHour } = day;
+            totalPrice = totalPrice + Number(priceForHour);
             return (
               <tr key={date + time}>
                 <th scope="row">{date}</th>

@@ -39,7 +39,7 @@ function DailyPrices({ dataForHour }) {
         <thead>
           <tr>
             <th scope="col">Dato</th>
-            <th scope="col">kwh Brukt</th>
+            <th scope="col">Forbruk kWh</th>
             <th scope="col">Pris for dagen</th>
           </tr>
         </thead>

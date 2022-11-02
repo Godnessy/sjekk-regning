@@ -38,13 +38,14 @@ function Home() {
   const [dailyData, setDailyData] = useState();
   const [totalKwh, setTotalKwh] = useState();
   const [month, setMonth] = useState();
+  const [avgPrice, setAvgPrice] = useState();
 
   const navigate = useNavigate();
 
   let tempMonthPrice = 0;
   let totalUsage = 0;
   let hoursCounter = 0;
-  let totalHourPrice = 0;
+  let tempAvg = 0;
 
   const handleCsvFile = (e) => {
     setError("");
@@ -149,7 +150,6 @@ function Home() {
 
   function calculateMonthlyValues(usageData) {
     let hourCounter = 0;
-    let averagePriceforZone = 0;
     const dataForHour = usageData.map((col, idx) => {
       const values = Object.values(col);
       const date = values[0].split(" ")[0];
@@ -163,18 +163,10 @@ function Home() {
       totalUsage = totalUsage + Number(usage);
       hoursCounter++;
       const priceForHour = createPriceForHour(selectedZonePrices, time);
+      if (!isNaN(priceForHour)) {
+        tempAvg = tempAvg + priceForHour;
+      }
       const totalPricePrHour = createTotalPricePrHour(usage, priceForHour);
-      hourCounter++;
-      const dayAveragePrice = Object.values(selectedZonePrices).reduce(
-        (result, price) => {
-          if (isNaN(price)) {
-            return;
-          } else {
-            return (result + price / 100) / hourCounter;
-          }
-        },
-        0
-      );
 
       return {
         values,
@@ -190,11 +182,15 @@ function Home() {
     const totalMonthPrice = dataForHour.reduce((result, item) => {
       return result + item.totalPricePrHour;
     }, 0);
-    setMonthlyAverage((totalMonthPrice / hourCounter).toFixed(2));
     setTotalMonthPrice(totalMonthPrice);
     setUsageData(dataForHour);
     setTotalKwh(totalUsage);
+    setAvgPrice((totalUsage / tempAvg) * 10000);
   }
+
+  // useEffect(() => {
+  //   console.log(avgPrice);
+  // }, [avgPrice]);
 
   if (!usageData) {
     return (
@@ -399,6 +395,7 @@ function Home() {
                 fee={fee}
                 totalUsage={totalKwh}
                 month={selectedMonth}
+                avgPrice={avgPrice}
               />
             )}
           </div>
@@ -406,7 +403,13 @@ function Home() {
 
         <div className="usage-price-container my-2 d-flex">
           <div className="ms-3">
-            {usageData && <HourlyPrices dataForHour={usageData} />}
+            {usageData && (
+              <HourlyPrices
+                dataForHour={usageData}
+                setAvgPrice={setAvgPrice}
+                hoursCounter={hoursCounter}
+              />
+            )}
           </div>
           <div className="me-4">
             {usageData && (

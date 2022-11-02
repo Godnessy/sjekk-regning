@@ -28,7 +28,7 @@ function Instructions() {
   return (
     <>
       <p variant="primary" className="csv-modal" onClick={handleShow}>
-        Vet ikke hvor den finnes? Her finner du en guide med bilder.
+        Klikk her for veiledning.
       </p>
 
       <Modal

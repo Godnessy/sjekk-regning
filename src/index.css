@@ -47,10 +47,12 @@ body {
 
 .logo{
  width: 6em;
+ position: relative;
+ top:0.5em;
 }
 
-.login-card{
-  
+.total-price{
+  background-color: lightgreen !important;
 }
 
 .navbar {
@@ -118,3 +120,16 @@ font-size: 2em;
 .results-card{
   background-color: lightgreen;
 }
+
+@media screen and (max-width: 1000px) {
+ .surcharge-input{
+  width: 2em;
+ }
+
+.logo{
+    position: absolute;
+    top: -0.5em;
+    left: 5px;
+  } 
+}
+
