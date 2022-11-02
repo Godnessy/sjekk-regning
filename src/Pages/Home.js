@@ -388,6 +388,10 @@ function Home() {
                   </button>
                 </div>
               </div>
+              <div className="border fw-bold border-dark border-2">
+                All informasjonen/filene du laster opp/deler her blir ikke
+                lagret og vi bruker ikke informasjonskapsler.
+              </div>
             </div>
             {totalMonthPrice && (
               <Results
