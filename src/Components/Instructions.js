@@ -8,7 +8,7 @@ import pic5 from "../Resources/images/csv-flow/5.png";
 import pic6 from "../Resources/images/csv-flow/6.png";
 import pic7 from "../Resources/images/csv-flow/7.png";
 import pic8 from "../Resources/images/csv-flow/8.png";
-
+import arrow from "../Resources/images/csv-flow/arrow.png";
 function Instructions() {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -41,6 +41,7 @@ function Instructions() {
           <h2>Slik får du frem filen som inneholder bruksverdiene dine:</h2>
         </Modal.Header>
         <Modal.Body>
+          <img src={arrow} alt="" className="modal-arrow" />
           <div className="d-flex flex-column">
             <Card className="mb-3 border border-5 border-dark">
               <Card.Title className="ms-3">
@@ -48,47 +49,54 @@ function Instructions() {
                 <a href="http://elhub.no" target="_blank">
                   Elhub
                 </a>{" "}
-                sin nettside
+                sin nettside - Steg 1/8
               </Card.Title>
               <Card.Body>
                 <img className="inst-pic" src={pic1} alt="" srcset="" />
               </Card.Body>
             </Card>
             <Card className="mb-3 border border-5 border-dark">
+              <Card.Title className="ms-3">Steg 2/8</Card.Title>
               <Card.Body>
                 <img className="inst-pic" src={pic2} alt="" srcset="" />
               </Card.Body>
             </Card>
             <Card className="mb-3 border border-5 border-dark">
+              <Card.Title className="ms-3">Steg 3/8</Card.Title>
               <Card.Body>
                 <img className="inst-pic" src={pic3} alt="" srcset="" />
               </Card.Body>
             </Card>
             <Card className="mb-3 border border-5 border-dark">
+              <Card.Title className="ms-3">Steg 4/8</Card.Title>
               <Card.Body>
                 <img className="inst-pic" src={pic4} alt="" srcset="" />
               </Card.Body>
             </Card>
             <Card className="mb-3 border border-5 border-dark">
+              <Card.Title className="ms-3">Steg 5/8</Card.Title>
               <Card.Body>
                 <img className="inst-pic" src={pic5} alt="" srcset="" />
               </Card.Body>
             </Card>
             <Card className="mb-3 border border-5 border-dark">
+              <Card.Title className="ms-3">Steg 6/8</Card.Title>
               <Card.Body>
                 <img className="inst-pic" src={pic6} alt="" srcset="" />
               </Card.Body>
             </Card>
             <Card className="mb-3 border border-5 border-dark">
-              <Card.Title className="ms-3 fs-4 text-danger my-3">
+              <Card.Title className="ms-3 fs-4 text-danger mt-2">
                 Systemet vårt er i betamodus og kan bare beregne priser for
                 oktober 2022 akkurat nå! Flere måneder kommer snart.
+                <p className="text-dark">Steg 7/8</p>
               </Card.Title>
               <Card.Body>
                 <img className="inst-pic" src={pic7} alt="" srcset="" />
               </Card.Body>
             </Card>
             <Card className="mb-3 border border-5 border-dark">
+              <Card.Title className="ms-3">Steg 8/8</Card.Title>
               <Card.Body>
                 <img className="inst-pic" src={pic8} alt="" srcset="" />
               </Card.Body>

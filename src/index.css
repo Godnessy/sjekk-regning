@@ -121,6 +121,25 @@ font-size: 2em;
   background-color: lightgreen;
 }
 
+.modal-arrow{
+  width: 10%;
+  position: absolute;
+  right: 3000px;
+  top:10px;
+  z-index: 1;
+  animation-name: arrow;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  animation-delay: 0;
+}
+
+@keyframes arrow {
+  0% {right:10px ; top:8%}
+  50% {right:10px ; top:9.5%}
+  100% {right:10px ; top:8%}
+}
+
+
 @media screen and (max-width: 1000px) {
  .surcharge-input{
   width: 2em;
