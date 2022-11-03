@@ -10,7 +10,6 @@ import {
   Container,
 } from "react-bootstrap";
 import { useAuth, currentUser } from "../context/AuthContext";
-import example from "../Resources/images/example.png";
 import Navbar from "../Components/Navbar";
 
 function Login() {
