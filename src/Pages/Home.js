@@ -219,7 +219,6 @@ function Home() {
                 />
               </div>
               <hr />
-              {/* Month selector to be implemented later when functionality works */}
               <label htmlFor="months">
                 <h3>2. Velg måned:</h3>{" "}
               </label>
@@ -404,6 +403,8 @@ function Home() {
                 totalUsage={totalKwh}
                 month={selectedMonth}
                 avgPrice={avgPrice}
+                surcharge={surcharge}
+                selectedMonth={selectedMonth}
               />
             )}
           </div>
