@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Papa, { parse } from "papaparse";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { db } from "../firebase-config.js";
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { useAuth } from "../context/AuthContext.js";
 import kommunes from "../Resources/kommuneList.json";
 import KommuneDropdown from "../Components/KommuneDropdown";
@@ -31,7 +31,6 @@ function Home() {
   const [networkNightPrice, setNetworkNightPrice] = useState(0);
   const [dailyData, setDailyData] = useState();
   const [totalKwh, setTotalKwh] = useState();
-  const [month, setMonth] = useState();
   const [avgPrice, setAvgPrice] = useState();
 
   const navigate = useNavigate();
@@ -42,9 +41,8 @@ function Home() {
   let tempAvg = 0;
 
   const getMonthPrices = async (month) => {
-    const monthRef = doc(db, "price-history", month);
+    const monthRef = doc(db, "price-history", `${month}-22`);
     const docSnap = await getDoc(monthRef);
-    console.log(month);
     if (docSnap.exists()) {
       setPrices(docSnap.data());
       console.log(`Selected ${month}`);

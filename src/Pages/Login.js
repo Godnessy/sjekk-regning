@@ -1,14 +1,6 @@
 import { React, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  Col,
-  Row,
-  Form,
-  Button,
-  Card,
-  Alert,
-  Container,
-} from "react-bootstrap";
+import { Form, Button, Card, Alert } from "react-bootstrap";
 import { useAuth, currentUser } from "../context/AuthContext";
 import Navbar from "../Components/Navbar";
 
