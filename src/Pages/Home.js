@@ -12,7 +12,6 @@ import HourlyPrices from "../Components/HourlyPrices.js";
 import Navbar from "../Components/Navbar.js";
 import Instructions from "../Components/Instructions.js";
 import Results from "../Components/Results.js";
-import SendMonthToDB from "../Components/SendMonthToDb.js";
 const allowedExtensions = ["csv"];
 function Home() {
   const [error, setError] = useState("");
