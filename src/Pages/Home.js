@@ -6,7 +6,6 @@ import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { useAuth } from "../context/AuthContext.js";
 import kommunes from "../Resources/kommuneList.json";
 import KommuneDropdown from "../Components/KommuneDropdown";
-import AddMonthToDB from "../Components/AddMonthToDB";
 import DailyPrices from "../Components/DailyPrices.js";
 import HourlyPrices from "../Components/HourlyPrices.js";
 import Navbar from "../Components/Navbar.js";
