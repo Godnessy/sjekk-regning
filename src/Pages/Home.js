@@ -294,7 +294,6 @@ function Home() {
                     Regne ut!
                   </button>
                 </div>
-                <SendMonthToDB prices={prices} />
               </div>
             </div>
           </div>
