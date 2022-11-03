@@ -70,4 +70,3 @@ firebase.json
 src/Resources/price_history/October/31-10-22.json
 src/Resources/price_history/dayToMonth.js
 src/Resources/images/example.png
-src/Components/AddMonthToDB.js
