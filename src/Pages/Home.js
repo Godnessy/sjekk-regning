@@ -220,7 +220,7 @@ function Home() {
               </div>
               <hr />
               <label htmlFor="months">
-                <h3>2. Velg måned:</h3>{" "}
+                <h3>2. Velg måned (2022): </h3>{" "}
               </label>
               <select
                 name="months"
