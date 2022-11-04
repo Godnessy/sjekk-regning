@@ -1,6 +1,5 @@
 import { React, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Login from "./Login";
 import { Form, Button, Card, Alert, Container } from "react-bootstrap";
 import { useAuth } from "../context/AuthContext";
 function Signup() {

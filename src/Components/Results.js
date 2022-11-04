@@ -18,11 +18,13 @@ function Results({
         </h2>
         <h2 className="ps-2">Total forbruk: {totalUsage.toFixed(0)} kWh</h2>
         <hr />
-        {surcharge && surcharge !== 0 && (
+        {surcharge && surcharge !== 0 ? (
           <h2 className="ps-2">
             Total påslag for {selectedMonth}:{" "}
             {((Number(surcharge) * totalUsage) / 100).toFixed(2)} kr{" "}
           </h2>
+        ) : (
+          <div></div>
         )}
         {fee !== 0 && <h2 className="ps-2">Månedspris : {fee}</h2>}
         <h2 className="ps-2">Din kWh snittpris : {avgPrice.toFixed(2)} øre</h2>
