@@ -16,4 +16,4 @@ jobs:
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_MINESTROM_644E6 }}"
           projectId: minestrom-644e6
 env:
-  CI: true
+  CI: CI= react-scripts build
