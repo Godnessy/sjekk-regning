@@ -60,11 +60,10 @@ function Home() {
     }
   };
   const parseCsvJson = () => {
-    if (!selectedKommune) {
-      setError(<h2>Velg kommune fra listen</h2>);
-      return;
-    }
-    if (!file) return setError(<h2>Finner ikke CSV filen</h2>);
+    if (!file) return setError(<h2>Har du glemt å velge CSV fil?</h2>);
+    else if (!selectedMonth) return setError(<h2>Husk å velg måned</h2>);
+    else if (!selectedKommune)
+      return setError(<h2>Velg kommune fra listen</h2>);
     setError("");
     const reader = new FileReader();
     reader.onload = async ({ target }) => {
