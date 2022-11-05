@@ -156,7 +156,38 @@ margin-left: 1%;
   right:10%;
 }
 
+.tg  {
+  border-collapse:collapse;border-spacing:0;
+}
+.tg td{
+  font-family: Arial, sans-serif;
+  font-size:1.5em;
+  word-break:normal;
+}
 
+.tg th{
+  
+  font-family
+  :Arial, sans-serif;
+  font-size:1.5em;
+  font-weight:normal;
+  word-break:normal;
+}
+.tg .tg-0lax{
+  vertical-align:top
+}
+
+.left-side-table{
+  text-align: right;
+}
+
+.right-side-table{
+  text-align: left;
+}
+
+.middle-table{
+  text-align:center;
+}
 
 @media screen and (max-width: 1000px) {
  .surcharge-input{
