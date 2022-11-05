@@ -30,7 +30,6 @@ function Home() {
   const [myGovSupport, setMyGovSupport] = useState(0);
   const [networkDayPrice, setNetworkDayPrice] = useState(0);
   const [networkNightPrice, setNetworkNightPrice] = useState(0);
-  const [dailyData, setDailyData] = useState();
   const [totalKwh, setTotalKwh] = useState();
   const [avgPrice, setAvgPrice] = useState();
   const [fixedPrice, setFixedPrice] = useState(0);
@@ -339,6 +338,8 @@ function Home() {
                 avgPrice={avgPrice}
                 surcharge={surcharge}
                 selectedMonth={selectedMonth}
+                hasFixedPrice={hasFixedPrice}
+                fixedPrice={fixedPrice}
               />
             )}
           </div>
@@ -349,8 +350,6 @@ function Home() {
             {usageData && (
               <HourlyPrices
                 dataForHour={usageData}
-                setAvgPrice={setAvgPrice}
-                hoursCounter={hoursCounter}
                 hasFixedPrice={hasFixedPrice}
                 fixedPrice={fixedPrice}
               />

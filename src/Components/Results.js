@@ -9,6 +9,8 @@ function Results({
   avgPrice,
   surcharge,
   selectedMonth,
+  hasFixedPrice,
+  fixedPrice,
 }) {
   return (
     <Card className="mx-4">
@@ -29,6 +31,26 @@ function Results({
         {fee !== 0 && <h2 className="ps-2">Månedspris : {fee}</h2>}
         <h2 className="ps-2">Din kWh snittpris : {avgPrice.toFixed(2)} øre</h2>
         <hr />
+        {hasFixedPrice && (
+          <table class="tg">
+            <thead>
+              <tr>
+                <th class="tg-0lax left-side-table">Forbruk</th>
+                <th class="tg-0lax middle-table">x</th>
+                <th class="tg-0lax right-side-table">Fast pris</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="tg-0lax left-side-table">{totalUsage.toFixed(2)}</td>
+                <td class="tg-0lax middle-table">x</td>
+                <td class="tg-0lax right-side-table">
+                  {Number(fixedPrice)} Øre =
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        )}
         <h2 className="m-5 total-price">
           Å betale for {month}:{" "}
           {(Number(totalMonthPrice) + Number(fee)).toFixed(2)} kr

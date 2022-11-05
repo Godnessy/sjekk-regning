@@ -1,6 +1,6 @@
 import { React, useState, useEffect } from "react";
 
-function DailyPrices({ dataForHour }) {
+function DailyPrices({ dataForHour, hasFixedPrice, fixedPrice }) {
   const [dailyData, setDailyData] = useState([]);
 
   function calculateDailyValues(dataForHour) {

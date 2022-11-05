@@ -26,7 +26,6 @@ export default function InputsForm({
     checkboxRef.current.disabled = !hasFixedPrice;
   }, [hasFixedPrice]);
 
-  // If checkBoxState is true - use fixed price for all calculations
   return (
     <div className="inputs-container d-flex">
       <div className="ms-3 border border-dark p-3 card">

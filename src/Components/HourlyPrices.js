@@ -1,6 +1,6 @@
 import React from "react";
 
-function HourlyPrices({ dataForHour, hoursCounter, avgPrice }) {
+function HourlyPrices({ dataForHour, hasFixedPrice, fixedPrice }) {
   let totalPrice = 0;
   return (
     <div className="card p-2">
@@ -19,14 +19,17 @@ function HourlyPrices({ dataForHour, hoursCounter, avgPrice }) {
         </thead>
         <tbody>
           {dataForHour.map((day) => {
-            const { date, time, usage, priceForHour, totalPricePrHour } = day;
+            let { date, time, usage, priceForHour, totalPricePrHour } = day;
+            priceForHour = hasFixedPrice ? fixedPrice : priceForHour;
             totalPrice = totalPrice + Number(priceForHour);
             return (
               <tr key={date + time}>
                 <th scope="row">{date}</th>
                 <td>{time}</td>
                 <td>{usage}</td>
-                <td>{priceForHour.toFixed(2)} Øre</td>
+                <td>
+                  {hasFixedPrice ? priceForHour : priceForHour.toFixed(2)} Øre
+                </td>
                 <td>{`${totalPricePrHour.toFixed(2)} nok`}</td>
               </tr>
             );
