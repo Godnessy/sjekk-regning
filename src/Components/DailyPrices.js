@@ -52,7 +52,7 @@ function DailyPrices({ dataForHour, hasFixedPrice, fixedPrice }) {
               <tr key={date}>
                 <th scope="row">{date}</th>
                 <td>{totalUsage}</td>
-                <td>{totalPrice}</td>
+                <td>{totalPrice} kr</td>
               </tr>
             );
           })}
