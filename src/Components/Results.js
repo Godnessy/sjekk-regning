@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useEffect } from "react";
 import { Card } from "react-bootstrap";
 
 function Results({
@@ -29,32 +29,47 @@ function Results({
           <div></div>
         )}
         {fee !== 0 && <h2 className="ps-2">Månedspris : {fee}</h2>}
-        <h2 className="ps-2">Din kWh snittpris : {avgPrice.toFixed(2)} øre</h2>
-        <hr />
-        {hasFixedPrice && (
-          <table class="tg">
-            <thead>
-              <tr>
-                <th class="tg-0lax left-side-table">Forbruk</th>
-                <th class="tg-0lax middle-table">x</th>
-                <th class="tg-0lax right-side-table">Fast pris</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="tg-0lax left-side-table">{totalUsage.toFixed(2)}</td>
-                <td class="tg-0lax middle-table">x</td>
-                <td class="tg-0lax right-side-table">
-                  {Number(fixedPrice)} Øre =
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        {!hasFixedPrice && (
+          <h2 className="ps-2">
+            Din kWh snittpris : {Number(avgPrice).toFixed(2)} øre
+          </h2>
         )}
+        {hasFixedPrice && (
+          <>
+            <hr />
+            <table className="tg">
+              <thead>
+                <tr>
+                  <th className="tg-0lax left-side-table">Forbruk</th>
+                  <th className="tg-0lax middle-table">x</th>
+                  <th className="tg-0lax right-side-table">Fast pris</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="tg-0lax left-side-table">
+                    {totalUsage.toFixed(2)}
+                  </td>
+                  <td className="tg-0lax middle-table">x</td>
+                  <td className="tg-0lax right-side-table">
+                    {Number(fixedPrice)} Øre =
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </>
+        )}
+        <div className="d-flex flex-column justify-content-center"></div>
         <h2 className="m-5 total-price">
           Å betale for {month}:{" "}
           {(Number(totalMonthPrice) + Number(fee)).toFixed(2)} kr
         </h2>
+        {!hasFixedPrice && (
+          <p className="price-exp align-self-center">
+            Total månedspris beregnes med ditt forbruk for hver eneste time og
+            ikke månedsgjennomsnitt.
+          </p>
+        )}
       </div>
     </Card>
   );

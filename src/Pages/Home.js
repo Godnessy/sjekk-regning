@@ -13,6 +13,7 @@ import Instructions from "../Components/Instructions.js";
 import Results from "../Components/Results.js";
 import InputsForm from "../Components/InputsForm.js";
 const allowedExtensions = ["csv"];
+
 function Home() {
   const [error, setError] = useState("");
   const [prices, setPrices] = useState({});
@@ -153,6 +154,10 @@ function Home() {
     }
   }
 
+  function calculateAveragePrice(totalUsage, tempAvg, totalHours) {
+    return tempAvg / totalHours;
+  }
+
   function calculateMonthlyValues(usageData) {
     let hourCounter = 0;
     const dataForHour = usageData.map((col, idx) => {
@@ -190,16 +195,12 @@ function Home() {
     setTotalMonthPrice(totalMonthPrice);
     setUsageData(dataForHour);
     setTotalKwh(totalUsage);
-    setAvgPrice((totalUsage / tempAvg) * 10000);
+    setAvgPrice(calculateAveragePrice(totalUsage, tempAvg, hoursCounter));
   }
 
   useEffect(() => {
     getMonthPrices(selectedMonth);
   }, [selectedMonth]);
-
-  useEffect(() => {
-    console.log(fixedPrice);
-  }, [fixedPrice]);
 
   if (!usageData) {
     return (
@@ -314,6 +315,7 @@ function Home() {
                     />
                     <h4>Kr</h4>
                   </div>
+                  {hasFixedPrice && <h3>Fast kWh pris: {fixedPrice} Øre</h3>}
                 </div>
                 <div className="calculate-btn">
                   {totalMonthPrice ? (

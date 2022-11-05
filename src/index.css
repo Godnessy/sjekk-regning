@@ -55,6 +55,10 @@ body {
   background-color: lightgreen !important;
 }
 
+.price-exp{
+  width: 25em;
+}
+
 .navbar {
   height: 5em;
 }
