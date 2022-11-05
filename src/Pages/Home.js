@@ -1,28 +1,24 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Papa, { parse } from "papaparse";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { db } from "../firebase-config.js";
+import { doc, getDoc } from "firebase/firestore";
 import { useAuth } from "../context/AuthContext.js";
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
-// import AddDayToDB from "./Components/AddDayToDB";
 import kommunes from "../Resources/kommuneList.json";
 import KommuneDropdown from "../Components/KommuneDropdown";
-import prices from "../Resources/price_json/October.json";
-import AddMonthToDB from "../Components/AddMonthToDB";
 import DailyPrices from "../Components/DailyPrices.js";
 import HourlyPrices from "../Components/HourlyPrices.js";
-import NetworkUsage from "../Components/NetworkUsage.js";
 import Navbar from "../Components/Navbar.js";
 import Instructions from "../Components/Instructions.js";
 import Results from "../Components/Results.js";
-
+import InputsForm from "../Components/InputsForm.js";
 const allowedExtensions = ["csv"];
 function Home() {
   const [error, setError] = useState("");
+  const [prices, setPrices] = useState({});
   const [file, setFile] = useState("");
   const [monthList, setMonthList] = useState();
   const [usageData, setUsageData] = useState();
-  const [priceData, setPriceData] = useState();
   const [selectedMonth, setSelectedMonth] = useState();
   const [kommuneList, setKommuneList] = useState(kommunes);
   const [selectedKommune, setSelectedKommune] = useState();
@@ -30,14 +26,12 @@ function Home() {
   const { currentUser, logout } = useAuth();
   const [surcharge, setsurcharge] = useState(0);
   const [fee, setFee] = useState(0);
-  const [monthlyAverage, setMonthlyAverage] = useState();
   const [govSupport, setGovSupport] = useState(0);
   const [myGovSupport, setMyGovSupport] = useState(0);
   const [networkDayPrice, setNetworkDayPrice] = useState(0);
   const [networkNightPrice, setNetworkNightPrice] = useState(0);
   const [dailyData, setDailyData] = useState();
   const [totalKwh, setTotalKwh] = useState();
-  const [month, setMonth] = useState();
   const [avgPrice, setAvgPrice] = useState();
   const [fixedPriceStatus, setFixedPriceStatus] = useState(true);
   const [fixedPrice, setFixedPrice] = useState(0);
@@ -51,6 +45,17 @@ function Home() {
   let hoursCounter = 0;
   let tempAvg = 0;
 
+  const getMonthPrices = async (month) => {
+    const monthRef = doc(db, "price-history", `${month}-22`);
+    const docSnap = await getDoc(monthRef);
+    if (docSnap.exists()) {
+      setPrices(docSnap.data());
+      console.log(`Selected ${month}`);
+    } else {
+      console.log("Doc does not exist");
+    }
+  };
+
   const handleCsvFile = (e) => {
     setError("");
     if (e.target.files.length) {
@@ -60,11 +65,9 @@ function Home() {
     }
   };
   const parseCsvJson = () => {
-    if (!selectedKommune) {
-      setError(<h2>Velg kommune fra listen</h2>);
-      return;
-    }
-    if (!file) return setError(<h2>Finner ikke CSV filen</h2>);
+    if (!file) return setError("Har du glemt å velge CSV fil?");
+    else if (!selectedMonth) return setError("Husk å velg måned");
+    else if (!selectedKommune) return setError("Velg kommune fra listen");
     setError("");
     const reader = new FileReader();
     reader.onload = async ({ target }) => {
@@ -192,9 +195,9 @@ function Home() {
     setAvgPrice((totalUsage / tempAvg) * 10000);
   }
 
-  // useEffect(() => {
-  //   console.log(avgPrice);
-  // }, [avgPrice]);
+  useEffect(() => {
+    getMonthPrices(selectedMonth);
+  }, [selectedMonth]);
 
   if (!usageData) {
     return (
@@ -327,7 +330,6 @@ function Home() {
                 />
               </div>
               <hr />
-              {/* Month selector to be implemented later when functionality works */}
               <label htmlFor="months">
                 <h3>2. Velg måned:</h3>{" "}
               </label>
@@ -411,6 +413,8 @@ function Home() {
                 totalUsage={totalKwh}
                 month={selectedMonth}
                 avgPrice={avgPrice}
+                surcharge={surcharge}
+                selectedMonth={selectedMonth}
               />
             )}
           </div>

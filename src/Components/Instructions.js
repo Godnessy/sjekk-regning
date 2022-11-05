@@ -14,17 +14,6 @@ function Instructions() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  //TODO:
-  //-on main page make CSV part of form bigger and add 1 2 3 to step following the flow, change Regne ut position to inside the form
-  //and make the button bigger
-  //-Add a background and more pop to total pris (add Din Regning:) when the button is clicked
-  //-Add details in the middle between day and hourly to explain what people see.
-
-  //Modal:
-  //--make the divs smaller so people can see
-  //-Make an arrow pointing down so people will know there is more
-  // add Steg X/Y so people know
-
   return (
     <>
       <p variant="primary" className="csv-modal" onClick={handleShow}>

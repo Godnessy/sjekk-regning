@@ -1,7 +1,4 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { Button } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
 import logo from "../Resources/images/logoTransp.png";
 
 function Navbar({ logOut }) {
