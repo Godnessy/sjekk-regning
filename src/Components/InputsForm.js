@@ -111,7 +111,7 @@ export default function InputsForm({
           <div className="fixed-price border border-2 border-dark">
             <div>
               <input
-                className="fixed-checkbox"
+                className="fixed-checkbox ms-2"
                 type="checkbox"
                 name="fixed=price-data"
                 id="fixed=price-data"
@@ -123,9 +123,9 @@ export default function InputsForm({
                 <h4>Har du fast pris?</h4>
               </label>
             </div>
-            <div className="d-flex flex-row">
+            <div className="d-flex flex-row ms-2">
               <input
-                className="fixed-price-input "
+                className="fixed-price-input"
                 type="number"
                 ref={checkboxRef}
                 disabled
