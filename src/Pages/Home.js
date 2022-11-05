@@ -39,6 +39,10 @@ function Home() {
   const [totalKwh, setTotalKwh] = useState();
   const [month, setMonth] = useState();
   const [avgPrice, setAvgPrice] = useState();
+  const [fixedPriceStatus, setFixedPriceStatus] = useState(true);
+  const [fixedPrice, setFixedPrice] = useState(0);
+  const [checkboxState, setCheckboxState] = useState(true);
+  const checkboxRef = useRef();
 
   const navigate = useNavigate();
 
@@ -274,6 +278,13 @@ function Home() {
                       onChange={(e) => {
                         setFee(e.target.value);
                       }}
+                      fixedPrice={fixedPrice}
+                      setFixedPrice={setFixedPrice}
+                      setFixedPriceStatus={setFixedPriceStatus}
+                      fixedPriceStatus={fixedPriceStatus}
+                      checkboxState={checkboxState}
+                      checkboxRef={checkboxRef}
+                      setCheckboxState={setCheckboxState}
                     />
                     <h4>Kr</h4>
                   </div>
