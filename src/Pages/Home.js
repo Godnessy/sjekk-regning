@@ -34,7 +34,7 @@ function Home() {
   const [totalKwh, setTotalKwh] = useState();
   const [avgPrice, setAvgPrice] = useState();
   const [fixedPrice, setFixedPrice] = useState(0);
-  const [hasFixedPrice, setHasFixedPrice] = useState(true);
+  const [hasFixedPrice, setHasFixedPrice] = useState(false);
   const checkboxRef = useRef();
 
   const navigate = useNavigate();
@@ -128,7 +128,7 @@ function Home() {
   };
   const createTotalPricePrHour = (usage, priceForHour) => {
     if (priceForHour) {
-      const basePrice = priceForHour;
+      const basePrice = hasFixedPrice ? fixedPrice : priceForHour;
       const totalPrice = (basePrice / 100) * Number(usage);
       tempMonthPrice = tempMonthPrice += totalPrice;
 
@@ -351,6 +351,8 @@ function Home() {
                 dataForHour={usageData}
                 setAvgPrice={setAvgPrice}
                 hoursCounter={hoursCounter}
+                hasFixedPrice={hasFixedPrice}
+                fixedPrice={fixedPrice}
               />
             )}
           </div>
@@ -359,6 +361,8 @@ function Home() {
               <DailyPrices
                 dataForHour={usageData}
                 totalMonthPrice={totalMonthPrice}
+                hasFixedPrice={hasFixedPrice}
+                fixedPrice={fixedPrice}
               />
             )}
           </div>

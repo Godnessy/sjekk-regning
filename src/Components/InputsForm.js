@@ -23,7 +23,7 @@ export default function InputsForm({
   setHasFixedPrice,
 }) {
   useEffect(() => {
-    checkboxRef.current.disabled = hasFixedPrice;
+    checkboxRef.current.disabled = !hasFixedPrice;
   }, [hasFixedPrice]);
 
   // If checkBoxState is true - use fixed price for all calculations
