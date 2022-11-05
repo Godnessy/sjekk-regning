@@ -316,12 +316,23 @@ function Home() {
                   </div>
                 </div>
                 <div className="calculate-btn">
-                  <button
-                    className="calculate btn btn-success ms-5 my-3 "
-                    onClick={parseCsvJson}
-                  >
-                    Regne ut!
-                  </button>
+                  {totalMonthPrice ? (
+                    <button
+                      className="calculate btn btn-danger ms-5 my-3"
+                      onClick={() => {
+                        window.location.reload();
+                      }}
+                    >
+                      Ny regning
+                    </button>
+                  ) : (
+                    <button
+                      className="calculate btn btn-success ms-5 my-3 "
+                      onClick={parseCsvJson}
+                    >
+                      Regne ut!
+                    </button>
+                  )}
                 </div>
               </div>
               <div className="border fw-bold border-dark border-2">
