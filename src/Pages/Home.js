@@ -33,9 +33,8 @@ function Home() {
   const [dailyData, setDailyData] = useState();
   const [totalKwh, setTotalKwh] = useState();
   const [avgPrice, setAvgPrice] = useState();
-  const [fixedPriceStatus, setFixedPriceStatus] = useState(true);
   const [fixedPrice, setFixedPrice] = useState(0);
-  const [checkboxState, setCheckboxState] = useState(true);
+  const [hasFixedPrice, setHasFixedPrice] = useState(true);
   const checkboxRef = useRef();
 
   const navigate = useNavigate();
@@ -199,6 +198,10 @@ function Home() {
     getMonthPrices(selectedMonth);
   }, [selectedMonth]);
 
+  useEffect(() => {
+    console.log(fixedPrice);
+  }, [fixedPrice]);
+
   if (!usageData) {
     return (
       <>
@@ -220,11 +223,9 @@ function Home() {
             parseCsvJson={parseCsvJson}
             fixedPrice={fixedPrice}
             setFixedPrice={setFixedPrice}
-            setFixedPriceStatus={setFixedPriceStatus}
-            fixedPriceStatus={fixedPriceStatus}
-            checkboxState={checkboxState}
+            hasFixedPrice={hasFixedPrice}
             checkboxRef={checkboxRef}
-            setCheckboxState={setCheckboxState}
+            setHasFixedPrice={setHasFixedPrice}
           />
         </div>
       </>
