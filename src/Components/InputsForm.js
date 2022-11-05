@@ -18,15 +18,13 @@ export default function InputsForm({
   parseCsvJson,
   fixedPrice,
   setFixedPrice,
-  setFixedPriceStatus,
-  fixedPriceStatus,
-  checkboxState,
+  hasFixedPrice,
   checkboxRef,
-  setCheckboxState,
+  setHasFixedPrice,
 }) {
   useEffect(() => {
-    checkboxRef.current.disabled = checkboxState;
-  }, [checkboxState]);
+    checkboxRef.current.disabled = hasFixedPrice;
+  }, [hasFixedPrice]);
 
   // If checkBoxState is true - use fixed price for all calculations
   return (
@@ -118,7 +116,7 @@ export default function InputsForm({
                 name="fixed=price-data"
                 id="fixed=price-data"
                 onClick={(e) => {
-                  setCheckboxState(!checkboxState);
+                  setHasFixedPrice(!hasFixedPrice);
                 }}
               />
               <label htmlFor="fixed-price-data">
