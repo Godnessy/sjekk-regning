@@ -1,8 +1,6 @@
 import { React, useEffect } from "react";
 import Instructions from "./Instructions";
 import KommuneDropdown from "./KommuneDropdown";
-import potato from "./potato";
-
 export default function InputsForm({
   handleCsvFile,
   selectedMonth,
