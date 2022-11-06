@@ -42,7 +42,7 @@ function Home() {
   let tempMonthPrice = 0;
   let totalUsage = 0;
   let hoursCounter = 0;
-  let tempAvg = 0;
+  let avgPriceTimesUsage = 0;
 
   const getMonthPrices = async (month) => {
     const monthRef = doc(db, "price-history", `${month}-22`);
@@ -154,8 +154,8 @@ function Home() {
     }
   }
 
-  function calculateAveragePrice(totalUsage, tempAvg, totalHours) {
-    return tempAvg / totalHours;
+  function calculateAveragePrice(avgPriceTimesUsage, totalHours) {
+    return avgPriceTimesUsage / totalHours;
   }
 
   function calculateMonthlyValues(usageData) {
@@ -174,7 +174,7 @@ function Home() {
       hoursCounter++;
       const priceForHour = createPriceForHour(selectedZonePrices, time);
       if (!isNaN(priceForHour)) {
-        tempAvg = tempAvg + priceForHour;
+        avgPriceTimesUsage = avgPriceTimesUsage + priceForHour * usage;
       }
       const totalPricePrHour = createTotalPricePrHour(usage, priceForHour);
 
@@ -195,7 +195,7 @@ function Home() {
     setTotalMonthPrice(totalMonthPrice);
     setUsageData(dataForHour);
     setTotalKwh(totalUsage);
-    setAvgPrice(calculateAveragePrice(totalUsage, tempAvg, hoursCounter));
+    setAvgPrice(calculateAveragePrice(avgPriceTimesUsage, hoursCounter));
   }
 
   useEffect(() => {
@@ -315,7 +315,7 @@ function Home() {
                     />
                     <h4>Kr</h4>
                   </div>
-                  {hasFixedPrice && <h3>Fast kWh pris: {fixedPrice} Øre</h3>}
+                  {hasFixedPrice && <h3>Fast kwh pris: {fixedPrice} Øre</h3>}
                 </div>
                 <div className="calculate-btn">
                   {totalMonthPrice ? (

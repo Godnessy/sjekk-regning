@@ -132,7 +132,7 @@ export default function InputsForm({
                   setFixedPrice(e.target.value);
                 }}
               />
-              <h4>Øre</h4>
+              <h4>Øre pr. kwh</h4>
             </div>
           </div>
           <div className="calculate-btn">
