@@ -12,7 +12,6 @@ function Results({
   hasFixedPrice,
   fixedPrice,
 }) {
-  console.log(totalMonthPrice, totalUsage, avgPrice);
   return (
     <Card className="mx-4">
       <div className="d-flex align-content-left flex-column">
@@ -32,7 +31,8 @@ function Results({
         {fee !== 0 && <h2 className="ps-2">Månedspris : {fee}</h2>}
         {!hasFixedPrice && (
           <h2 className="ps-2">
-            Din kWh snittpris : {Number(avgPrice).toFixed(2)} øre
+            Din kWh snittpris :{" "}
+            {((totalMonthPrice / totalUsage) * 100).toFixed(2)} øre
           </h2>
         )}
         {hasFixedPrice && (

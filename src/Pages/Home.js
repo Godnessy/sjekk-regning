@@ -28,7 +28,6 @@ function Home() {
   const [networkDayPrice, setNetworkDayPrice] = useState(0);
   const [networkNightPrice, setNetworkNightPrice] = useState(0);
   const [totalKwh, setTotalKwh] = useState();
-  const [avgPrice, setAvgPrice] = useState();
   const [fixedPrice, setFixedPrice] = useState(0);
   const [hasFixedPrice, setHasFixedPrice] = useState(false);
   const checkboxRef = useRef();
@@ -170,10 +169,6 @@ function Home() {
     }
   };
 
-  function calculateAveragePrice(avgPriceTimesUsage, totalHours) {
-    return avgPriceTimesUsage / totalHours;
-  }
-
   function calculateMonthlyValues(usageData, isNew, prices) {
     function extractUsage(value, NeedsFixing) {
       const newValue = NeedsFixing ? value.replace(",", ".") : value;
@@ -219,7 +214,6 @@ function Home() {
     setTotalMonthPrice(totalMonthPrice);
     setUsageData(dataForHour);
     setTotalKwh(totalUsage);
-    setAvgPrice(calculateAveragePrice(avgPriceTimesUsage, hoursCounter));
   }
 
   if (!usageData) {
@@ -348,7 +342,6 @@ function Home() {
                 fee={fee}
                 totalUsage={totalKwh}
                 month={selectedMonth}
-                avgPrice={avgPrice}
                 surcharge={surcharge}
                 selectedMonth={selectedMonth}
                 hasFixedPrice={hasFixedPrice}
