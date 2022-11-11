@@ -56,7 +56,6 @@ function Home() {
     try {
       const docSnap = await getDoc(monthRef);
       if (docSnap.exists()) {
-        console.log(`Got from DB: ${month}`);
         return docSnap.data();
       } else {
         console.log("Doc does not exist");
@@ -96,6 +95,9 @@ function Home() {
         },
         complete: function (results) {
           const CSVArr = [];
+          if (results.data.length == 0) {
+            return setError("CSV filen er tomt");
+          }
           if (!results.data[0].Til) {
             results.data.map((item) => {
               const splitLineIntoArr = item.Fra.split("");
@@ -177,7 +179,6 @@ function Home() {
       const newValue = NeedsFixing ? value.replace(",", ".") : value;
       return newValue;
     }
-    console.log("started working");
     const dataForHour = usageData.map((hour, idx) => {
       const values = hour.Fra.split(" ");
       const date = values[0];
@@ -188,7 +189,6 @@ function Home() {
         selectedKommune.value,
         dayPrices
       );
-      console.log("step 5");
       totalUsage = totalUsage + Number(usage);
       hoursCounter++;
       const priceForHour = createPriceForHour(selectedZonePrices, time);
