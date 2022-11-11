@@ -231,7 +231,6 @@ function Home() {
             handleCsvFile={handleCsvFile}
             selectedMonth={selectedMonth}
             setSelectedMonth={setSelectedMonth}
-            monthList={monthList}
             kommuneList={kommuneList}
             setSelectedKommune={setSelectedKommune}
             selectedKommune={selectedKommune}
