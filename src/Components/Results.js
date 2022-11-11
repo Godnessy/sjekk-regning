@@ -12,6 +12,7 @@ function Results({
   hasFixedPrice,
   fixedPrice,
 }) {
+  console.log(totalMonthPrice, totalUsage, avgPrice);
   return (
     <Card className="mx-4">
       <div className="d-flex align-content-left flex-column">

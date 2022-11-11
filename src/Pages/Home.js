@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import Papa, { parse, unparse } from "papaparse";
-import { useNavigate } from "react-router-dom";
 import { db } from "../firebase-config.js";
 import { doc, getDoc } from "firebase/firestore";
 import { useAuth } from "../context/AuthContext.js";
@@ -16,15 +15,12 @@ const allowedExtensions = ["csv"];
 
 function Home() {
   const [error, setError] = useState("");
-  const [prices, setPrices] = useState({});
   const [file, setFile] = useState("");
-  const [monthList, setMonthList] = useState();
   const [usageData, setUsageData] = useState();
   const [selectedMonth, setSelectedMonth] = useState();
   const [kommuneList, setKommuneList] = useState(kommunes);
   const [selectedKommune, setSelectedKommune] = useState();
   const [totalMonthPrice, setTotalMonthPrice] = useState();
-  const { currentUser, logout } = useAuth();
   const [surcharge, setsurcharge] = useState(0);
   const [fee, setFee] = useState(0);
   const [govSupport, setGovSupport] = useState(0);
@@ -36,22 +32,32 @@ function Home() {
   const [fixedPrice, setFixedPrice] = useState(0);
   const [hasFixedPrice, setHasFixedPrice] = useState(false);
   const checkboxRef = useRef();
-
-  const navigate = useNavigate();
-
   let tempMonthPrice = 0;
   let totalUsage = 0;
   let hoursCounter = 0;
   let avgPriceTimesUsage = 0;
+  const monthObj = {
+    "01": "January",
+    "02": "February",
+    "03": "March",
+    "04": "April",
+    "05": "May",
+    "06": "June",
+    "07": "July",
+    "08": "August",
+    "09": "September",
+    10: "October",
+    11: "November",
+    12: "December",
+  };
 
   const getMonthPrices = async (month) => {
-    console.log("test");
     const monthRef = doc(db, "price-history", `${month}-22`);
     try {
       const docSnap = await getDoc(monthRef);
       if (docSnap.exists()) {
-        setPrices(docSnap.data());
-        console.log(`Selected ${month}`);
+        console.log(`Got from DB: ${month}`);
+        return docSnap.data();
       } else {
         console.log("Doc does not exist");
       }
@@ -64,29 +70,16 @@ function Home() {
     setError("");
     if (e.target.files.length) {
       const inputFile = e.target.files[0];
-      console.log(inputFile);
       const fileExtension = inputFile?.type.split("/")[1];
       setFile(inputFile);
     }
   };
   const parseCsvJson = () => {
     if (!file) return setError("Har du glemt å velge CSV fil?");
-    else if (!selectedMonth) return setError("Husk å velg måned");
     else if (!selectedKommune) return setError("Velg kommune fra listen");
     setError("");
     const reader = new FileReader();
     reader.onload = async ({ target }) => {
-      const replaceCommaWithDot = (val) => {
-        console.log(val);
-        const arr = val.split("");
-        console.log(arr);
-        const commaIndex = arr.lastIndexOf(",");
-        console.log(commaIndex);
-        const result = arr.splice(commaIndex, 1, ".");
-        console.log(result);
-        console.log(result.join(""));
-        return result.join("");
-      };
       let newResult;
       let csv = Papa.parse(target.result, {
         header: true,
@@ -104,8 +97,7 @@ function Home() {
         complete: function (results) {
           const CSVArr = [];
           if (!results.data[0].Til) {
-            console.log("entered if");
-            results.data.map((item, index) => {
+            results.data.map((item) => {
               const splitLineIntoArr = item.Fra.split("");
               const findLastCommaIndex = splitLineIntoArr.lastIndexOf(",");
               splitLineIntoArr.splice(findLastCommaIndex, 1, ".");
@@ -121,38 +113,13 @@ function Home() {
           }
         },
       });
-      newResult
-        ? calculateMonthlyValues(newResult?.data, false)
-        : calculateMonthlyValues(csv?.data, true);
+      if (newResult) {
+        extractCurrentMonth(newResult.data, false);
+      } else {
+        extractCurrentMonth(csv.data, true);
+      }
     };
     reader.readAsText(file);
-  };
-
-  const createMonthList = () => {
-    const date = new Date();
-    const months = 12;
-    const currentMonth = date.getMonth();
-    const monthNames = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-    let monthArr = new Set();
-    for (let i = 0; i < currentMonth + 1; i++) {
-      const m = date.getMonth();
-      monthArr.add(monthNames[m]);
-      date.setMonth(date.getMonth() - 1);
-    }
-    return setMonthList(Array.from(monthArr));
   };
 
   const collectDayPrices = (prices, date) => {
@@ -187,43 +154,41 @@ function Home() {
     return 0;
   };
 
-  useEffect(() => {
-    createMonthList();
-  }, []);
-
   useEffect(() => {}, [selectedKommune]);
   useEffect(() => {}, [totalMonthPrice]);
 
-  async function handleLogout(usageData) {
-    setError("");
-    try {
-      await logout();
-      navigate("/");
-    } catch (error) {
-      setError("Failed to logout");
+  const extractCurrentMonth = async (usageData, isNew) => {
+    const month = usageData[0].Fra.split(".")[1];
+    setSelectedMonth(monthObj[month]);
+    const prices = await getMonthPrices(monthObj[month]);
+    if (isNew) {
+      calculateMonthlyValues(usageData, true, prices);
+    } else {
+      calculateMonthlyValues(usageData, false, prices);
     }
-  }
+  };
 
   function calculateAveragePrice(avgPriceTimesUsage, totalHours) {
     return avgPriceTimesUsage / totalHours;
   }
 
-  function calculateMonthlyValues(usageData, isNew) {
+  function calculateMonthlyValues(usageData, isNew, prices) {
     function extractUsage(value, NeedsFixing) {
       const newValue = NeedsFixing ? value.replace(",", ".") : value;
       return newValue;
     }
+    console.log("started working");
     const dataForHour = usageData.map((hour, idx) => {
       const values = hour.Fra.split(" ");
       const date = values[0];
       const time = values[1];
       const usage = extractUsage(hour["KWH 60 Forbruk"], isNew);
-      console.log(date, time, usage);
       const dayPrices = collectDayPrices(prices, date);
       const selectedZonePrices = createSelectedPriceZone(
         selectedKommune.value,
         dayPrices
       );
+      console.log("step 5");
       totalUsage = totalUsage + Number(usage);
       hoursCounter++;
       const priceForHour = createPriceForHour(selectedZonePrices, time);
@@ -257,14 +222,10 @@ function Home() {
     setAvgPrice(calculateAveragePrice(avgPriceTimesUsage, hoursCounter));
   }
 
-  useEffect(() => {
-    getMonthPrices(selectedMonth);
-  }, [selectedMonth]);
-
   if (!usageData) {
     return (
       <>
-        <Navbar logOut={handleLogout} />
+        <Navbar />
         <div className="d-flex justify-content-center my-5">
           <InputsForm
             handleCsvFile={handleCsvFile}
@@ -292,7 +253,7 @@ function Home() {
   } else {
     return (
       <>
-        <Navbar logOut={handleLogout} />
+        <Navbar />
 
         <div className="page-container">
           <div className="inputs-container justify-content-center my-2 d-flex">
@@ -312,26 +273,7 @@ function Home() {
                   type="File"
                 />
               </div>
-              <hr />
-              <label htmlFor="months">
-                <h3>2. Velg måned:</h3>{" "}
-              </label>
-              <select
-                name="months"
-                id="months"
-                value={selectedMonth}
-                onChange={(e) => {
-                  setSelectedMonth(e.target.value);
-                }}
-              >
-                <option>Valg en måned</option>
-                {monthList &&
-                  monthList.map((month, index) => (
-                    <option key={index} value={month}>
-                      {month}
-                    </option>
-                  ))}
-              </select>
+
               <hr />
               <div className="drop-down d-flex flex-column">
                 <h4 className="me-3">3. Velg din kommune:</h4>

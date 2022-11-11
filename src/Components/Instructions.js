@@ -41,37 +41,37 @@ function Instructions() {
                 sin nettside - Steg 1/8
               </Card.Title>
               <Card.Body>
-                <img className="inst-pic" src={pic1} alt="" srcset="" />
+                <img className="inst-pic" src={pic1} alt="" />
               </Card.Body>
             </Card>
             <Card className="mb-3 border border-5 border-dark">
               <Card.Title className="ms-3">Steg 2/8</Card.Title>
               <Card.Body>
-                <img className="inst-pic" src={pic2} alt="" srcset="" />
+                <img className="inst-pic" src={pic2} alt="" />
               </Card.Body>
             </Card>
             <Card className="mb-3 border border-5 border-dark">
               <Card.Title className="ms-3">Steg 3/8</Card.Title>
               <Card.Body>
-                <img className="inst-pic" src={pic3} alt="" srcset="" />
+                <img className="inst-pic" src={pic3} alt="" />
               </Card.Body>
             </Card>
             <Card className="mb-3 border border-5 border-dark">
               <Card.Title className="ms-3">Steg 4/8</Card.Title>
               <Card.Body>
-                <img className="inst-pic" src={pic4} alt="" srcset="" />
+                <img className="inst-pic" src={pic4} alt="" />
               </Card.Body>
             </Card>
             <Card className="mb-3 border border-5 border-dark">
               <Card.Title className="ms-3">Steg 5/8</Card.Title>
               <Card.Body>
-                <img className="inst-pic" src={pic5} alt="" srcset="" />
+                <img className="inst-pic" src={pic5} alt="" />
               </Card.Body>
             </Card>
             <Card className="mb-3 border border-5 border-dark">
               <Card.Title className="ms-3">Steg 6/8</Card.Title>
               <Card.Body>
-                <img className="inst-pic" src={pic6} alt="" srcset="" />
+                <img className="inst-pic" src={pic6} alt="" />
               </Card.Body>
             </Card>
             <Card className="mb-3 border border-5 border-dark">
@@ -81,13 +81,13 @@ function Instructions() {
                 <p className="text-dark">Steg 7/8</p>
               </Card.Title>
               <Card.Body>
-                <img className="inst-pic" src={pic7} alt="" srcset="" />
+                <img className="inst-pic" src={pic7} alt="" />
               </Card.Body>
             </Card>
             <Card className="mb-3 border border-5 border-dark">
               <Card.Title className="ms-3">Steg 8/8</Card.Title>
               <Card.Body>
-                <img className="inst-pic" src={pic8} alt="" srcset="" />
+                <img className="inst-pic" src={pic8} alt="" />
               </Card.Body>
             </Card>
           </div>

@@ -3,9 +3,6 @@ import Instructions from "./Instructions";
 import KommuneDropdown from "./KommuneDropdown";
 export default function InputsForm({
   handleCsvFile,
-  selectedMonth,
-  setSelectedMonth,
-  monthList,
   kommuneList,
   setSelectedKommune,
   selectedKommune,
@@ -44,28 +41,8 @@ export default function InputsForm({
           />
         </div>
         <hr />
-        <label htmlFor="months">
-          <h3>2. Velg måned (2022): </h3>{" "}
-        </label>
-        <select
-          name="months"
-          id="months"
-          value={selectedMonth}
-          onChange={(e) => {
-            setSelectedMonth(e.target.value);
-          }}
-        >
-          <option>Valg en måned</option>
-          {monthList &&
-            monthList.map((month, index) => (
-              <option key={index} value={month}>
-                {month}
-              </option>
-            ))}
-        </select>
-        <hr />
         <div className="drop-down d-flex flex-column">
-          <h4 className="me-3">3. Velg din kommune:</h4>
+          <h4 className="me-3">2. Velg din kommune:</h4>
           <div className="d-flex w-100 flex-column">
             <KommuneDropdown
               className="kommune-select"
