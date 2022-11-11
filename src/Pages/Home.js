@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import Papa, { parse } from "papaparse";
+import Papa, { parse, unparse } from "papaparse";
 import { useNavigate } from "react-router-dom";
 import { db } from "../firebase-config.js";
 import { doc, getDoc } from "firebase/firestore";
@@ -45,13 +45,18 @@ function Home() {
   let avgPriceTimesUsage = 0;
 
   const getMonthPrices = async (month) => {
+    console.log("test");
     const monthRef = doc(db, "price-history", `${month}-22`);
-    const docSnap = await getDoc(monthRef);
-    if (docSnap.exists()) {
-      setPrices(docSnap.data());
-      console.log(`Selected ${month}`);
-    } else {
-      console.log("Doc does not exist");
+    try {
+      const docSnap = await getDoc(monthRef);
+      if (docSnap.exists()) {
+        setPrices(docSnap.data());
+        console.log(`Selected ${month}`);
+      } else {
+        console.log("Doc does not exist");
+      }
+    } catch (error) {
+      alert(error.message);
     }
   };
 
@@ -59,6 +64,7 @@ function Home() {
     setError("");
     if (e.target.files.length) {
       const inputFile = e.target.files[0];
+      console.log(inputFile);
       const fileExtension = inputFile?.type.split("/")[1];
       setFile(inputFile);
     }
@@ -70,10 +76,54 @@ function Home() {
     setError("");
     const reader = new FileReader();
     reader.onload = async ({ target }) => {
-      const csv = Papa.parse(target.result, { header: true });
-      const parsedData = csv?.data;
-      const organizedDataFormat = parsedData;
-      calculateMonthlyValues(organizedDataFormat);
+      const replaceCommaWithDot = (val) => {
+        console.log(val);
+        const arr = val.split("");
+        console.log(arr);
+        const commaIndex = arr.lastIndexOf(",");
+        console.log(commaIndex);
+        const result = arr.splice(commaIndex, 1, ".");
+        console.log(result);
+        console.log(result.join(""));
+        return result.join("");
+      };
+      let newResult;
+      let csv = Papa.parse(target.result, {
+        header: true,
+        quoteChar: '"',
+        skipEmptyLines: true,
+        transform: (val, col) => {
+          const removeQuotations = val.replaceAll(/['"]+/g, "");
+          const doubleCommasRegex = /,,/i;
+          const removeDoubleCommas = removeQuotations.replace(
+            doubleCommasRegex,
+            ""
+          );
+          return removeQuotations;
+        },
+        complete: function (results) {
+          const CSVArr = [];
+          if (!results.data[0].Til) {
+            console.log("entered if");
+            results.data.map((item, index) => {
+              const splitLineIntoArr = item.Fra.split("");
+              const findLastCommaIndex = splitLineIntoArr.lastIndexOf(",");
+              splitLineIntoArr.splice(findLastCommaIndex, 1, ".");
+              const fixedLineStr = [splitLineIntoArr.join("")];
+              const fixedLine = fixedLineStr[0].split(",");
+              CSVArr.push(fixedLine);
+            });
+            const unParsed = Papa.unparse({
+              fields: ["Fra", "Til", "KWH 60 Forbruk"],
+              data: CSVArr,
+            });
+            newResult = Papa.parse(unParsed, { header: true });
+          }
+        },
+      });
+      newResult
+        ? calculateMonthlyValues(newResult?.data, false)
+        : calculateMonthlyValues(csv?.data, true);
     };
     reader.readAsText(file);
   };
@@ -158,13 +208,17 @@ function Home() {
     return avgPriceTimesUsage / totalHours;
   }
 
-  function calculateMonthlyValues(usageData) {
-    let hourCounter = 0;
-    const dataForHour = usageData.map((col, idx) => {
-      const values = Object.values(col);
-      const date = values[0].split(" ")[0];
-      const time = values[0].split(" ")[1];
-      const usage = values[2].replace(",", ".");
+  function calculateMonthlyValues(usageData, isNew) {
+    function extractUsage(value, NeedsFixing) {
+      const newValue = NeedsFixing ? value.replace(",", ".") : value;
+      return newValue;
+    }
+    const dataForHour = usageData.map((hour, idx) => {
+      const values = hour.Fra.split(" ");
+      const date = values[0];
+      const time = values[1];
+      const usage = extractUsage(hour["KWH 60 Forbruk"], isNew);
+      console.log(date, time, usage);
       const dayPrices = collectDayPrices(prices, date);
       const selectedZonePrices = createSelectedPriceZone(
         selectedKommune.value,
@@ -189,8 +243,13 @@ function Home() {
         totalPricePrHour,
       };
     });
-    const totalMonthPrice = dataForHour.reduce((result, item) => {
-      return result + item.totalPricePrHour;
+
+    const totalMonthPrice = dataForHour.reduce((result, item, index) => {
+      if (index == 0) {
+        return result;
+      } else {
+        return result + item.totalPricePrHour;
+      }
     }, 0);
     setTotalMonthPrice(totalMonthPrice);
     setUsageData(dataForHour);
