@@ -19,4 +19,4 @@ jobs:
           channelId: live
           projectId: minestrom-644e6
 env:
-  CI: true
+  CI: false
