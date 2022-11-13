@@ -11,6 +11,7 @@ import Navbar from "../Components/Navbar.js";
 import Instructions from "../Components/Instructions.js";
 import Results from "../Components/Results.js";
 import InputsForm from "../Components/InputsForm.js";
+import BioLink from "../Components/BioLink.js";
 const allowedExtensions = ["csv"];
 
 function Home() {
@@ -220,26 +221,31 @@ function Home() {
     return (
       <>
         <Navbar />
-        <div className="d-flex justify-content-center my-5">
-          <InputsForm
-            handleCsvFile={handleCsvFile}
-            selectedMonth={selectedMonth}
-            setSelectedMonth={setSelectedMonth}
-            kommuneList={kommuneList}
-            setSelectedKommune={setSelectedKommune}
-            selectedKommune={selectedKommune}
-            error={error}
-            surcharge={surcharge}
-            setsurcharge={setsurcharge}
-            fee={fee}
-            setFee={setFee}
-            parseCsvJson={parseCsvJson}
-            fixedPrice={fixedPrice}
-            setFixedPrice={setFixedPrice}
-            hasFixedPrice={hasFixedPrice}
-            checkboxRef={checkboxRef}
-            setHasFixedPrice={setHasFixedPrice}
-          />
+        <div className="d-flex flex-column justify-content-center">
+          <div className="d-flex justify-content-center my-5">
+            <InputsForm
+              handleCsvFile={handleCsvFile}
+              selectedMonth={selectedMonth}
+              setSelectedMonth={setSelectedMonth}
+              kommuneList={kommuneList}
+              setSelectedKommune={setSelectedKommune}
+              selectedKommune={selectedKommune}
+              error={error}
+              surcharge={surcharge}
+              setsurcharge={setsurcharge}
+              fee={fee}
+              setFee={setFee}
+              parseCsvJson={parseCsvJson}
+              fixedPrice={fixedPrice}
+              setFixedPrice={setFixedPrice}
+              hasFixedPrice={hasFixedPrice}
+              checkboxRef={checkboxRef}
+              setHasFixedPrice={setHasFixedPrice}
+            />
+          </div>
+          <div className="bio-link d-flex mt-5 justify-content-center">
+            <BioLink></BioLink>
+          </div>
         </div>
       </>
     );
