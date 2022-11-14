@@ -28,11 +28,11 @@ function Results({
         ) : (
           <div></div>
         )}
-        {fee !== 0 && <h2 className="ps-2">Månedspris : {fee}</h2>}
+        {fee !== 0 && <h2 className="ps-2">Månedspris : {fee} kr</h2>}
         {!hasFixedPrice && (
           <h2 className="ps-2">
             Din kWh snittpris :{" "}
-            {((totalMonthPrice / totalUsage) * 100).toFixed(2)} øre
+            {((totalMonthPrice / totalUsage) * 100).toFixed(2)} øre pr kwh
           </h2>
         )}
         {hasFixedPrice && (
@@ -67,8 +67,8 @@ function Results({
         </h2>
         {!hasFixedPrice && (
           <p className="price-exp align-self-center">
-            Total månedspris beregnes med ditt forbruk for hver eneste time og
-            ikke månedsgjennomsnitt.
+            Total månedspris beregnes utifra ditt forbruk for hver enkelt time
+            og ikke månedsgjennomsnitt.
           </p>
         )}
       </div>

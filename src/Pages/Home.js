@@ -22,7 +22,7 @@ function Home() {
   const [kommuneList, setKommuneList] = useState(kommunes);
   const [selectedKommune, setSelectedKommune] = useState();
   const [totalMonthPrice, setTotalMonthPrice] = useState();
-  const [surcharge, setsurcharge] = useState(0);
+  const [surcharge, setsurcharge] = useState("0");
   const [fee, setFee] = useState(0);
   const [govSupport, setGovSupport] = useState(0);
   const [myGovSupport, setMyGovSupport] = useState(0);
@@ -53,11 +53,12 @@ function Home() {
 
   const getMonthPrices = async (month) => {
     const monthRef = doc(db, "price-history", `${month}-22`);
-    const usageCounterRef = doc(db, "usage-counter", `usage`);
-    const usageCounterSnap = await getDoc(usageCounterRef);
-    let usageCounter = usageCounterSnap.data().usage;
-    console.log(usageCounter + 1);
-    await setDoc(usageCounterRef, { usage: usageCounter + 1 });
+    //quick way to track usage while in beta - will be removed.
+    // const usageCounterRef = doc(db, "usage-counter", `usage`);
+    // const usageCounterSnap = await getDoc(usageCounterRef);
+    // let usageCounter = usageCounterSnap.data().usage;
+    // console.log(usageCounter + 1);
+    // await setDoc(usageCounterRef, { usage: usageCounter + 1 });
     try {
       const docSnap = await getDoc(monthRef);
       if (docSnap.exists()) {
@@ -68,15 +69,6 @@ function Home() {
     } catch (error) {
       alert(error.message);
     }
-    // ;
-
-    // if (usageCounterSnap.exists()) {
-    //   console.log("usage is: " + usageCounterSnap.data()[0]);
-    //   usageCounter = usageCounterSnap.data()[0];
-    //   return usageCounterSnap.data();
-    // } else {
-    //   console.log("Doc does not exist");
-    // }
   };
 
   const handleCsvFile = (e) => {
@@ -184,11 +176,17 @@ function Home() {
     }
   };
 
+  const fixComma = (str) => {
+    const fixed = str.replace(",", ".");
+    return Number(fixed);
+  };
+
   function calculateMonthlyValues(usageData, isNew, prices) {
     function extractUsage(value, NeedsFixing) {
       const newValue = NeedsFixing ? value.replace(",", ".") : value;
       return newValue;
     }
+    setsurcharge(surcharge);
     const dataForHour = usageData.map((hour, idx) => {
       const values = hour.Fra.split(" ");
       const date = values[0];
@@ -220,15 +218,20 @@ function Home() {
     });
 
     const totalMonthPrice = dataForHour.reduce((result, item, index) => {
-      if (index == 0) {
-        return result;
-      } else {
-        return result + item.totalPricePrHour;
-      }
+      return result + item.totalPricePrHour;
     }, 0);
     setTotalMonthPrice(totalMonthPrice);
     setUsageData(dataForHour);
     setTotalKwh(totalUsage);
+  }
+
+  function convertCommaToNumber(str) {
+    console.log(str);
+    const fixComma = str.replace(",", ".");
+    console.log(fixComma);
+    const newResult = Number(fixComma);
+    console.log(newResult);
+    return newResult;
   }
 
   if (!usageData) {
@@ -255,6 +258,8 @@ function Home() {
               hasFixedPrice={hasFixedPrice}
               checkboxRef={checkboxRef}
               setHasFixedPrice={setHasFixedPrice}
+              convertCommaToNumber={convertCommaToNumber}
+              fixComma={fixComma}
             />
           </div>
           <div className="bio-link d-flex mt-5 justify-content-center">
@@ -312,7 +317,8 @@ function Home() {
                       type="text"
                       value={surcharge}
                       onChange={(e) => {
-                        setsurcharge(e.target.value);
+                        let correctedSurcharge = fixComma(e.target.value);
+                        setsurcharge(correctedSurcharge);
                       }}
                     />
                     <h4>Øre</h4>

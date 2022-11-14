@@ -17,6 +17,8 @@ export default function InputsForm({
   hasFixedPrice,
   checkboxRef,
   setHasFixedPrice,
+  convertCommaToNumber,
+  fixComma,
 }) {
   useEffect(() => {
     checkboxRef.current.disabled = !hasFixedPrice;
@@ -63,9 +65,9 @@ export default function InputsForm({
               <input
                 className="surcharge-input"
                 type="text"
-                value={surcharge}
                 onChange={(e) => {
-                  setsurcharge(e.target.value);
+                  let correctedSurcharge = fixComma(e.target.value);
+                  setsurcharge(correctedSurcharge);
                 }}
               />
               <h4>Øre</h4>
@@ -77,7 +79,8 @@ export default function InputsForm({
                 type="text"
                 value={fee}
                 onChange={(e) => {
-                  setFee(e.target.value);
+                  let correctedFee = fixComma(e.target.value);
+                  setFee(correctedFee);
                 }}
               />
               <h4>Kr</h4>
@@ -120,6 +123,10 @@ export default function InputsForm({
               Regne ut!
             </button>
           </div>
+        </div>
+        <div className="border fw-bold border-dark border-2 mt-3">
+          All informasjonen/filene du laster opp/deler her blir ikke lagret og
+          vi bruker ikke informasjonskapsler.
         </div>
       </div>
     </div>
