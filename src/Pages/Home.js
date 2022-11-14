@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import Papa, { parse, unparse } from "papaparse";
 import { db } from "../firebase-config.js";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useAuth } from "../context/AuthContext.js";
 import kommunes from "../Resources/kommuneList.json";
 import KommuneDropdown from "../Components/KommuneDropdown";
@@ -53,6 +53,11 @@ function Home() {
 
   const getMonthPrices = async (month) => {
     const monthRef = doc(db, "price-history", `${month}-22`);
+    const usageCounterRef = doc(db, "usage-counter", `usage`);
+    const usageCounterSnap = await getDoc(usageCounterRef);
+    let usageCounter = usageCounterSnap.data().usage;
+    console.log(usageCounter + 1);
+    await setDoc(usageCounterRef, { usage: usageCounter + 1 });
     try {
       const docSnap = await getDoc(monthRef);
       if (docSnap.exists()) {
@@ -63,6 +68,15 @@ function Home() {
     } catch (error) {
       alert(error.message);
     }
+    // ;
+
+    // if (usageCounterSnap.exists()) {
+    //   console.log("usage is: " + usageCounterSnap.data()[0]);
+    //   usageCounter = usageCounterSnap.data()[0];
+    //   return usageCounterSnap.data();
+    // } else {
+    //   console.log("Doc does not exist");
+    // }
   };
 
   const handleCsvFile = (e) => {

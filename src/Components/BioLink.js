@@ -1,7 +1,6 @@
 import { React, useRef } from "react";
 import { Card } from "react-bootstrap";
 import github from "../Resources/images/github.jpg";
-import email from "../Resources/images/email.jpg";
 
 function BioLink() {
   return (
