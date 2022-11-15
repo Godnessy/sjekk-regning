@@ -61,16 +61,30 @@ function Results({
           </>
         )}
         <div className="d-flex flex-column justify-content-center"></div>
-        <h2 className="m-5 total-price">
+        <h2 className="mt-3 total-price">
           Å betale for {month}:{" "}
           {(Number(totalMonthPrice) + Number(fee)).toFixed(2)} kr
         </h2>
+
         {!hasFixedPrice && (
           <p className="price-exp align-self-center">
             Total månedspris beregnes utifra ditt forbruk for hver enkelt time
             og ikke månedsgjennomsnitt.
           </p>
         )}
+        <hr />
+        <p className="price-exp d-block align-self-center mt-2">
+          <mark>
+            Fant du en betydelig forskjell mellom våre beregninger og din
+            regning?
+          </mark>
+          Vi anbefaler deg å ta kontakt med Ole Nyborg Markussen på{" "}
+          <a href="http://https://www.facebook.com/groups/1055189454988378">
+            {" "}
+            Prismatch Strøm
+          </a>{" "}
+          som hjelper folk med denne typen problemer.
+        </p>
       </div>
     </Card>
   );
