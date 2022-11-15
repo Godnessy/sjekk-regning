@@ -12,10 +12,7 @@ body {
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   grid-template-rows: 1fr;
 }
-/* 
-.inputs-container{
-  height: 10em !important;
-} */
+
 .usage-price-container{
   display: flex;
   flex-direction: row;
@@ -46,10 +43,19 @@ body {
 }
 
 .logo{
- width: 6em;
- position: relative;
- top:0.5em;
+  width: 6em;
+  margin-top:10px;
 }
+
+.cooporation{
+  margin-top: 1.5rem;
+}
+
+.logo-pris{
+  width: 15em;
+  margin-left: 1em;
+}
+
 
 .total-price{
   background-color: lightgreen !important;
@@ -61,6 +67,22 @@ body {
 
 .navbar {
   height: 5em;
+}
+
+@media screen and (max-width: 991px) {
+.logo ,.logo-pris ,.cooporation{
+  position: relative;
+  bottom:2.5em;
+}
+.logo{
+  bottom:1.5em;
+}
+.cooporation{
+  right:20%;
+}
+.logo-pris{
+  right:40%;
+}
 }
 
 .calculate{
@@ -208,12 +230,6 @@ margin-left: 1%;
  .surcharge-input{
   width: 2em;
  }
-
-.logo{
-    position: absolute;
-    top: -0.5em;
-    left: 5px;
-  } 
 
   .fixed-price{
     right:0;
