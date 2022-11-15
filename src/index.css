@@ -83,18 +83,36 @@ body {
 @media screen and (max-width: 991px) {
 .logo ,.logo-pris ,.cooporation{
   position: relative;
-  bottom:2.5em;
 }
 .logo{
   bottom:1.5em;
 }
 .cooporation{
-  right:20%;
+  right:15%;
+  bottom: 35%;
 }
 .logo-pris{
-  right:40%;
+  right:30%;
+  bottom:40%
 }
 }
+
+@media screen and (max-width: 790px) {
+  .logo ,.logo-pris ,.cooporation{
+    position: relative;
+  }
+  .logo{
+    bottom:1.5em;
+  }
+  .cooporation{
+    right:10%;
+    bottom: 35%;
+  }
+  .logo-pris{
+    right:20%;
+    bottom:40%
+  }
+  }
 
 .calculate{
   font-size: 2em !important;
