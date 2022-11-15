@@ -17,7 +17,7 @@ function Instructions() {
   return (
     <>
       <p variant="primary" className="csv-modal" onClick={handleShow}>
-        Klikk her for veiledning.
+        Klikk her for Elhub veiledning.
       </p>
 
       <Modal
