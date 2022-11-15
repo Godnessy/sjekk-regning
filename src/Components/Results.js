@@ -61,7 +61,7 @@ function Results({
           </>
         )}
         <div className="d-flex flex-column justify-content-center"></div>
-        <h2 className="mt-3 total-price">
+        <h2 className="mt-3 mx-1 total-price">
           Å betale for {month}:{" "}
           {(Number(totalMonthPrice) + Number(fee)).toFixed(2)} kr
         </h2>
@@ -83,7 +83,7 @@ function Results({
             {" "}
             Prismatch Strøm
           </a>{" "}
-          som hjelper folk med denne typen problemer.
+          som hjelper folk med denne typen problemer - gratis.
         </p>
       </div>
     </Card>
