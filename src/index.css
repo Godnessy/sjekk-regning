@@ -62,7 +62,18 @@ body {
 }
 
 .price-exp{
-  width: 25em;
+  width:30em;
+}
+
+@media screen and (max-width:1200px) {
+  .price-exp{
+    width:20em;
+  }
+}
+@media screen and (max-width:890px) {
+  .price-exp{
+    width:15em;
+  }
 }
 
 .navbar {
