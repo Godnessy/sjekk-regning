@@ -250,12 +250,12 @@ function Home() {
       </div>
     );
   } else {
-    if (!usageData) {
-      return (
-        <>
-          <Navbar />
-          <div className="d-flex flex-column justify-content-center">
-            <div className="d-flex justify-content-center my-5">
+    return (
+      <>
+        <Navbar />
+        <div className="page-container">
+          <div className="d-flex flex-row justify-content-center">
+            <div className="d-flex justify-content-center my-2">
               <InputsForm
                 handleCsvFile={handleCsvFile}
                 selectedMonth={selectedMonth}
@@ -276,111 +276,8 @@ function Home() {
                 setHasFixedPrice={setHasFixedPrice}
                 convertCommaToNumber={convertCommaToNumber}
                 fixComma={fixComma}
+                totalMonthPrice={totalMonthPrice}
               />
-            </div>
-            <div className="bio-link d-flex mt-5 justify-content-center">
-              <BioLink></BioLink>
-            </div>
-          </div>
-        </>
-      );
-    } else {
-      return (
-        <>
-          <Navbar />
-
-          <div className="page-container">
-            <div className="inputs-container justify-content-center my-2 d-flex">
-              <div className="ms-3 border border-dark p-3 card">
-                <div className="csv-part">
-                  <label htmlFor="csvInput" style={{ display: "block" }}>
-                    <p className="input-text">
-                      1. Laste opp måleverdier CSV fil fra Elhub:
-                    </p>
-                  </label>
-                  <Instructions></Instructions>
-
-                  <input
-                    onChange={handleCsvFile}
-                    id="csvInput"
-                    name="file"
-                    type="File"
-                  />
-                </div>
-
-                <hr />
-                <div className="drop-down d-flex flex-column">
-                  <h4 className="me-3">3. Velg din kommune:</h4>
-                  <div className="d-flex w-100 flex-column">
-                    <KommuneDropdown
-                      className="kommune-select"
-                      kommuneList={kommuneList}
-                      setSelectedKommune={setSelectedKommune}
-                    />
-                    {selectedKommune && (
-                      <h4>
-                        {" "}
-                        Din kommune tilhører sone: {selectedKommune.value}
-                      </h4>
-                    )}
-                  </div>
-                  {error && <p className="text-danger d-flex ">{error} </p>}
-                </div>
-                <hr />
-                <div className="d-flex justify">
-                  <div className="d-flex flex-column">
-                    <div className="d-flex surcharge">
-                      <h3 className="me-2 surcharge-title">Påslag</h3>
-                      <input
-                        className="surcharge-input"
-                        type="text"
-                        value={surcharge}
-                        onChange={(e) => {
-                          let correctedSurcharge = fixComma(e.target.value);
-                          setsurcharge(correctedSurcharge);
-                        }}
-                      />
-                      <h4>Øre</h4>
-                    </div>
-                    <div className="surcharge d-flex">
-                      <h3 className="me-2 surcharge-title">Månedspris</h3>
-                      <input
-                        className="surcharge-input fee"
-                        type="text"
-                        value={fee}
-                        onChange={(e) => {
-                          setFee(e.target.value);
-                        }}
-                      />
-                      <h4>Kr</h4>
-                    </div>
-                    {hasFixedPrice && <h3>Fast kwh pris: {fixedPrice} Øre</h3>}
-                  </div>
-                  <div className="calculate-btn">
-                    {totalMonthPrice ? (
-                      <button
-                        className="calculate btn btn-danger ms-5 my-3"
-                        onClick={() => {
-                          window.location.reload();
-                        }}
-                      >
-                        Ny regning
-                      </button>
-                    ) : (
-                      <button
-                        className="calculate btn btn-success ms-5 my-3 "
-                        onClick={parseCsvJson}
-                      >
-                        Regne ut!
-                      </button>
-                    )}
-                  </div>
-                </div>
-                <div className="border fw-bold border-dark border-2">
-                  All informasjonen/filene du laster opp/deler her blir ikke
-                  lagret og vi bruker ikke informasjonskapsler.
-                </div>
-              </div>
               {totalMonthPrice && (
                 <Results
                   totalMonthPrice={totalMonthPrice}
@@ -391,35 +288,42 @@ function Home() {
                   selectedMonth={selectedMonth}
                   hasFixedPrice={hasFixedPrice}
                   fixedPrice={fixedPrice}
+                  selectedKommune={selectedKommune}
                 />
               )}
             </div>
           </div>
+        </div>
 
-          <div className="usage-price-container my-2 d-flex">
-            <div className="ms-3">
-              {usageData && (
-                <HourlyPrices
-                  dataForHour={usageData}
-                  hasFixedPrice={hasFixedPrice}
-                  fixedPrice={fixedPrice}
-                />
-              )}
-            </div>
-            <div className="me-4">
-              {usageData && (
-                <DailyPrices
-                  dataForHour={usageData}
-                  totalMonthPrice={totalMonthPrice}
-                  hasFixedPrice={hasFixedPrice}
-                  fixedPrice={fixedPrice}
-                />
-              )}
-            </div>
+        <div className="usage-price-container my-2 d-flex">
+          <div className="ms-3">
+            {usageData && (
+              <HourlyPrices
+                dataForHour={usageData}
+                hasFixedPrice={hasFixedPrice}
+                fixedPrice={fixedPrice}
+              />
+            )}
           </div>
-        </>
-      );
-    }
+          <div className="me-4">
+            {usageData && (
+              <DailyPrices
+                dataForHour={usageData}
+                totalMonthPrice={totalMonthPrice}
+                hasFixedPrice={hasFixedPrice}
+                fixedPrice={fixedPrice}
+              />
+            )}
+          </div>
+        </div>
+        {!totalMonthPrice && (
+          <div className="bio-link d-flex mt-5 justify-content-center">
+            <BioLink></BioLink>
+          </div>
+        )}
+      </>
+    );
+    // }
   }
 }
 

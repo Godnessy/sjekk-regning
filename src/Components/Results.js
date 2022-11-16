@@ -6,12 +6,13 @@ function Results({
   fee,
   totalUsage,
   month,
-  avgPrice,
   surcharge,
   selectedMonth,
   hasFixedPrice,
   fixedPrice,
+  selectedKommune,
 }) {
+  const zone = selectedKommune.value;
   return (
     <Card className="mx-4">
       <div className="d-flex align-content-left flex-column">
@@ -19,6 +20,11 @@ function Results({
           Forventet regning for {month}
         </h2>
         <h2 className="ps-2">Total forbruk: {totalUsage.toFixed(0)} kWh</h2>
+        <h3 className="ps-2">Sone: {zone}</h3>
+        {hasFixedPrice && (
+          <h3 className="ps-2">Fast pris pr kwh: {fixedPrice}</h3>
+        )}
+        <h3></h3>
         <hr />
         {surcharge && surcharge !== 0 ? (
           <h2 className="ps-2">
