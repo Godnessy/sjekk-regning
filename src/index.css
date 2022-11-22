@@ -13,6 +13,10 @@ body {
   grid-template-rows: 1fr;
 }
 
+.description-text{
+  color: white
+}
+
 .usage-price-container{
   display: flex;
   flex-direction: row;
@@ -264,5 +268,111 @@ margin-left: 1%;
     right:0;
     left: 5%;
   }
+  .site-descrip{
+    margin-left: 10% !important;
+    margin-right: 10% !important;
+  }
+
 }
 
+
+@media screen and (max-width: 450px) {
+  .page-container{
+    display: flex;
+    flex-direction: column;
+  }
+  .inputs-container{
+    flex-direction: column;
+    margin: 2% 5% 2% 5% !important
+  }
+  .inputs-card{
+    justify-self: center;
+    margin: 2% 9% 2% 10% !important;
+    position: relative;
+    left:2%;
+  }
+
+  .inputs-and-button{
+    flex-direction: column;
+  }
+
+  .calculate-after{
+    font-size: 1rem !important;
+    margin: 0px !important;
+  }
+
+  .usage-price-container{
+    flex-direction: column;
+  }
+
+  .site-descrip{
+    margin-left: 40% !important;
+    margin-right: 40% !important;
+  }
+
+  .daily-prices{
+    margin: 2% 5% 2% 6% !important;
+  }
+  .hourly-prices{
+    margin: 2% 9% 2% 10% !important;
+    align-self: center;
+  }
+  
+  .hourly-prices{
+    position: relative;
+    left: 3%;
+  }
+  .cooporation, .logo-pris{
+    display:none;
+  }
+
+  .surcharge-input{
+    width: 2em;
+  }
+  .price-exp{
+   width:auto;
+   padding: 0.3rem;
+  }
+  .logo{
+   position: relative;
+   left: 90%;
+  }
+
+  .extras-container{
+    display:flex;
+    flex-direction: column;
+  }
+
+  .fixed-price{
+    margin-left: -20px;
+   width: 14em;
+  }
+  
+
+  @keyframes arrow {
+    0% {right:10px ; top:20%}
+    50% {right:10px ; top:21%}
+    100% {right:10px ; top:20%}
+  }
+ }
+
+ @media screen and (max-width: 400px) {
+  .hourly-prices{
+  margin-right: 14% !important;
+  }
+  .logo{
+    position: relative;
+    left:65%;
+  }
+ }
+
+ @media screen and (max-width: 370px) {
+  .hourly-prices{
+    margin-right: 14% !important;
+    }
+   
+  .table-hourly{
+    margin-right: 10%;
+  }
+  
+ }

@@ -25,8 +25,8 @@ export default function InputsForm({
   }, [hasFixedPrice]);
 
   return (
-    <div className="inputs-container d-flex">
-      <div className="ms-3 border border-dark p-3 card">
+    <div className="d-flex">
+      <div className="ms-3 border border-dark p-3 card inputs-card ">
         <div className="csv-part">
           <label htmlFor="csvInput" style={{ display: "block" }}>
             <p className="input-text">
@@ -58,7 +58,7 @@ export default function InputsForm({
           {error && <h2 className="text-danger d-flex ">{error} </h2>}
         </div>
         <hr />
-        <div className="d-flex justify">
+        <div className="d-flex justify extras-container">
           <div className="d-flex flex-column">
             <div className="d-flex surcharge">
               <h3 className="me-2 surcharge-title">Påslag</h3>
@@ -67,6 +67,7 @@ export default function InputsForm({
                 type="text"
                 onChange={(e) => {
                   let correctedSurcharge = fixComma(e.target.value);
+
                   setsurcharge(correctedSurcharge);
                 }}
               />
