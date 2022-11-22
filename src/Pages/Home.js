@@ -107,14 +107,20 @@ function Home() {
             return setError("CSV filen er tomt");
           }
           if (!results.data[0].Til) {
-            results.data.map((item) => {
-              const splitLineIntoArr = item.Fra.split("");
-              const findLastCommaIndex = splitLineIntoArr.lastIndexOf(",");
-              splitLineIntoArr.splice(findLastCommaIndex, 1, ".");
-              const fixedLineStr = [splitLineIntoArr.join("")];
-              const fixedLine = fixedLineStr[0].split(",");
-              CSVArr.push(fixedLine);
-            });
+            try {
+              results.data.map((item) => {
+                const splitLineIntoArr = item.Fra.split("");
+                const findLastCommaIndex = splitLineIntoArr.lastIndexOf(",");
+                splitLineIntoArr.splice(findLastCommaIndex, 1, ".");
+                const fixedLineStr = [splitLineIntoArr.join("")];
+                const fixedLine = fixedLineStr[0].split(",");
+                CSVArr.push(fixedLine);
+              });
+            } catch (error) {
+              alert(`Error under forsøk på å analysere regningen. Vennligst bruk en datamaskin eller nettbrett for å sjekke regningen!
+              Vi jobber med å fikse dette problemet som oppstår med enkelte mobiltelefoner.`);
+              return;
+            }
             const unParsed = Papa.unparse({
               fields: ["Fra", "Til", "KWH 60 Forbruk"],
               data: CSVArr,
