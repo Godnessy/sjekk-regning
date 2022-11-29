@@ -13,6 +13,7 @@ import Instructions from "../Components/Instructions.js";
 import Results from "../Components/Results.js";
 import InputsForm from "../Components/InputsForm.js";
 import BioLink from "../Components/BioLink.js";
+import { useStateManager } from "react-select";
 const allowedExtensions = ["csv"];
 
 function Home() {
@@ -25,6 +26,8 @@ function Home() {
   const [totalMonthPrice, setTotalMonthPrice] = useState();
   const [surcharge, setsurcharge] = useState("0");
   const [fee, setFee] = useState(0);
+  const [lastDay, setLastDay] = useState("");
+  const [avgMonthly, setAvgMonthly] = useState(0);
   const [govSupport, setGovSupport] = useState(0);
   const [myGovSupport, setMyGovSupport] = useState(0);
   const [networkDayPrice, setNetworkDayPrice] = useState(0);
@@ -34,6 +37,7 @@ function Home() {
   const [hasFixedPrice, setHasFixedPrice] = useState(false);
   const checkboxRef = useRef();
   let tempMonthPrice = 0;
+  let tempMonthAvg = 0;
   let totalUsage = 0;
   let hoursCounter = 0;
   let avgPriceTimesUsage = 0;
@@ -55,11 +59,11 @@ function Home() {
   const getMonthPrices = async (month) => {
     const monthRef = doc(db, "price-history", `${month}-22`);
     //quick way to track usage while in beta - will be removed.
-    const usageCounterRef = doc(db, "usage-counter", `usage`);
-    const usageCounterSnap = await getDoc(usageCounterRef);
-    let usageCounter = usageCounterSnap.data().usage;
-    console.log(usageCounter + 1);
-    await setDoc(usageCounterRef, { usage: usageCounter + 1 });
+    // const usageCounterRef = doc(db, "usage-counter", `usage`);
+    // const usageCounterSnap = await getDoc(usageCounterRef);
+    // let usageCounter = usageCounterSnap.data().usage;
+    // console.log(usageCounter + 1);
+    // await setDoc(usageCounterRef, { usage: usageCounter + 1 });
     try {
       const docSnap = await getDoc(monthRef);
       if (docSnap.exists()) {
@@ -83,7 +87,6 @@ function Home() {
   const parseCsvJson = () => {
     if (!file) return setError("Har du glemt å velge CSV fil?");
     else if (!selectedKommune) return setError("Velg kommune fra listen");
-    console.log(file);
     setError("");
     const reader = new FileReader();
     reader.onload = async ({ target }) => {
@@ -153,6 +156,7 @@ function Home() {
   const createPriceForHour = (zonePrices, time) => {
     if (zonePrices) {
       const basePrice = Number(zonePrices[time]);
+      tempMonthAvg = tempMonthAvg + basePrice;
       const calculatedPrice = basePrice + Number(surcharge);
       return calculatedPrice;
     } else {
@@ -168,6 +172,13 @@ function Home() {
       return totalPrice;
     }
     return 0;
+  };
+
+  const createGovSupport = (monthlyAvg) => {
+    console.log(monthlyAvg);
+    const calculation = (monthlyAvg - 87.5) * 0.9;
+    console.log(`strømstøtte er ${calculation}`);
+    return calculation;
   };
 
   useEffect(() => {}, [selectedKommune]);
@@ -198,6 +209,7 @@ function Home() {
     const dataForHour = usageData.map((hour, idx) => {
       const values = hour.Fra.split(" ");
       const date = values[0];
+      idx == usageData.length - 1 && setLastDay(date);
       const time = values[1];
       const usage = extractUsage(hour["KWH 60 Forbruk"], isNew);
       const dayPrices = collectDayPrices(prices, date);
@@ -230,15 +242,14 @@ function Home() {
     }, 0);
     setTotalMonthPrice(totalMonthPrice);
     setUsageData(dataForHour);
+    setAvgMonthly(tempMonthAvg / hoursCounter);
+    setGovSupport(createGovSupport(tempMonthAvg / hoursCounter));
     setTotalKwh(totalUsage);
   }
 
   function convertCommaToNumber(str) {
-    console.log(str);
     const fixComma = str.replace(",", ".");
-    console.log(fixComma);
     const newResult = Number(fixComma);
-    console.log(newResult);
     return newResult;
   }
 
@@ -358,7 +369,7 @@ function Home() {
                   {hasFixedPrice && <h3>Fast kwh pris: {fixedPrice} Øre</h3>}
                 </div>
                 <div className="calculate-btn">
-                  {totalMonthPrice ? (
+                  {/* {totalMonthPrice ? (
                     <button
                       className="calculate calculate-after btn btn-danger ms-5 my-3"
                       onClick={() => {
@@ -367,20 +378,38 @@ function Home() {
                     >
                       Ny regning
                     </button>
-                  ) : (
-                    <button
-                      className="calculate btn btn-success ms-5 my-3 "
-                      onClick={parseCsvJson}
-                    >
-                      Regne ut!
-                    </button>
-                  )}
+                  ) : ( */}
+                  <button
+                    className="calculate btn btn-success ms-5 my-3 "
+                    onClick={parseCsvJson}
+                  >
+                    Regne ut!
+                  </button>
+                  {/* )} */}
                 </div>
               </div>
               <div className="border fw-bold border-dark border-2">
                 All informasjonen/filene du laster opp/deler her blir ikke
                 lagret og vi bruker ikke informasjonskapsler.
               </div>
+              {usageData && (
+                <div className="w-100">
+                  {" "}
+                  <hr />
+                  <p className="mx-2 align-self-center mt-2">
+                    <mark>
+                      Fant du en betydelig forskjell mellom våre beregninger og
+                      din regning?
+                    </mark>
+                    Vi anbefaler deg å ta kontakt med Ole Nyborg Markussen på{" "}
+                    <a href="http://https://www.facebook.com/groups/1055189454988378">
+                      {" "}
+                      Prismatch Strøm
+                    </a>{" "}
+                    som hjelper folk med denne typen problemer - gratis.
+                  </p>
+                </div>
+              )}
             </div>
             <div>
               {totalMonthPrice && (
@@ -393,6 +422,10 @@ function Home() {
                   selectedMonth={selectedMonth}
                   hasFixedPrice={hasFixedPrice}
                   fixedPrice={fixedPrice}
+                  avgPrice={avgMonthly}
+                  govSupport={govSupport}
+                  lastDay={lastDay}
+                  zone={selectedKommune.value}
                 />
               )}
             </div>

@@ -1,4 +1,4 @@
-import { React, useEffect } from "react";
+import { React, useState, useEffect } from "react";
 import { Card } from "react-bootstrap";
 
 function Results({
@@ -11,14 +11,37 @@ function Results({
   selectedMonth,
   hasFixedPrice,
   fixedPrice,
+  govSupport,
+  lastDay,
+  zone,
 }) {
+  const [isSupport, setIsSupport] = useState(false);
+  const clientGovSupport = totalUsage * govSupport;
+
+  useEffect(() => {
+    avgPrice > 70 ? setIsSupport(true) : setIsSupport(false);
+  }, [avgPrice]);
+
   return (
     <Card className="mx-4">
       <div className="d-flex align-content-left flex-column">
         <h2 className="text-decoration-underline p-2">
           Forventet regning for {month}
         </h2>
-        <h2 className="ps-2">Total forbruk: {totalUsage.toFixed(0)} kWh</h2>
+        <h2 className="ps-2 my-1">
+          Total forbruk: {totalUsage.toFixed(0)} kWh
+        </h2>
+        <h3 className="ps-2 my-1">
+          Snitt pris for {zone}: {avgPrice.toFixed(2)} øre pr kwh
+        </h3>
+        <h3 className="ps-2 my-1">
+          Strømstøtte {lastDay}:{" "}
+          {avgPrice > 70 ? (
+            govSupport.toFixed(2) + " øre pr kwh"
+          ) : (
+            <p>Ingen strømstøtte</p>
+          )}
+        </h3>
         <hr />
         {surcharge && surcharge !== 0 ? (
           <h2 className="ps-2">
@@ -28,11 +51,14 @@ function Results({
         ) : (
           <div></div>
         )}
+        <h3 className="ps-2">
+          Din strømstøtte: {((totalUsage * govSupport) / 100).toFixed(2)} kr
+        </h3>
         {fee !== 0 && <h2 className="ps-2">Månedspris : {fee} kr</h2>}
         {!hasFixedPrice && (
           <h2 className="ps-2">
-            Din kWh snittpris :{" "}
-            {((totalMonthPrice / totalUsage) * 100).toFixed(2)} øre pr kwh
+            Din snittpris : {((totalMonthPrice / totalUsage) * 100).toFixed(2)}{" "}
+            øre pr kwh
           </h2>
         )}
         {hasFixedPrice && (
@@ -71,19 +97,6 @@ function Results({
               og ikke månedsgjennomsnitt.
             </p>
           )}
-          <hr />
-          <p className="mx-2 align-self-center mt-2">
-            <mark>
-              Fant du en betydelig forskjell mellom våre beregninger og din
-              regning?
-            </mark>
-            Vi anbefaler deg å ta kontakt med Ole Nyborg Markussen på{" "}
-            <a href="http://https://www.facebook.com/groups/1055189454988378">
-              {" "}
-              Prismatch Strøm
-            </a>{" "}
-            som hjelper folk med denne typen problemer - gratis.
-          </p>
         </div>
       </div>
     </Card>
