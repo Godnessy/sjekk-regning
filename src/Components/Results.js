@@ -22,6 +22,17 @@ function Results({
     avgPrice > 70 ? setIsSupport(true) : setIsSupport(false);
   }, [avgPrice]);
 
+  const createGovSupportDiv = (totalUsage, govSupport) => {
+    if (avgPrice > 70) {
+      return (
+        <h3 className="ps-2">
+          Din strømstøtte: {((totalUsage * govSupport) / 100).toFixed(2)} kr
+        </h3>
+      );
+    } else {
+      return "";
+    }
+  };
   return (
     <Card className="mx-4">
       <div className="d-flex align-content-left flex-column">
@@ -34,14 +45,16 @@ function Results({
         <h3 className="ps-2 my-1">
           Snitt pris for {zone}: {avgPrice.toFixed(2)} øre pr kwh
         </h3>
-        <h3 className="ps-2 my-1">
-          Strømstøtte {lastDay}:{" "}
-          {avgPrice > 70 ? (
-            govSupport.toFixed(2) + " øre pr kwh"
-          ) : (
-            <p>Ingen strømstøtte</p>
-          )}
-        </h3>
+        {!hasFixedPrice && (
+          <h3 className="ps-2 my-1">
+            Strømstøtte {lastDay}:{" "}
+            {avgPrice > 70 ? (
+              <p className="support"> {govSupport.toFixed(2)} øre pr kwh</p>
+            ) : (
+              <p>Ingen strømstøtte</p>
+            )}
+          </h3>
+        )}
         <hr />
         {surcharge && surcharge !== 0 ? (
           <h2 className="ps-2">
@@ -51,9 +64,12 @@ function Results({
         ) : (
           <div></div>
         )}
-        <h3 className="ps-2">
-          Din strømstøtte: {((totalUsage * govSupport) / 100).toFixed(2)} kr
-        </h3>
+        {!hasFixedPrice ? (
+          createGovSupportDiv(totalUsage, govSupport)
+        ) : (
+          <h3>Strømstøtte for fastpris kommer snart!</h3>
+        )}
+
         {fee !== 0 && <h2 className="ps-2">Månedspris : {fee} kr</h2>}
         {!hasFixedPrice && (
           <h2 className="ps-2">
@@ -88,7 +104,7 @@ function Results({
         )}
         <h2 className="mt-3 mx-1 total-price">
           Å betale for {month}:{" "}
-          {(Number(totalMonthPrice) + Number(fee)).toFixed(2)} kr
+          {(Number(totalMonthPrice) - govSupport + Number(fee)).toFixed(2)} kr
         </h2>
         <div className="price-exp mx-2 align-self-center">
           {!hasFixedPrice && (

@@ -259,6 +259,11 @@ margin-left: 1%;
 .github-link{
   width: 90%;
 }
+
+.support{
+  background: linear-gradient(90deg, #7efff5 50%, rgba(255, 255, 255, 0) 50%);
+  width: 120%;
+}
 @media screen and (max-width: 1000px) {
  .surcharge-input{
   width: 2em;
@@ -347,6 +352,8 @@ margin-left: 1%;
     margin-left: -20px;
    width: 14em;
   }
+
+  
   
 
   @keyframes arrow {
