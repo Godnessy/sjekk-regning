@@ -24,20 +24,23 @@ function Results({
     avgPrice > 70 ? setIsSupport(true) : setIsSupport(false);
   }, [avgPrice]);
 
+  const calculateGovSupport = () => {
+    return ((totalUsage * govSupport) / 100).toFixed(2);
+  };
   const createGovSupportDiv = (totalUsage, govSupport) => {
     if (avgPrice > 70) {
       return (
-        <h3 className="ps-2">
-          Din strømstøtte: {((totalUsage * govSupport) / 100).toFixed(2)} kr
-        </h3>
+        <h3 className="ps-2">Din strømstøtte: {calculateGovSupport()} kr</h3>
       );
     } else {
       return "";
     }
   };
 
-  const getGovSupport = (totalWithSupport) => {
-    return totalWithSupport ? govSupport : 0;
+  const getGovSupport = (totalWithSupport, totalUsage, govSupport) => {
+    const usage = Number(totalUsage);
+
+    return totalWithSupport ? calculateGovSupport() : 0;
   };
 
   return (
