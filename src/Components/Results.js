@@ -37,9 +37,7 @@ function Results({
     }
   };
 
-  const getGovSupport = (totalWithSupport, totalUsage, govSupport) => {
-    const usage = Number(totalUsage);
-
+  const getGovSupport = (totalWithSupport, totalUsage) => {
     return totalWithSupport ? calculateGovSupport() : 0;
   };
 
