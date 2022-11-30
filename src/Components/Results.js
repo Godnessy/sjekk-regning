@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useRef } from "react";
 import { Card } from "react-bootstrap";
 
 function Results({
@@ -16,8 +16,10 @@ function Results({
   zone,
 }) {
   const [isSupport, setIsSupport] = useState(false);
+  const [totalWithSupport, setTotalWithSupport] = useState(false);
   const clientGovSupport = totalUsage * govSupport;
-
+  const govSupportCheckboxRef = useRef();
+  console.log(govSupportCheckboxRef.current);
   useEffect(() => {
     avgPrice > 70 ? setIsSupport(true) : setIsSupport(false);
   }, [avgPrice]);
@@ -33,6 +35,11 @@ function Results({
       return "";
     }
   };
+
+  const getGovSupport = (totalWithSupport) => {
+    return totalWithSupport ? govSupport : 0;
+  };
+
   return (
     <Card className="mx-4">
       <div className="d-flex align-content-left flex-column">
@@ -67,7 +74,7 @@ function Results({
         {!hasFixedPrice ? (
           createGovSupportDiv(totalUsage, govSupport)
         ) : (
-          <h3>Strømstøtte for fastpris kommer snart!</h3>
+          <h3 className="ps-2">Strømstøtte for fastpris kommer snart!</h3>
         )}
 
         {fee !== 0 && <h2 className="ps-2">Månedspris : {fee} kr</h2>}
@@ -104,8 +111,37 @@ function Results({
         )}
         <h2 className="mt-3 mx-1 total-price">
           Å betale for {month}:{" "}
-          {(Number(totalMonthPrice) - govSupport + Number(fee)).toFixed(2)} kr
+          {(
+            Number(totalMonthPrice) -
+            getGovSupport(totalWithSupport) +
+            Number(fee)
+          ).toFixed(2)}{" "}
+          kr
         </h2>
+        {!hasFixedPrice && (
+          <div className=" d-flex align-items-center ">
+            <input
+              className="fixed-checkbox ms-2"
+              type="checkbox"
+              name="supportCheckBox"
+              id="supportCheckBox"
+              ref={govSupportCheckboxRef}
+              onClick={(e) => {
+                setTotalWithSupport(!totalWithSupport);
+              }}
+            />
+            <label className="ps-1" htmlFor="supportCheckBox">
+              <h4>
+                Viser total <b>{totalWithSupport ? "med" : "uten"}</b>{" "}
+                Strømstøtte
+              </h4>
+              <p>
+                Trykk boksen for å vise total{" "}
+                <b>{totalWithSupport ? "uten" : "med"}</b> strømstøtte.
+              </p>
+            </label>
+          </div>
+        )}
         <div className="price-exp mx-2 align-self-center">
           {!hasFixedPrice && (
             <p className="mx-2 align-self-center">
