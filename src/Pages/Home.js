@@ -325,7 +325,7 @@ function Home() {
 
               <hr />
               <div className="drop-down d-flex flex-column">
-                <h4 className="me-3">3. Velg din kommune:</h4>
+                <h4 className="me-3">2. Velg din kommune:</h4>
                 <div className="d-flex w-100 flex-column">
                   <KommuneDropdown
                     className="kommune-select"
