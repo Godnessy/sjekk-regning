@@ -17,7 +17,6 @@ function Results({
 }) {
   const [isSupport, setIsSupport] = useState(false);
   const [totalWithSupport, setTotalWithSupport] = useState(false);
-  const clientGovSupport = totalUsage * govSupport;
   const govSupportCheckboxRef = useRef();
   console.log(govSupportCheckboxRef.current);
   useEffect(() => {
@@ -27,7 +26,7 @@ function Results({
   const calculateGovSupport = () => {
     return ((totalUsage * govSupport) / 100).toFixed(2);
   };
-  const createGovSupportDiv = (totalUsage, govSupport) => {
+  const createGovSupportDiv = () => {
     if (avgPrice > 70) {
       return (
         <h3 className="ps-2">Din strømstøtte: {calculateGovSupport()} kr</h3>
@@ -37,7 +36,7 @@ function Results({
     }
   };
 
-  const getGovSupport = (totalWithSupport, totalUsage) => {
+  const getGovSupport = (totalWithSupport) => {
     return totalWithSupport ? calculateGovSupport() : 0;
   };
 

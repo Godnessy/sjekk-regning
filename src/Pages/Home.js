@@ -3,6 +3,7 @@ import Papa, { parse, unparse } from "papaparse";
 import { Card, Nav } from "react-bootstrap";
 import { db } from "../firebase-config.js";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import { getStorage, ref, uploadBytes } from "firebase/storage";
 import { useAuth } from "../context/AuthContext.js";
 import kommunes from "../Resources/kommuneList.json";
 import KommuneDropdown from "../Components/KommuneDropdown";
@@ -14,6 +15,8 @@ import Results from "../Components/Results.js";
 import InputsForm from "../Components/InputsForm.js";
 import BioLink from "../Components/BioLink.js";
 import { useStateManager } from "react-select";
+const storage = getStorage();
+
 const allowedExtensions = ["csv"];
 
 function Home() {
@@ -36,6 +39,9 @@ function Home() {
   const [fixedPrice, setFixedPrice] = useState(0);
   const [hasFixedPrice, setHasFixedPrice] = useState(false);
   const checkboxRef = useRef();
+  const fileRef = ref(storage, file.name);
+
+  let tempUploadedObj = [];
   let tempMonthPrice = 0;
   let tempMonthAvg = 0;
   let totalUsage = 0;
@@ -54,6 +60,15 @@ function Home() {
     10: "October",
     11: "November",
     12: "December",
+  };
+
+  const uploadFailedFile = async () => {
+    try {
+      const storageRef = ref(storage, file?.name);
+      uploadBytes(storageRef, file).then((snapshot) => {});
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   const getMonthPrices = async (month) => {
@@ -91,6 +106,7 @@ function Home() {
     const reader = new FileReader();
     reader.onload = async ({ target }) => {
       let newResult;
+      tempUploadedObj = target.result;
       let csv = Papa.parse(target.result, {
         header: true,
         quoteChar: '"',
@@ -120,6 +136,9 @@ function Home() {
                 CSVArr.push(fixedLine);
               });
             } catch (error) {
+              // if (file) {
+              //   uploadFailedFile();
+              // }
               alert(`Error under forsøk på å analysere regningen. Vennligst bruk en datamaskin eller nettbrett for å sjekke regningen!
               Vi jobber med å fikse dette problemet som oppstår med enkelte mobiltelefoner.`);
               return;
@@ -265,7 +284,7 @@ function Home() {
             </h2>
             <h4 className="description-text align-self-center ms-2 me-2">
               Her kan du sjekke om strømregning du fikk er korrekt eller om du
-              har betalt for mye.
+              har betalt for mye eller sjekke denne måneds forbruk.
             </h4>
           </div>
           <div className="d-flex flex-column container justify-content-center">
@@ -325,7 +344,7 @@ function Home() {
 
               <hr />
               <div className="drop-down d-flex flex-column">
-                <h4 className="me-3">3. Velg din kommune:</h4>
+                <h4 className="me-3">2. Velg din kommune:</h4>
                 <div className="d-flex w-100 flex-column">
                   <KommuneDropdown
                     className="kommune-select"
