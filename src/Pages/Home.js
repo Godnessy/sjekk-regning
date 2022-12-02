@@ -388,7 +388,7 @@ function Home() {
                   {hasFixedPrice && <h3>Fast kwh pris: {fixedPrice} Øre</h3>}
                 </div>
                 <div className="calculate-btn">
-                  {/* {totalMonthPrice ? (
+                  {totalMonthPrice ? (
                     <button
                       className="calculate calculate-after btn btn-danger ms-5 my-3"
                       onClick={() => {
@@ -397,14 +397,14 @@ function Home() {
                     >
                       Ny regning
                     </button>
-                  ) : ( */}
-                  <button
-                    className="calculate btn btn-success ms-5 my-3 "
-                    onClick={parseCsvJson}
-                  >
-                    Regne ut!
-                  </button>
-                  {/* )} */}
+                  ) : (
+                    <button
+                      className="calculate btn btn-success ms-5 my-3 "
+                      onClick={parseCsvJson}
+                    >
+                      Regne ut!
+                    </button>
+                  )}
                 </div>
               </div>
               <div className="border fw-bold border-dark border-2">
