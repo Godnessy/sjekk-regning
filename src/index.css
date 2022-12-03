@@ -264,6 +264,22 @@ margin-left: 1%;
   background: linear-gradient(90deg, #7efff5 50%, rgba(255, 255, 255, 0) 50%);
   width: 120%;
 }
+.report{
+  width: 25%;
+  position: absolute;
+  right:10px;
+  top:10px;
+  
+}
+
+
+@media screen and (max-width: 2500px){
+  .report{
+    width: 10%;
+  }
+ }
+
+
 @media screen and (max-width: 1000px) {
  .surcharge-input{
   width: 2em;
@@ -278,6 +294,19 @@ margin-left: 1%;
     margin-right: 10% !important;
   }
 
+  .report{
+    width: 10%;
+  }
+
+}
+
+@media screen and (max-width: 800px) {
+    .report{
+      width: 20%;
+      right:35px;
+    }
+   
+  
 }
 
 
@@ -353,7 +382,12 @@ margin-left: 1%;
    width: 14em;
   }
 
-  
+
+    .report{
+      width: 25%;
+      right:10px;
+    }
+   
   
 
   @keyframes arrow {
@@ -383,3 +417,4 @@ margin-left: 1%;
   }
   
  }
+
