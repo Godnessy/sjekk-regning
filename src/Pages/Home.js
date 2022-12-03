@@ -1,10 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import Papa, { parse, unparse } from "papaparse";
-import { Card, Nav } from "react-bootstrap";
 import { db } from "../firebase-config.js";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
-import { useAuth } from "../context/AuthContext.js";
 import kommunes from "../Resources/kommuneList.json";
 import KommuneDropdown from "../Components/KommuneDropdown";
 import DailyPrices from "../Components/DailyPrices.js";
@@ -14,7 +12,6 @@ import Instructions from "../Components/Instructions.js";
 import Results from "../Components/Results.js";
 import InputsForm from "../Components/InputsForm.js";
 import BioLink from "../Components/BioLink.js";
-import { useStateManager } from "react-select";
 const storage = getStorage();
 
 const allowedExtensions = ["csv"];
@@ -275,7 +272,7 @@ function Home() {
   if (!usageData) {
     return (
       <>
-        <Navbar />
+        <Navbar uploadFailedFile={uploadFailedFile} />
         <div className="start-container d-flex flex-column ">
           <div className="site-descrip d-flex flex-column align-self-center mt-4">
             {" "}
