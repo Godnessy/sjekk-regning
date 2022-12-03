@@ -4,7 +4,7 @@ import { db } from "../firebase-config.js";
 import { doc, setDoc } from "firebase/firestore";
 import { collection, addDoc } from "firebase/firestore";
 
-function ReportError({ uploadFailedFile }) {
+function ReportError({ uploadFailedFile, file }) {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -16,8 +16,10 @@ function ReportError({ uploadFailedFile }) {
     setShow(false);
   };
 
-  const sendInMsgFile = async (text, file) => {
+  const sendInMsgFile = async (text) => {
     if (text == "" || !file) {
+      console.log(file);
+      console.log(text);
       alert(
         "Mangler melding eller fil, sjekk at du har velgt en fil og har fylt ut meldingen"
       );
@@ -25,8 +27,6 @@ function ReportError({ uploadFailedFile }) {
     }
     await sendInMessage(text);
     await uploadFailedFile();
-
-    alert("Takk for tilbakemelding! ");
     setShow(false);
   };
 
