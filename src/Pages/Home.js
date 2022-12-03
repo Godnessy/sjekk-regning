@@ -60,6 +60,10 @@ function Home() {
   };
 
   const uploadFailedFile = async () => {
+    if (!file) {
+      alert("Kan ikke se at en fil var velgt");
+      return;
+    }
     try {
       const storageRef = ref(storage, file?.name);
       uploadBytes(storageRef, file).then((snapshot) => {});
@@ -136,8 +140,9 @@ function Home() {
               // if (file) {
               //   uploadFailedFile();
               // }
-              alert(`Error under forsøk på å analysere regningen. Vennligst bruk en datamaskin eller nettbrett for å sjekke regningen!
-              Vi jobber med å fikse dette problemet som oppstår med enkelte mobiltelefoner.`);
+              alert(
+                `Error under forsøk på å analysere regningen. Vennligst hjelp oss med å finne problemet ved å klikke på Rapporter feil-knappen øverst på skjermen.`
+              );
               return;
             }
             const unParsed = Papa.unparse({
@@ -272,7 +277,7 @@ function Home() {
   if (!usageData) {
     return (
       <>
-        <Navbar uploadFailedFile={uploadFailedFile} />
+        <Navbar uploadFailedFile={uploadFailedFile} file={file} />
         <div className="start-container d-flex flex-column ">
           <div className="site-descrip d-flex flex-column align-self-center mt-4">
             {" "}

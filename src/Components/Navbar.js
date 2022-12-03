@@ -3,7 +3,7 @@ import logo from "../Resources/images/logoTransp.png";
 import prisMatch from "../Resources/images/pris-match.png";
 import ReportError from "./ReportError";
 
-function Navbar({ uploadFailedFile }) {
+function Navbar({ uploadFailedFile, file }) {
   return (
     <nav className="navbar navbar-expand-lg navbar-light d-flex flex-row bg-light justify-content-left">
       <a className="navbar-brand" href="#">
@@ -15,7 +15,12 @@ function Navbar({ uploadFailedFile }) {
       <img src={prisMatch} alt="" className="logo-pris" /> */}
 
       <div className="report-div">
-        {<ReportError uploadFailedFile={uploadFailedFile}></ReportError>}
+        {
+          <ReportError
+            uploadFailedFile={uploadFailedFile}
+            file={file}
+          ></ReportError>
+        }
       </div>
     </nav>
   );

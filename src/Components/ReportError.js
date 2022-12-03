@@ -10,6 +10,26 @@ function ReportError({ uploadFailedFile }) {
   const handleShow = () => setShow(true);
   const [text, setText] = useState("");
 
+  const sendInFile = async () => {
+    await uploadFailedFile();
+    alert("Takk for at du deler filen med oss!");
+    setShow(false);
+  };
+
+  const sendInMsgFile = async (text, file) => {
+    if (text == "" || !file) {
+      alert(
+        "Mangler melding eller fil, sjekk at du har velgt en fil og har fylt ut meldingen"
+      );
+      return;
+    }
+    await sendInMessage(text);
+    await uploadFailedFile();
+
+    alert("Takk for tilbakemelding! ");
+    setShow(false);
+  };
+
   const sendInMessage = async (text) => {
     if (text == "") {
       alert("Vennligst skriv en melding før du sender");
@@ -22,6 +42,7 @@ function ReportError({ uploadFailedFile }) {
     });
     setText("");
     alert("Takk for tilbakemelding! ");
+    setShow(false);
   };
 
   return (
@@ -40,25 +61,26 @@ function ReportError({ uploadFailedFile }) {
         className="modal modal-xl"
         aria-labelledby="example-custom-modal-styling-title"
       >
-        <Modal.Header closeButton className="">
-          <h2>
-            Har du opplevd eller funnet en feil på nettsiden? <br></br>Gjerne
-            fortell oss hva som skjedde! Har du prøvd å sjekke regningen din og
-            det fungerte ikke? Kan du sende inn bruksfilen din slik at vi kan
-            analysere den og fikse problemet slik at dette ikke skjer for deg
-            eller andre brukere igjen<br></br> hvis du ikke ønsker å sende inn
-            filen din kan du klikke på avbryt-knappen -
-            <b className="text-danger">
-              Ingen personlig informasjon vil bli samlet inn uansett om du
-              sender inn filen eller ikke.
-            </b>{" "}
-            <br></br>
+        <Modal.Header closeButton>
+          <div className="pe-2">
+            <h2>
+              Har du opplevd eller funnet en feil på nettsiden? <br></br>Gjerne
+              fortell oss hva som skjedde! Har du prøvd å sjekke regningen din
+              og det fungerte ikke? Kan du sende inn bruksfilen din slik at vi
+              kan analysere den og fikse problemet slik at dette ikke skjer for
+              deg eller andre brukere igjen.<br></br> hvis du ikke ønsker å
+              sende inn en melding eller filen din kan du klikke på
+              avbryt-knappen -
+              <b className="text-danger">
+                Ingen personlig informasjon <br></br>vil bli samlet inn uansett
+                om du sender inn filen eller ikke.
+              </b>{" "}
+            </h2>
             <br></br>
             <p>Melding:</p>
             <div className="d-flex flex-row">
               <input
                 type="text"
-                asd
                 name=""
                 id=""
                 value={text}
@@ -75,20 +97,33 @@ function ReportError({ uploadFailedFile }) {
                 Reset
               </button>
             </div>
-            <button
-              className="btn btn-success"
-              onClick={() => sendInMessage(text)}
-            >
-              Send inn melding/fil
-            </button>
-          </h2>
+            <div className="d-flex flex-row mt-2">
+              <button
+                className="btn btn-success me-2"
+                onClick={() => sendInMsgFile(text)}
+              >
+                Send inn melding og fil
+              </button>
+              <button
+                className="btn btn-info"
+                onClick={() => sendInMessage(text)}
+              >
+                Send inn bare melding
+              </button>
+            </div>
+          </div>
         </Modal.Header>
         <Modal.Footer className="d-flex justify-content-between">
+          <Button
+            variant="success"
+            onClick={() => {
+              sendInFile();
+            }}
+          >
+            Send inn filen uten melding
+          </Button>
           <Button variant="danger" onClick={handleClose}>
             Avbryt
-          </Button>
-          <Button variant="success" onClick={uploadFailedFile}>
-            Send inn filen uten melding
           </Button>
         </Modal.Footer>
       </Modal>
