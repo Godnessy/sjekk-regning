@@ -75,11 +75,11 @@ function Home() {
   const getMonthPrices = async (month) => {
     const monthRef = doc(db, "price-history", `${month}-22`);
     //quick way to track usage while in beta - will be removed.
-    // const usageCounterRef = doc(db, "usage-counter", `usage`);
-    // const usageCounterSnap = await getDoc(usageCounterRef);
-    // let usageCounter = usageCounterSnap.data().usage;
-    // console.log(usageCounter + 1);
-    // await setDoc(usageCounterRef, { usage: usageCounter + 1 });
+    const usageCounterRef = doc(db, "usage-counter", `usage`);
+    const usageCounterSnap = await getDoc(usageCounterRef);
+    let usageCounter = usageCounterSnap.data().usage;
+    console.log(usageCounter + 1);
+    await setDoc(usageCounterRef, { usage: usageCounter + 1 });
     try {
       const docSnap = await getDoc(monthRef);
       if (docSnap.exists()) {
