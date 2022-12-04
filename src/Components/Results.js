@@ -18,7 +18,6 @@ function Results({
   const [isSupport, setIsSupport] = useState(false);
   const [totalWithSupport, setTotalWithSupport] = useState(false);
   const govSupportCheckboxRef = useRef();
-  console.log(govSupportCheckboxRef.current);
   useEffect(() => {
     avgPrice > 70 ? setIsSupport(true) : setIsSupport(false);
   }, [avgPrice]);

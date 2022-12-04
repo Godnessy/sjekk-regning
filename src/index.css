@@ -124,6 +124,12 @@ position: relative;
 left: 0%;
 }
 
+.reset-btn{
+  font: 2em !important;
+  position: relative;
+  right: 1%;
+}
+
 .surcharge-title{
   position: relative;
   bottom:0.25em;
@@ -272,6 +278,11 @@ margin-left: 1%;
   
 }
 
+.chart-bar{
+  position: relative;
+  height: 40vh;
+  width: 80vw;
+}
 
 @media screen and (max-width: 2500px){
   .report{
@@ -305,12 +316,10 @@ margin-left: 1%;
       width: 20%;
       right:35px;
     }
-   
-  
 }
 
 
-@media screen and (max-width: 450px) {
+@media screen and (max-width: 500px) {
   .page-container{
     display: flex;
     flex-direction: column;
@@ -330,11 +339,12 @@ margin-left: 1%;
     flex-direction: column;
   }
 
-  .calculate-after{
-    font-size: 1rem !important;
-    margin: 0px !important;
-  }
+  
 
+  .reset-btn{
+    position: relative;
+    right: 5%;
+  }
   .usage-price-container{
     flex-direction: column;
   }
@@ -405,7 +415,11 @@ margin-left: 1%;
     position: relative;
     left:65%;
   }
+  .reset-btn{
+    right:9%;
+  }
  }
+
 
  @media screen and (max-width: 370px) {
   .hourly-prices{

@@ -12,6 +12,7 @@ import Instructions from "../Components/Instructions.js";
 import Results from "../Components/Results.js";
 import InputsForm from "../Components/InputsForm.js";
 import BioLink from "../Components/BioLink.js";
+import MonthlyChart from "../Components/MonthlyChart.js";
 const storage = getStorage();
 
 const allowedExtensions = ["csv"];
@@ -38,7 +39,6 @@ function Home() {
   const checkboxRef = useRef();
   const fileRef = ref(storage, file.name);
 
-  let tempUploadedObj = [];
   let tempMonthPrice = 0;
   let tempMonthAvg = 0;
   let totalUsage = 0;
@@ -75,11 +75,11 @@ function Home() {
   const getMonthPrices = async (month) => {
     const monthRef = doc(db, "price-history", `${month}-22`);
     //quick way to track usage while in beta - will be removed.
-    const usageCounterRef = doc(db, "usage-counter", `usage`);
-    const usageCounterSnap = await getDoc(usageCounterRef);
-    let usageCounter = usageCounterSnap.data().usage;
-    console.log(usageCounter + 1);
-    await setDoc(usageCounterRef, { usage: usageCounter + 1 });
+    // const usageCounterRef = doc(db, "usage-counter", `usage`);
+    // const usageCounterSnap = await getDoc(usageCounterRef);
+    // let usageCounter = usageCounterSnap.data().usage;
+    // console.log(usageCounter + 1);
+    // await setDoc(usageCounterRef, { usage: usageCounter + 1 });
     try {
       const docSnap = await getDoc(monthRef);
       if (docSnap.exists()) {
@@ -107,7 +107,6 @@ function Home() {
     const reader = new FileReader();
     reader.onload = async ({ target }) => {
       let newResult;
-      tempUploadedObj = target.result;
       let csv = Papa.parse(target.result, {
         header: true,
         quoteChar: '"',
@@ -196,9 +195,7 @@ function Home() {
   };
 
   const createGovSupport = (monthlyAvg) => {
-    console.log(monthlyAvg);
     const calculation = (monthlyAvg - 87.5) * 0.9;
-    console.log(`strømstøtte er ${calculation}`);
     return calculation;
   };
 
@@ -326,113 +323,8 @@ function Home() {
         <Navbar />
 
         <div className="page-container">
-          <div className="inputs-container justify-content-center my-2 d-flex">
-            <div className="ms-3 border  border-dark p-3 inputs-card card">
-              <div className="csv-part">
-                <label htmlFor="csvInput" style={{ display: "block" }}>
-                  <p className="input-text">
-                    1. Laste opp måleverdier CSV fil fra Elhub:
-                  </p>
-                </label>
-                <Instructions></Instructions>
-
-                <input
-                  onChange={handleCsvFile}
-                  id="csvInput"
-                  name="file"
-                  type="File"
-                />
-              </div>
-
-              <hr />
-              <div className="drop-down d-flex flex-column">
-                <h4 className="me-3">2. Velg din kommune:</h4>
-                <div className="d-flex w-100 flex-column">
-                  <KommuneDropdown
-                    className="kommune-select"
-                    kommuneList={kommuneList}
-                    setSelectedKommune={setSelectedKommune}
-                  />
-                  {selectedKommune && (
-                    <h4> Din kommune tilhører sone: {selectedKommune.value}</h4>
-                  )}
-                </div>
-                {error && <p className="text-danger d-flex ">{error} </p>}
-              </div>
-              <hr />
-              <div className="inputs-and-button d-flex justify">
-                <div className="d-flex flex-column">
-                  <div className="d-flex surcharge">
-                    <h3 className="me-2 surcharge-title">Påslag</h3>
-                    <input
-                      className="surcharge-input"
-                      type="text"
-                      value={surcharge}
-                      onChange={(e) => {
-                        let correctedSurcharge = fixComma(e.target.value);
-                        setsurcharge(correctedSurcharge);
-                      }}
-                    />
-                    <h4>Øre</h4>
-                  </div>
-                  <div className="surcharge d-flex">
-                    <h3 className="me-2 surcharge-title">Månedspris</h3>
-                    <input
-                      className="surcharge-input fee"
-                      type="text"
-                      value={fee}
-                      onChange={(e) => {
-                        setFee(e.target.value);
-                      }}
-                    />
-                    <h4>Kr</h4>
-                  </div>
-                  {hasFixedPrice && <h3>Fast kwh pris: {fixedPrice} Øre</h3>}
-                </div>
-                <div className="calculate-btn">
-                  {totalMonthPrice ? (
-                    <button
-                      className="calculate calculate-after btn btn-danger ms-5 my-3"
-                      onClick={() => {
-                        window.location.reload();
-                      }}
-                    >
-                      Ny regning
-                    </button>
-                  ) : (
-                    <button
-                      className="calculate btn btn-success ms-5 my-3 "
-                      onClick={parseCsvJson}
-                    >
-                      Regne ut!
-                    </button>
-                  )}
-                </div>
-              </div>
-              <div className="border fw-bold border-dark border-2">
-                All informasjonen/filene du laster opp/deler her blir ikke
-                lagret og vi bruker ikke informasjonskapsler.
-              </div>
-              {usageData && (
-                <div className="w-100">
-                  {" "}
-                  <hr />
-                  <p className="mx-2 align-self-center mt-2">
-                    <mark>
-                      Fant du en betydelig forskjell mellom våre beregninger og
-                      din regning?
-                    </mark>
-                    Vi anbefaler deg å ta kontakt med Ole Nyborg Markussen på{" "}
-                    <a href="http://https://www.facebook.com/groups/1055189454988378">
-                      {" "}
-                      Prismatch Strøm
-                    </a>{" "}
-                    som hjelper folk med denne typen problemer - gratis.
-                  </p>
-                </div>
-              )}
-            </div>
-            <div>
+          <div className="inputs-container justify-content-center my-2 d-flex flex-column">
+            <div className="align-self-center">
               {totalMonthPrice && (
                 <Results
                   totalMonthPrice={totalMonthPrice}
@@ -449,6 +341,17 @@ function Home() {
                   zone={selectedKommune.value}
                 />
               )}
+            </div>
+            <button
+              className="reset-btn calculate-after w-25 align-self-center btn btn-danger ms-5 my-3"
+              onClick={() => {
+                window.location.reload();
+              }}
+            >
+              Ny regning
+            </button>
+            <div className="align-self-center chart">
+              <MonthlyChart usageData={usageData} />
             </div>
           </div>
 
