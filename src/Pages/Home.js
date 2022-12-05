@@ -78,7 +78,6 @@ function Home() {
     const usageCounterRef = doc(db, "usage-counter", `usage`);
     const usageCounterSnap = await getDoc(usageCounterRef);
     let usageCounter = usageCounterSnap.data().usage;
-    console.log(usageCounter + 1);
     await setDoc(usageCounterRef, { usage: usageCounter + 1 });
     try {
       const docSnap = await getDoc(monthRef);
