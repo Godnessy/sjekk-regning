@@ -75,10 +75,10 @@ function Home() {
   const getMonthPrices = async (month) => {
     const monthRef = doc(db, "price-history", `${month}-22`);
     //quick way to track usage while in beta - will be removed.
-    const usageCounterRef = doc(db, "usage-counter", `usage`);
-    const usageCounterSnap = await getDoc(usageCounterRef);
-    let usageCounter = usageCounterSnap.data().usage;
-    await setDoc(usageCounterRef, { usage: usageCounter + 1 });
+    // const usageCounterRef = doc(db, "usage-counter", `usage`);
+    // const usageCounterSnap = await getDoc(usageCounterRef);
+    // let usageCounter = usageCounterSnap.data().usage;
+    // await setDoc(usageCounterRef, { usage: usageCounter + 1 });
     try {
       const docSnap = await getDoc(monthRef);
       if (docSnap.exists()) {
@@ -105,57 +105,47 @@ function Home() {
     setError("");
     const reader = new FileReader();
     reader.onload = async ({ target }) => {
-      let newResult;
-      let csv = Papa.parse(target.result, {
-        header: true,
+      const strWithoutCommas = target.result.replaceAll(/['"]+/g, "");
+      let csv = Papa.parse(strWithoutCommas, {
+        header: false,
         quoteChar: '"',
         skipEmptyLines: true,
-        transform: (val, col) => {
-          const removeQuotations = val.replaceAll(/['"]+/g, "");
-          const doubleCommasRegex = /,,/i;
-          const removeDoubleCommas = removeQuotations.replace(
-            doubleCommasRegex,
-            ""
-          );
-          return removeQuotations;
-        },
         complete: function (results) {
-          const CSVArr = [];
-          if (results.data.length == 0) {
-            return setError("CSV filen er tomt");
-          }
-          if (!results.data[0].Til) {
-            try {
-              results.data.map((item) => {
-                const splitLineIntoArr = item.Fra.split("");
-                const findLastCommaIndex = splitLineIntoArr.lastIndexOf(",");
-                splitLineIntoArr.splice(findLastCommaIndex, 1, ".");
-                const fixedLineStr = [splitLineIntoArr.join("")];
-                const fixedLine = fixedLineStr[0].split(",");
-                CSVArr.push(fixedLine);
-              });
-            } catch (error) {
-              // if (file) {
-              //   uploadFailedFile();
-              // }
-              alert(
-                `Error under forsøk på å analysere regningen. Vennligst hjelp oss med å finne problemet ved å klikke på Rapporter feil-knappen øverst på skjermen.`
-              );
-              return;
+          try {
+            const fixedHeaders = ["Fra", "Til", "KWH 60 Forbruk", "Kvalitet"];
+            const CSVArr = [];
+            if (results.data.length == 0) {
+              return setError("CSV filen er tomt");
             }
-            const unParsed = Papa.unparse({
-              fields: ["Fra", "Til", "KWH 60 Forbruk"],
-              data: CSVArr,
+
+            const removingOldHeaders = results.data.shift();
+            const arrWithoutHeaders = results.data;
+            const arrWithFixedUsage = arrWithoutHeaders.map((hour) => {
+              const {
+                startTime = hour[0],
+                finishTime = hour[1],
+                usagePart1 = hour[2],
+                usagePart2 = hour[3],
+              } = hour;
+              const result = [
+                startTime,
+                finishTime,
+                `${
+                  isNaN(usagePart2) ? usagePart1 : usagePart1 + "." + usagePart2
+                }`,
+              ];
+              return result;
             });
-            newResult = Papa.parse(unParsed, { header: true });
-          }
+            const unParsed = Papa.unparse({
+              fields: ["Fra", "Til", "KWH 60 Forbruk", "Kvalitet"],
+              data: arrWithFixedUsage,
+            });
+            console.log(arrWithFixedUsage);
+            const newResult = Papa.parse(unParsed, { header: true });
+            extractCurrentMonth(newResult.data);
+          } catch (error) {}
         },
       });
-      if (newResult) {
-        extractCurrentMonth(newResult.data, false);
-      } else {
-        extractCurrentMonth(csv.data, true);
-      }
     };
     reader.readAsText(file);
   };
@@ -201,15 +191,11 @@ function Home() {
   useEffect(() => {}, [selectedKommune]);
   useEffect(() => {}, [totalMonthPrice]);
 
-  const extractCurrentMonth = async (usageData, isNew) => {
+  const extractCurrentMonth = async (usageData) => {
     const month = usageData[0].Fra.split(".")[1];
     setSelectedMonth(monthObj[month]);
     const prices = await getMonthPrices(monthObj[month]);
-    if (isNew) {
-      calculateMonthlyValues(usageData, true, prices);
-    } else {
-      calculateMonthlyValues(usageData, false, prices);
-    }
+    calculateMonthlyValues(usageData, prices);
   };
 
   const fixComma = (str) => {
@@ -217,18 +203,18 @@ function Home() {
     return Number(fixed);
   };
 
-  function calculateMonthlyValues(usageData, isNew, prices) {
-    function extractUsage(value, NeedsFixing) {
-      const newValue = NeedsFixing ? value.replace(",", ".") : value;
-      return newValue;
+  function calculateMonthlyValues(usageData, prices) {
+    function extractUsage(value) {
+      return value.replace(",", ".");
     }
     setsurcharge(surcharge);
+    // console.log(usageData);
     const dataForHour = usageData.map((hour, idx) => {
       const values = hour.Fra.split(" ");
       const date = values[0];
       idx == usageData.length - 1 && setLastDay(date);
       const time = values[1];
-      const usage = extractUsage(hour["KWH 60 Forbruk"], isNew);
+      const usage = extractUsage(hour["KWH 60 Forbruk"]);
       const dayPrices = collectDayPrices(prices, date);
       const selectedZonePrices = createSelectedPriceZone(
         selectedKommune.value,

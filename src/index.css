@@ -268,7 +268,7 @@ margin-left: 1%;
 
 .support{
   background: linear-gradient(90deg, #7efff5 50%, rgba(255, 255, 255, 0) 50%);
-  width: 120%;
+  width: 100%;
 }
 .report{
   width: 25%;
@@ -398,6 +398,9 @@ margin-left: 1%;
       right:10px;
     }
    
+    .support{
+      width: 120%;
+    }
   
 
   @keyframes arrow {
@@ -417,6 +420,9 @@ margin-left: 1%;
   }
   .reset-btn{
     right:9%;
+  }
+  .support{
+    width: 140%;
   }
  }
 

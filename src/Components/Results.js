@@ -43,7 +43,7 @@ function Results({
     <Card className="mx-4">
       <div className="d-flex align-content-left flex-column">
         <h2 className="text-decoration-underline p-2">
-          Forventet regning for {month}
+          Estimert regning for {month}
         </h2>
         <h2 className="ps-2 my-1">
           Total forbruk: {totalUsage.toFixed(0)} kWh
