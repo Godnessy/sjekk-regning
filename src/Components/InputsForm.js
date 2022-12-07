@@ -7,7 +7,6 @@ export default function InputsForm({
   setSelectedKommune,
   selectedKommune,
   error,
-  surcharge,
   setsurcharge,
   fee,
   setFee,
@@ -17,7 +16,6 @@ export default function InputsForm({
   hasFixedPrice,
   checkboxRef,
   setHasFixedPrice,
-  convertCommaToNumber,
   fixComma,
 }) {
   useEffect(() => {

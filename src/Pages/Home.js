@@ -245,12 +245,6 @@ function Home() {
     setTotalKwh(totalUsage);
   }
 
-  function convertCommaToNumber(str) {
-    const fixComma = str.replace(",", ".");
-    const newResult = Number(fixComma);
-    return newResult;
-  }
-
   if (!usageData) {
     return (
       <>
@@ -286,7 +280,6 @@ function Home() {
                 hasFixedPrice={hasFixedPrice}
                 checkboxRef={checkboxRef}
                 setHasFixedPrice={setHasFixedPrice}
-                convertCommaToNumber={convertCommaToNumber}
                 fixComma={fixComma}
               />
             </div>
