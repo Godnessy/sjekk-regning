@@ -66,8 +66,10 @@ function Home() {
     }
     try {
       const storageRef = ref(storage, file?.name);
-      uploadBytes(storageRef, file);
-    } catch (error) {}
+      uploadBytes(storageRef, file).then((snapshot) => {});
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   const getMonthPrices = async (month) => {
@@ -201,16 +203,13 @@ function Home() {
   };
 
   function calculateMonthlyValues(usageData, prices) {
-    function extractUsage(value) {
-      return value.replace(",", ".");
-    }
     setsurcharge(surcharge);
     const dataForHour = usageData.map((hour, idx) => {
       const values = hour.Fra.split(" ");
       const date = values[0];
       idx == usageData.length - 1 && setLastDay(date);
       const time = values[1];
-      const usage = extractUsage(hour["KWH 60 Forbruk"]);
+      const usage = hour["KWH 60 Forbruk"];
       const dayPrices = collectDayPrices(prices, date);
       const selectedZonePrices = createSelectedPriceZone(
         selectedKommune.value,
