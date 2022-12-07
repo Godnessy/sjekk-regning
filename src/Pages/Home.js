@@ -66,19 +66,17 @@ function Home() {
     }
     try {
       const storageRef = ref(storage, file?.name);
-      uploadBytes(storageRef, file).then((snapshot) => {});
-    } catch (error) {
-      console.log(error.message);
-    }
+      uploadBytes(storageRef, file);
+    } catch (error) {}
   };
 
   const getMonthPrices = async (month) => {
     const monthRef = doc(db, "price-history", `${month}-22`);
     //quick way to track usage while in beta - will be removed.
-    // const usageCounterRef = doc(db, "usage-counter", `usage`);
-    // const usageCounterSnap = await getDoc(usageCounterRef);
-    // let usageCounter = usageCounterSnap.data().usage;
-    // await setDoc(usageCounterRef, { usage: usageCounter + 1 });
+    const usageCounterRef = doc(db, "usage-counter", `usage`);
+    const usageCounterSnap = await getDoc(usageCounterRef);
+    let usageCounter = usageCounterSnap.data().usage;
+    await setDoc(usageCounterRef, { usage: usageCounter + 1 });
     try {
       const docSnap = await getDoc(monthRef);
       if (docSnap.exists()) {
@@ -140,7 +138,6 @@ function Home() {
               fields: ["Fra", "Til", "KWH 60 Forbruk", "Kvalitet"],
               data: arrWithFixedUsage,
             });
-            console.log(arrWithFixedUsage);
             const newResult = Papa.parse(unParsed, { header: true });
             extractCurrentMonth(newResult.data);
           } catch (error) {}
@@ -208,7 +205,6 @@ function Home() {
       return value.replace(",", ".");
     }
     setsurcharge(surcharge);
-    // console.log(usageData);
     const dataForHour = usageData.map((hour, idx) => {
       const values = hour.Fra.split(" ");
       const date = values[0];
