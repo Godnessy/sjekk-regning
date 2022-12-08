@@ -17,6 +17,12 @@ export default function InputsForm({
   checkboxRef,
   setHasFixedPrice,
   fixComma,
+  CalculateWithNetowrk,
+  setCalculateWithNetwork,
+  networkDayPrice,
+  setNetworkDayPrice,
+  networkNightOrWeekendtPrice,
+  setNetworkNightOrWeekendtPrice,
 }) {
   useEffect(() => {
     checkboxRef.current.disabled = !hasFixedPrice;
@@ -25,20 +31,67 @@ export default function InputsForm({
   return (
     <div className="d-flex">
       <div className="ms-3 border border-dark p-3 card inputs-card ">
-        <div className="csv-part">
-          <label htmlFor="csvInput" style={{ display: "block" }}>
-            <p className="input-text">
-              1. Laste opp måleverdier CSV fil fra Elhub:{" "}
-            </p>
-          </label>
-          <Instructions></Instructions>
+        <div className="csv-part d-flex flex-column">
+          <div className="upload mb-2">
+            <label htmlFor="csvInput" style={{ display: "block" }}>
+              <p className="input-text">
+                1. Laste opp måleverdier CSV fil fra Elhub:{" "}
+              </p>
+            </label>
+            <Instructions></Instructions>
 
-          <input
-            onChange={handleCsvFile}
-            id="csvInput"
-            name="file"
-            type="File"
-          />
+            <input
+              onChange={handleCsvFile}
+              id="csvInput"
+              name="file"
+              type="File"
+            />
+          </div>
+          <div className="network">
+            <div className="border border-dark d-flex flex-column w-50 card inputs-card ">
+              <h4>Nettleie</h4>
+              <div className="d-flex">
+                <input
+                  className="fixed-checkbox"
+                  type="checkbox"
+                  name="fixed=price-data"
+                  id="fixed=price-data"
+                  onClick={(e) => {}}
+                />
+                <label htmlFor="fixed-price-data">
+                  <p>Beregne med Nettleie?</p>
+                </label>
+              </div>
+              <div className="d-flex flex-column">
+                <h5 className="me-2 network-rates-title">Energiledd Dag:</h5>
+                <div className="d-flex">
+                  <input
+                    className="network-rates-inputs"
+                    type="text"
+                    value={networkDayPrice}
+                    onChange={(e) => {
+                      let correctedFee = fixComma(e.target.value);
+                      setNetworkDayPrice(correctedFee);
+                    }}
+                  />
+                  <h6>øre</h6>
+                </div>
+                <h5 className="me-2 network-rates-title">Energiledd Natt:</h5>
+                <div className="d-flex">
+                  <input
+                    className="network-rates-inputs"
+                    type="text"
+                    value={networkNightOrWeekendtPrice}
+                    onChange={(e) => {
+                      let correctedFee = fixComma(e.target.value);
+                      setNetworkNightOrWeekendtPrice(correctedFee);
+                    }}
+                  />
+                  <h4>øre</h4>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <hr />
         <div className="drop-down d-flex flex-column">
@@ -90,8 +143,6 @@ export default function InputsForm({
               <input
                 className="fixed-checkbox ms-2"
                 type="checkbox"
-                name="fixed=price-data"
-                id="fixed=price-data"
                 onClick={(e) => {
                   setHasFixedPrice(!hasFixedPrice);
                 }}

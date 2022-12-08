@@ -284,6 +284,12 @@ margin-left: 1%;
   width: 80vw;
 }
 
+
+/* Network rates */
+.network-rates-inputs{
+  width: 50%;
+}
+
 @media screen and (max-width: 2500px){
   .report{
     width: 10%;

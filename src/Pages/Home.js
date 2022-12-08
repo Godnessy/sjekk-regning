@@ -30,9 +30,10 @@ function Home() {
   const [lastDay, setLastDay] = useState("");
   const [avgMonthly, setAvgMonthly] = useState(0);
   const [govSupport, setGovSupport] = useState(0);
-  const [myGovSupport, setMyGovSupport] = useState(0);
-  const [networkDayPrice, setNetworkDayPrice] = useState(0);
-  const [networkNightPrice, setNetworkNightPrice] = useState(0);
+  const [CalculateWithNetowrk, setCalculateWithNetwork] = useState(true);
+  const [networkDayPrice, setNetworkDayPrice] = useState(49.9);
+  const [networkNightOrWeekendtPrice, setNetworkNightOrWeekendtPrice] =
+    useState(39.9);
   const [totalKwh, setTotalKwh] = useState();
   const [fixedPrice, setFixedPrice] = useState(0);
   const [hasFixedPrice, setHasFixedPrice] = useState(false);
@@ -197,6 +198,7 @@ function Home() {
     calculateMonthlyValues(usageData, prices);
   };
 
+  //Needed because Norwegians write floats with a comma instead of a dot and it messes the math up in JS.
   const fixComma = (str) => {
     const fixed = str.replace(",", ".");
     return Number(fixed);
