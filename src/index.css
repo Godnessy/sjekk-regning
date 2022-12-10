@@ -61,9 +61,6 @@ body {
 }
 
 
-.total-price{
-  background-color: lightgreen !important;
-}
 
 .price-exp{
   width:30em;
@@ -289,6 +286,8 @@ margin-left: 1%;
 .network-rates-inputs{
   width: 50%;
 }
+
+
 
 @media screen and (max-width: 2500px){
   .report{

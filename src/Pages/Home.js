@@ -31,20 +31,25 @@ function Home() {
   const [avgMonthly, setAvgMonthly] = useState(0);
   const [govSupport, setGovSupport] = useState(0);
   const [CalculateWithNetowrk, setCalculateWithNetwork] = useState(true);
-  const [networkDayPrice, setNetworkDayPrice] = useState(49.9);
+  const [usageDayHours, setUsageDayHours] = useState(0);
+  const [usageNightHours, setUsageNightHours] = useState(0);
+  const [networkDayPrice, setNetworkDayPrice] = useState("0");
   const [networkNightOrWeekendtPrice, setNetworkNightOrWeekendtPrice] =
-    useState(39.9);
+    useState("0");
   const [totalKwh, setTotalKwh] = useState();
   const [fixedPrice, setFixedPrice] = useState(0);
   const [hasFixedPrice, setHasFixedPrice] = useState(false);
+  const [capacityPrice, setCapacityPrice] = useState();
   const checkboxRef = useRef();
-  const fileRef = ref(storage, file.name);
 
+  const fileRef = ref(storage, file.name);
+  let capacitySet = new Set();
   let tempMonthPrice = 0;
   let tempMonthAvg = 0;
   let totalUsage = 0;
   let hoursCounter = 0;
   let avgPriceTimesUsage = 0;
+  let dayNightHoursCounter = { day: 0, night: 0 };
   const monthObj = {
     "01": "January",
     "02": "February",
@@ -76,10 +81,10 @@ function Home() {
   const getMonthPrices = async (month) => {
     const monthRef = doc(db, "price-history", `${month}-22`);
     //quick way to track usage while in beta - will be removed.
-    const usageCounterRef = doc(db, "usage-counter", `usage`);
-    const usageCounterSnap = await getDoc(usageCounterRef);
-    let usageCounter = usageCounterSnap.data().usage;
-    await setDoc(usageCounterRef, { usage: usageCounter + 1 });
+    // const usageCounterRef = doc(db, "usage-counter", `usage`);
+    // const usageCounterSnap = await getDoc(usageCounterRef);
+    // let usageCounter = usageCounterSnap.data().usage;
+    // await setDoc(usageCounterRef, { usage: usageCounter + 1 });
     try {
       const docSnap = await getDoc(monthRef);
       if (docSnap.exists()) {
@@ -198,26 +203,65 @@ function Home() {
     calculateMonthlyValues(usageData, prices);
   };
 
+  const extractDifferentRates = (hour, usageForhour, isWeekend) => {
+    const extractNumberFromHour = Number(hour.split(":")[0]);
+    const nightHours = dayNightHoursCounter.night;
+    const dayHours = dayNightHoursCounter.day;
+    if (isWeekend) {
+      dayNightHoursCounter.night = nightHours + usageForhour;
+    } else {
+      //stuck here, calculation doesnt work and everything gets taken for day hour, checked type and its number.
+      if (extractNumberFromHour >= 22 || extractNumberFromHour <= 5) {
+        return (dayNightHoursCounter.night = nightHours + usageForhour);
+      } else {
+        return (dayNightHoursCounter.day = dayHours + usageForhour);
+      }
+    }
+  };
+  const checkIsWeekend = (date, time, usage) => {
+    var days = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+    var d = new Date(date.split(".").reverse().join("/"));
+    if (days[d.getDay()] == "Sunday" || days[d.getDay()] == "Saturday") {
+      return extractDifferentRates(time, usage, true);
+    } else return extractDifferentRates(time, usage, false);
+  };
+
   //Needed because Norwegians write floats with a comma instead of a dot and it messes the math up in JS.
   const fixComma = (str) => {
     const fixed = str.replace(",", ".");
     return Number(fixed);
   };
 
+  function setCapacityRates(capacitySet) {
+    const capacityArr = Array.from(capacitySet);
+    const sortedCapacityarr = capacityArr.sort((a, b) => a > b);
+  }
+
   function calculateMonthlyValues(usageData, prices) {
     setsurcharge(surcharge);
+
     const dataForHour = usageData.map((hour, idx) => {
       const values = hour.Fra.split(" ");
       const date = values[0];
       idx == usageData.length - 1 && setLastDay(date);
       const time = values[1];
-      const usage = hour["KWH 60 Forbruk"];
+      const usage = Number(hour["KWH 60 Forbruk"]);
+      capacitySet.add(usage);
+      const isWeekend = checkIsWeekend(date, time, usage);
       const dayPrices = collectDayPrices(prices, date);
       const selectedZonePrices = createSelectedPriceZone(
         selectedKommune.value,
         dayPrices
       );
-      totalUsage = totalUsage + Number(usage);
+      totalUsage = totalUsage + usage;
       hoursCounter++;
       const priceForHour = createPriceForHour(selectedZonePrices, time);
       if (!isNaN(priceForHour)) {
@@ -236,10 +280,12 @@ function Home() {
         totalPricePrHour,
       };
     });
-
     const totalMonthPrice = dataForHour.reduce((result, item, index) => {
       return result + item.totalPricePrHour;
     }, 0);
+    setCapacityRates(capacitySet);
+    setUsageDayHours(dayNightHoursCounter.day);
+    setUsageNightHours(dayNightHoursCounter.night);
     setTotalMonthPrice(totalMonthPrice);
     setUsageData(dataForHour);
     setAvgMonthly(tempMonthAvg / hoursCounter);
@@ -283,6 +329,12 @@ function Home() {
                 checkboxRef={checkboxRef}
                 setHasFixedPrice={setHasFixedPrice}
                 fixComma={fixComma}
+                networkNightOrWeekendtPrice={networkNightOrWeekendtPrice}
+                setNetworkNightOrWeekendtPrice={setNetworkNightOrWeekendtPrice}
+                networkDayPrice={networkDayPrice}
+                setNetworkDayPrice={setNetworkDayPrice}
+                capacityPrice={capacityPrice}
+                setCapacityPrice={setCapacityPrice}
               />
             </div>
             <div className="bio-link d-flex mt-5 justify-content-center">
@@ -314,6 +366,12 @@ function Home() {
                   govSupport={govSupport}
                   lastDay={lastDay}
                   zone={selectedKommune.value}
+                  networkDayPrice={networkDayPrice}
+                  networkNightOrWeekendtPrice={networkNightOrWeekendtPrice}
+                  UsageDayHours={usageDayHours}
+                  UsageNightHours={usageNightHours}
+                  capacityPrice={capacityPrice}
+                  setCapacityPrice={setCapacityPrice}
                 />
               )}
             </div>

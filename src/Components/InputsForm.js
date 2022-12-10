@@ -23,6 +23,8 @@ export default function InputsForm({
   setNetworkDayPrice,
   networkNightOrWeekendtPrice,
   setNetworkNightOrWeekendtPrice,
+  capacityPrice,
+  setCapacityPrice,
 }) {
   useEffect(() => {
     checkboxRef.current.disabled = !hasFixedPrice;
@@ -39,7 +41,6 @@ export default function InputsForm({
               </p>
             </label>
             <Instructions></Instructions>
-
             <input
               onChange={handleCsvFile}
               id="csvInput"
@@ -48,46 +49,47 @@ export default function InputsForm({
             />
           </div>
           <div className="network">
+            {/* change the w-25 when adjusting responsiveness */}
             <div className="border border-dark d-flex flex-column w-50 card inputs-card ">
-              <h4>Nettleie</h4>
-              <div className="d-flex">
-                <input
-                  className="fixed-checkbox"
-                  type="checkbox"
-                  name="fixed=price-data"
-                  id="fixed=price-data"
-                  onClick={(e) => {}}
-                />
-                <label htmlFor="fixed-price-data">
-                  <p>Beregne med Nettleie?</p>
-                </label>
-              </div>
-              <div className="d-flex flex-column">
+              <h4 className="ms-2 text-decoration-underline">Nettleie</h4>
+              <div className="d-flex flex-column ms-2 mb-1">
+                <h5 className="me-2 network-rates-title">Fastledd:</h5>
+                <div className="d-flex">
+                  <input
+                    className="network-rates-inputs"
+                    type="text"
+                    onChange={(e) => {
+                      let correctedPrice = fixComma(e.target.value);
+                      setCapacityPrice(correctedPrice);
+                    }}
+                  />
+                  <h6>kr</h6>
+                </div>
                 <h5 className="me-2 network-rates-title">Energiledd Dag:</h5>
                 <div className="d-flex">
                   <input
                     className="network-rates-inputs"
                     type="text"
-                    value={networkDayPrice}
                     onChange={(e) => {
-                      let correctedFee = fixComma(e.target.value);
-                      setNetworkDayPrice(correctedFee);
+                      let correctedPrice = fixComma(e.target.value);
+                      setNetworkDayPrice(correctedPrice);
                     }}
                   />
-                  <h6>øre</h6>
+                  <h6>øre(ink. avgifter)</h6>
                 </div>
-                <h5 className="me-2 network-rates-title">Energiledd Natt:</h5>
+                <h5 className="me-2 network-rates-title">
+                  Energiledd Natt/Helg:
+                </h5>
                 <div className="d-flex">
                   <input
                     className="network-rates-inputs"
                     type="text"
-                    value={networkNightOrWeekendtPrice}
                     onChange={(e) => {
                       let correctedFee = fixComma(e.target.value);
                       setNetworkNightOrWeekendtPrice(correctedFee);
                     }}
                   />
-                  <h4>øre</h4>
+                  <h6>øre (ink. avgifter)</h6>
                 </div>
               </div>
             </div>
@@ -118,7 +120,6 @@ export default function InputsForm({
                 type="text"
                 onChange={(e) => {
                   let correctedSurcharge = fixComma(e.target.value);
-
                   setsurcharge(correctedSurcharge);
                 }}
               />
