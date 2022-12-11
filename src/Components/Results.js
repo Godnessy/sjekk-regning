@@ -26,6 +26,7 @@ function Results({
   const [finalNightRate, setFinalNightRate] = useState();
   const govSupportCheckboxRef = useRef();
 
+  const totalUsagedisplay = totalUsage && totalUsage.toFixed(2);
   useEffect(() => {
     avgPrice > 70 ? setIsSupport(true) : setIsSupport(false);
   }, [avgPrice]);
@@ -33,17 +34,8 @@ function Results({
   const calculateGovSupport = () => {
     return (totalUsage * govSupport) / 100;
   };
-  const createGovSupportDiv = () => {
-    if (avgPrice > 70) {
-      return (
-        <h3 className="ps-2">Din strømstøtte: {calculateGovSupport()} kr</h3>
-      );
-    } else {
-      return "";
-    }
-  };
 
-  const getGovSupport = (totalWithSupport) => {
+  const getPersonalGovSupport = (totalWithSupport) => {
     return totalWithSupport ? calculateGovSupport() : 0;
   };
 
@@ -69,11 +61,9 @@ function Results({
     UsageDayHours,
     UsageNightHours
   ) => {
-    const toPayDayRates = (networkDayPrice / 100) * UsageDayHours;
-    const toPayNightAndWeekends =
+    const finalDayRate = (networkDayPrice / 100) * UsageDayHours;
+    const finalNightRate =
       (networkNightOrWeekendtPrice / 100) * UsageNightHours;
-    const finalDayRate = toPayDayRates;
-    const finalNightRate = toPayNightAndWeekends;
     return { finalDayRate, finalNightRate };
   };
 
@@ -82,15 +72,18 @@ function Results({
       finalDayRate,
       finalNightRate,
       capacityPrice,
-      getGovSupport(true)
+      getPersonalGovSupport(true)
     );
     const result =
-      finalDayRate + finalNightRate + capacityPrice - getGovSupport(true);
+      finalDayRate +
+      finalNightRate +
+      capacityPrice -
+      getPersonalGovSupport(true);
     return result;
   };
 
   const calculatePowerPrice = () => {
-    return (Number(totalMonthPrice) + Number(fee)).toFixed(2);
+    return Number(totalMonthPrice) + Number(fee);
   };
 
   const calculateAvgPriceZone = () =>
@@ -110,65 +103,125 @@ function Results({
   return (
     <Card className="mx-4">
       <div className="d-flex align-content-left flex-column">
-        <h2 className="text-decoration-underline p-2">
+        <h2 className="text-decoration-underline ms-2">
           Estimert regning for {month}
         </h2>
-        <h2 className="ps-2 my-1">
-          Total forbruk: {totalUsage.toFixed(0)} kWh
-        </h2>
-        <h3 className="ps-2 my-1">
-          Snitt pris for {zone}: {avgPrice.toFixed(2)} øre pr kwh
-        </h3>
-        {!hasFixedPrice && (
-          <h3 className="ps-2 my-1">
-            Strømstøtte {lastDay}:{" "}
-            {avgPrice > 70 ? (
-              <p className="support"> {govSupport.toFixed(2)} øre pr kwh</p>
-            ) : (
-              <p>Ingen strømstøtte</p>
-            )}
-          </h3>
-        )}
-        <hr />
-        {surcharge && surcharge !== 0 ? (
-          <h2 className="ps-2">
-            Total påslag for {selectedMonth}:{" "}
-            {((Number(surcharge) * totalUsage) / 100).toFixed(2)} kr{" "}
-          </h2>
-        ) : (
-          <div></div>
-        )}
-
-        {fee !== 0 && <h2 className="ps-2">Månedspris : {fee} kr</h2>}
-        {!hasFixedPrice && (
-          <h2 className="ps-2">
-            Din snittpris : {calculateAvgPriceZone()} øre pr kwh
-          </h2>
-        )}
-        <div className="mt-3 mx-1 total-price d-flex  flex-column">
-          <h3> Å betale for {month}: </h3>
-          <div className="d-flex">
-            <h4 className="text-decoration-underline">
-              Strøm: {calculatePowerPrice()} kr
-            </h4>
+        <div className="tg-wrap">
+          <table className="table">
+            <thead>
+              <tr>
+                <th scope="col">Total Forbruk</th>
+                <th scope="col">Snittpris {zone}</th>
+                <th scope="col">
+                  {" "}
+                  Strømstøtte {zone} {lastDay}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{totalUsage.toFixed(0)} kWh</td>
+                <td>{avgPrice.toFixed(2)} øre</td>
+                <td>
+                  {avgPrice > 70 ? (
+                    <p className="support">
+                      {" "}
+                      {govSupport.toFixed(2)} øre pr kwh
+                    </p>
+                  ) : (
+                    <p>Ingen strømstøtte</p>
+                  )}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div className="Totals-table mt-1 ms-1">
+          <table className="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Priselement</th>
+                <th scope="col">Forbruk</th>
+                <th scope="col">Pris</th>
+                <th scope="col">Øre/Kr</th>
+                <th scope="col">Sum Kr</th>
+              </tr>
+            </thead>
+            <tbody>
+              {surcharge !== 0 && (
+                <tr>
+                  <th scope="row">Påslag</th>
+                  <td>{totalUsage.toFixed(2)}</td>
+                  <td>{surcharge}</td>
+                  <td>Øre</td>
+                  <td>
+                    {surcharge && surcharge !== 0
+                      ? ((Number(surcharge) * totalUsage) / 100).toFixed(2)
+                      : surcharge == 0
+                      ? "0"
+                      : ""}
+                  </td>
+                </tr>
+              )}
+              {fee !== 0 && (
+                <tr>
+                  <th scope="row">Fast beløp</th>
+                  <td>1</td>
+                  <td>{fee}</td>
+                  <td>Kr</td>
+                  <td>{fee}</td>
+                </tr>
+              )}
+              <tr>
+                <th scope="row">Strøm totalt</th>
+                <td>{totalUsage.toFixed(2)}</td>
+                <td>time for time</td>
+                <td>Øre</td>
+                <td>
+                  {hasFixedPrice
+                    ? totalUsage * Number(fixedPrice)
+                    : calculatePowerPrice().toFixed(2)}
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Kapasitet Fastledd</th>
+                <td>1</td>
+                <td>{capacityPrice}</td>
+                <td>kr</td>
+                <td>{capacityPrice}</td>
+              </tr>
+              {finalDayRate && (
+                <tr>
+                  <th scope="row">Dag/Høy ledd</th>
+                  <td>{totalUsagedisplay}</td>
+                  <td>{networkDayPrice}</td>
+                  <td>øre</td>
+                  <td>{finalDayRate}</td>
+                </tr>
+              )}
+              {finalNightRate && (
+                <tr>
+                  <th scope="row">Natt/Helg ledd</th>
+                  <td>{totalUsagedisplay}</td>
+                  <td>{networkNightOrWeekendtPrice}</td>
+                  <td>øre</td>
+                  <td>{finalNightRate.toFixed(2)}</td>
+                </tr>
+              )}
+              <tr>
+                <th scope="row">Strømstøtte:</th>
+                <td>{totalUsagedisplay}</td>
+                <td>{govSupport.toFixed(2)}</td>
+                <td>øre</td>
+                <td>{getPersonalGovSupport(true).toFixed(2)}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div>
+            <h2>
+              Total Sum for {month}:{totalMonthBill.toFixed(2)} kr{" "}
+            </h2>
           </div>
-          {finalDayRate && (
-            <div>
-              <h4>
-                <p className="">Nettleie:</p>
-                <p>Fastledd : {capacityPrice} kr</p>
-                <p>Dag/høy ledd: {finalDayRate.toFixed(2)} kr</p>
-                <p>natt/helg/lav ledd: {finalNightRate.toFixed(2)} kr</p>
-                <p>Strømstøtte: {getGovSupport(true).toFixed(2)} kr</p>
-                <p className="text-decoration-underline">
-                  Nettleie Totalt:
-                  {calculateNetworkFinalPrice().toFixed(2)} kr
-                </p>
-              </h4>
-              <h2>Total regning: {totalMonthBill.toFixed(2)}</h2>
-            </div>
-          )}
-          <div></div>
         </div>
 
         <div className="price-exp mx-2 align-self-center">

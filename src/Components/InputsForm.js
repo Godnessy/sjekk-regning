@@ -7,7 +7,7 @@ export default function InputsForm({
   setSelectedKommune,
   selectedKommune,
   error,
-  setsurcharge,
+  setSurcharge,
   fee,
   setFee,
   parseCsvJson,
@@ -30,6 +30,16 @@ export default function InputsForm({
     checkboxRef.current.disabled = !hasFixedPrice;
   }, [hasFixedPrice]);
 
+  function validateInput(input) {
+    const allowedChars = new RegExp(/^[0-9\-\,\.\b]*$/);
+    if (allowedChars.test(input)) {
+      let correctedSurcharge = fixComma(input);
+      return correctedSurcharge;
+    } else {
+      alert("bruk kun tall(0-9), komma(,) eller prikk(.)");
+      return;
+    }
+  }
   return (
     <div className="d-flex">
       <div className="ms-3 border border-dark p-3 card inputs-card ">
@@ -59,8 +69,7 @@ export default function InputsForm({
                     className="network-rates-inputs"
                     type="text"
                     onChange={(e) => {
-                      let correctedPrice = fixComma(e.target.value);
-                      setCapacityPrice(correctedPrice);
+                      setCapacityPrice(validateInput(e.target.value));
                     }}
                   />
                   <h6>kr</h6>
@@ -71,8 +80,7 @@ export default function InputsForm({
                     className="network-rates-inputs"
                     type="text"
                     onChange={(e) => {
-                      let correctedPrice = fixComma(e.target.value);
-                      setNetworkDayPrice(correctedPrice);
+                      setNetworkDayPrice(validateInput(e.target.value));
                     }}
                   />
                   <h6>øre(ink. avgifter)</h6>
@@ -85,8 +93,9 @@ export default function InputsForm({
                     className="network-rates-inputs"
                     type="text"
                     onChange={(e) => {
-                      let correctedFee = fixComma(e.target.value);
-                      setNetworkNightOrWeekendtPrice(correctedFee);
+                      setNetworkNightOrWeekendtPrice(
+                        validateInput(e.target.value)
+                      );
                     }}
                   />
                   <h6>øre (ink. avgifter)</h6>
@@ -119,8 +128,7 @@ export default function InputsForm({
                 className="surcharge-input"
                 type="text"
                 onChange={(e) => {
-                  let correctedSurcharge = fixComma(e.target.value);
-                  setsurcharge(correctedSurcharge);
+                  setSurcharge(validateInput(e.target.value));
                 }}
               />
               <h4>Øre</h4>
@@ -132,8 +140,7 @@ export default function InputsForm({
                 type="text"
                 value={fee}
                 onChange={(e) => {
-                  let correctedFee = fixComma(e.target.value);
-                  setFee(correctedFee);
+                  setFee(validateInput(e.target.value));
                 }}
               />
               <h4>Kr</h4>

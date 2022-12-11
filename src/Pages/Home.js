@@ -25,7 +25,7 @@ function Home() {
   const [kommuneList, setKommuneList] = useState(kommunes);
   const [selectedKommune, setSelectedKommune] = useState();
   const [totalMonthPrice, setTotalMonthPrice] = useState();
-  const [surcharge, setsurcharge] = useState("0");
+  const [surcharge, setSurcharge] = useState(0);
   const [fee, setFee] = useState(0);
   const [lastDay, setLastDay] = useState("");
   const [avgMonthly, setAvgMonthly] = useState(0);
@@ -246,7 +246,7 @@ function Home() {
   }
 
   function calculateMonthlyValues(usageData, prices) {
-    setsurcharge(surcharge);
+    setSurcharge(surcharge);
 
     const dataForHour = usageData.map((hour, idx) => {
       const values = hour.Fra.split(" ");
@@ -319,12 +319,11 @@ function Home() {
                 selectedKommune={selectedKommune}
                 error={error}
                 surcharge={surcharge}
-                setsurcharge={setsurcharge}
+                setSurcharge={setSurcharge}
                 fee={fee}
                 setFee={setFee}
                 parseCsvJson={parseCsvJson}
                 fixedPrice={fixedPrice}
-                setFixedPrice={setFixedPrice}
                 hasFixedPrice={hasFixedPrice}
                 checkboxRef={checkboxRef}
                 setHasFixedPrice={setHasFixedPrice}
