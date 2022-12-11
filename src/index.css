@@ -1,82 +1,88 @@
 body {
   margin: 0;
-  background: #00B4DB;  /* fallback for old browsers */
-  background: -webkit-linear-gradient(to right, #0083B0, #00B4DB);  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to right, #0083B0, #00B4DB); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: #00b4db; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to right,
+    #0083b0,
+    #00b4db
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to right,
+    #0083b0,
+    #00b4db
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   cursor: pointer !important;
-  
 }
 
-.zones-container{
+.zones-container {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   grid-template-rows: 1fr;
 }
 
-.description-text{
-  color: white
+.description-text {
+  color: white;
 }
 
-.usage-price-container{
+.usage-price-container {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
 }
 
-.csv-input{
-  display:block;
+.csv-input {
+  display: block;
 }
-.drop-down{
+.drop-down {
   width: 100%;
 }
 
 .surcharge-input {
   width: 11%;
   height: 80%;
-  position: relative; 
+  position: relative;
 }
 
-.fee{
+.fee {
   width: 12%;
 }
 .network-charge-input {
   width: 10%;
   height: 10%;
   position: relative;
-  top:15%;
+  top: 15%;
 }
 
-.logo{
+.logo {
   width: 6em;
-  margin-top:10px;
+  margin-top: 10px;
 }
 
-.cooporation{
+.cooporation {
   margin-top: 1.5rem;
 }
 
-.logo-pris{
+.logo-pris {
   width: 15em;
   margin-left: 1em;
 }
 
-
-.total-price{
-  background-color: lightgreen !important;
+.price-exp {
+  width: 30em;
 }
 
-.price-exp{
-  width:30em;
+.results-table {
+  margin: 0 5% 0 5%;
 }
 
-@media screen and (max-width:1200px) {
-  .price-exp{
-    width:20em;
+@media screen and (max-width: 1200px) {
+  .price-exp {
+    width: 20em;
   }
 }
-@media screen and (max-width:890px) {
-  .price-exp{
-    width:15em;
+@media screen and (max-width: 890px) {
+  .price-exp {
+    width: 15em;
   }
 }
 
@@ -85,112 +91,115 @@ body {
 }
 
 @media screen and (max-width: 991px) {
-.logo ,.logo-pris ,.cooporation{
-  position: relative;
-}
-.logo{
-  bottom:1.5em;
-}
-.cooporation{
-  right:15%;
-  bottom: 35%;
-}
-.logo-pris{
-  right:30%;
-  bottom:40%
-}
+  .logo,
+  .logo-pris,
+  .cooporation {
+    position: relative;
+  }
+  .logo {
+    bottom: 1.5em;
+  }
+  .cooporation {
+    right: 15%;
+    bottom: 35%;
+  }
+  .logo-pris {
+    right: 30%;
+    bottom: 40%;
+  }
 }
 
 @media screen and (max-width: 790px) {
-  .logo ,.logo-pris ,.cooporation{
+  .logo,
+  .logo-pris,
+  .cooporation {
     position: relative;
   }
-  .logo{
-    bottom:1.5em;
+  .logo {
+    bottom: 1.5em;
   }
-  .cooporation{
-    right:10%;
+  .cooporation {
+    right: 10%;
     bottom: 35%;
   }
-  .logo-pris{
-    right:20%;
-    bottom:40%
+  .logo-pris {
+    right: 20%;
+    bottom: 40%;
   }
-  }
-
-.calculate{
-  font-size: 2em !important;
-position: relative;
-left: 0%;
 }
 
-.reset-btn{
+.calculate {
+  font-size: 2em !important;
+  position: relative;
+  left: 0%;
+}
+
+.reset-btn {
   font: 2em !important;
   position: relative;
   right: 1%;
 }
 
-.surcharge-title{
+.surcharge-title {
   position: relative;
-  bottom:0.25em;
+  bottom: 0.25em;
 }
 
-.login-example-pic{
+.login-example-pic {
   width: 80%;
-  margin-left:20%;
+  margin-left: 20%;
   border-radius: 1%;
   height: 30em;
 }
 
-.login-banner{
+.login-banner {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.login-title{
- position: relative;
- top:10em;
- left: 5em;
- display: flex;
- flex-direction: column;
- align-items: center;
- color: #F5DEB3
+.login-title {
+  position: relative;
+  top: 10em;
+  left: 5em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #f5deb3;
 }
 
-.input-text{
+.input-text {
   font-size: 2em;
 }
 
-.csv-modal{
+.csv-modal {
   font-size: 1.5em;
-     cursor:pointer;
-     color:blue;
-     text-decoration:underline;
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
 }
 
-.inst-pic{
+.inst-pic {
   width: 100%;
 }
 
-
-.csv-flow-title{
-font-size: 2em;
+.csv-flow-title {
+  font-size: 2em;
 }
 
-.login-container{
+.login-container {
   display: flex;
 }
 
-.results-card{
+.results-card {
   background-color: lightgreen;
 }
 
-.modal-arrow{
+.modal-arrow {
   width: 10%;
   position: absolute;
   right: 3000px;
-  top:10px;
+  top: 10px;
   z-index: 1;
   animation-name: arrow;
   animation-duration: 2s;
@@ -199,242 +208,251 @@ font-size: 2em;
 }
 
 @keyframes arrow {
-  0% {right:10px ; top:8%}
-  50% {right:10px ; top:9.5%}
-  100% {right:10px ; top:8%}
+  0% {
+    right: 10px;
+    top: 8%;
+  }
+  50% {
+    right: 10px;
+    top: 9.5%;
+  }
+  100% {
+    right: 10px;
+    top: 8%;
+  }
 }
-
-
-
 
 .fixed-checkbox {
-margin-right: 1%;
-margin-left: 1%;
+  margin-right: 1%;
+  margin-left: 1%;
 }
 
-.fixed-price-input{
+.fixed-price-input {
   width: 30%;
 }
 
-.fixed-price{
+.fixed-price {
   position: relative;
-  right:10%;
+  right: 10%;
 }
 
-.tg  {
-  border-collapse:collapse;border-spacing:0;
+.tg {
+  border-collapse: collapse;
+  border-spacing: 0;
 }
-.tg td{
+.tg td {
   font-family: Arial, sans-serif;
-  font-size:1.5em;
-  word-break:normal;
+  font-size: 1.5em;
+  word-break: normal;
 }
 
-.tg th{
-  
-  font-family
-  :Arial, sans-serif;
-  font-size:1.5em;
-  font-weight:normal;
-  word-break:normal;
+.tg th {
+  font-family: Arial, sans-serif;
+  font-size: 1.5em;
+  font-weight: normal;
+  word-break: normal;
 }
-.tg .tg-0lax{
-  vertical-align:top
+.tg .tg-0lax {
+  vertical-align: top;
 }
 
-.left-side-table{
+.left-side-table {
   text-align: right;
 }
 
-.right-side-table{
+.right-side-table {
   text-align: left;
 }
 
-.middle-table{
-  text-align:center;
+.middle-table {
+  text-align: center;
 }
 
-.social-links{
+.social-links {
   width: 250px !important;
   height: 50px;
 }
 
-.email{
-  color:blue !important;
+.email {
+  color: blue !important;
 }
-.github-link{
+.github-link {
   width: 90%;
 }
 
-.support{
+.support {
   background: linear-gradient(90deg, #7efff5 50%, rgba(255, 255, 255, 0) 50%);
   width: 100%;
 }
-.report{
+.report {
   width: 25%;
   position: absolute;
-  right:10px;
-  top:10px;
-  
+  right: 10px;
+  top: 10px;
 }
 
-.chart-bar{
+.chart-bar {
   position: relative;
-  height: 40vh;
-  width: 80vw;
+  height: 70vh;
+  width: 70vh;
 }
 
-@media screen and (max-width: 2500px){
-  .report{
+/* Network rates */
+.network-rates-inputs {
+  width: 50%;
+}
+
+@media screen and (max-width: 2500px) {
+  .report {
     width: 10%;
   }
- }
-
+}
 
 @media screen and (max-width: 1000px) {
- .surcharge-input{
-  width: 2em;
- }
+  .surcharge-input {
+    width: 2em;
+  }
 
-  .fixed-price{
-    right:0;
+  .fixed-price {
+    right: 0;
     left: 5%;
   }
-  .site-descrip{
+  .site-descrip {
     margin-left: 10% !important;
     margin-right: 10% !important;
   }
 
-  .report{
+  .report {
     width: 10%;
   }
-
 }
 
 @media screen and (max-width: 800px) {
-    .report{
-      width: 20%;
-      right:35px;
-    }
+  .report {
+    width: 20%;
+    right: 35px;
+  }
 }
 
-
 @media screen and (max-width: 500px) {
-  .page-container{
+  .page-container {
     display: flex;
     flex-direction: column;
   }
-  .inputs-container{
+  .inputs-container {
     flex-direction: column;
-    margin: 2% 5% 2% 5% !important
+    margin: 2% 5% 2% 5% !important;
   }
-  .inputs-card{
+  .inputs-card {
     justify-self: center;
     margin: 2% 9% 2% 10% !important;
     position: relative;
-    left:2%;
+    left: 2%;
   }
 
-  .inputs-and-button{
+  .inputs-and-button {
     flex-direction: column;
   }
 
-  
-
-  .reset-btn{
+  .reset-btn {
     position: relative;
     right: 5%;
   }
-  .usage-price-container{
+  .usage-price-container {
     flex-direction: column;
   }
 
-  .site-descrip{
+  .site-descrip {
     margin-left: 40% !important;
     margin-right: 40% !important;
   }
 
-  .daily-prices{
+  .daily-prices {
     margin: 2% 5% 2% 6% !important;
   }
-  .hourly-prices{
+  .hourly-prices {
     margin: 2% 9% 2% 10% !important;
     align-self: center;
   }
-  
-  .hourly-prices{
+
+  .hourly-prices {
     position: relative;
     left: 3%;
   }
-  .cooporation, .logo-pris{
-    display:none;
+  .cooporation,
+  .logo-pris {
+    display: none;
   }
 
-  .surcharge-input{
+  .surcharge-input {
     width: 2em;
   }
-  .price-exp{
-   width:auto;
-   padding: 0.3rem;
+  .price-exp {
+    width: auto;
+    padding: 0.3rem;
   }
-  .logo{
-   position: relative;
-   left: 90%;
+  .logo {
+    position: relative;
+    left: 90%;
   }
 
-  .extras-container{
-    display:flex;
+  .extras-container {
+    display: flex;
     flex-direction: column;
   }
 
-  .fixed-price{
+  .fixed-price {
     margin-left: -20px;
-   width: 14em;
+    width: 14em;
   }
 
+  .report {
+    width: 25%;
+    right: 10px;
+  }
 
-    .report{
-      width: 25%;
-      right:10px;
-    }
-   
-    .support{
-      width: 120%;
-    }
-  
+  .support {
+    width: 120%;
+  }
 
   @keyframes arrow {
-    0% {right:10px ; top:20%}
-    50% {right:10px ; top:21%}
-    100% {right:10px ; top:20%}
+    0% {
+      right: 10px;
+      top: 20%;
+    }
+    50% {
+      right: 10px;
+      top: 21%;
+    }
+    100% {
+      right: 10px;
+      top: 20%;
+    }
   }
- }
+}
 
- @media screen and (max-width: 400px) {
-  .hourly-prices{
-  margin-right: 14% !important;
+@media screen and (max-width: 400px) {
+  .hourly-prices {
+    margin-right: 14% !important;
   }
-  .logo{
+  .logo {
     position: relative;
-    left:65%;
+    left: 65%;
   }
-  .reset-btn{
-    right:9%;
+  .reset-btn {
+    right: 9%;
   }
-  .support{
+  .support {
     width: 140%;
   }
- }
+}
 
-
- @media screen and (max-width: 370px) {
-  .hourly-prices{
+@media screen and (max-width: 370px) {
+  .hourly-prices {
     margin-right: 14% !important;
-    }
-   
-  .table-hourly{
+  }
+
+  .table-hourly {
     margin-right: 10%;
   }
-  
- }
-
+}

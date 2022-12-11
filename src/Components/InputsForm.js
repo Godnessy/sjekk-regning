@@ -7,8 +7,7 @@ export default function InputsForm({
   setSelectedKommune,
   selectedKommune,
   error,
-  surcharge,
-  setsurcharge,
+  setSurcharge,
   fee,
   setFee,
   parseCsvJson,
@@ -17,31 +16,93 @@ export default function InputsForm({
   hasFixedPrice,
   checkboxRef,
   setHasFixedPrice,
-  convertCommaToNumber,
   fixComma,
-  totalMonthPrice,
+  CalculateWithNetowrk,
+  setCalculateWithNetwork,
+  networkDayPrice,
+  setNetworkDayPrice,
+  networkNightOrWeekendtPrice,
+  setNetworkNightOrWeekendtPrice,
+  capacityPrice,
+  setCapacityPrice,
 }) {
   useEffect(() => {
     checkboxRef.current.disabled = !hasFixedPrice;
   }, [hasFixedPrice]);
 
+  function validateInput(input) {
+    const allowedChars = new RegExp(/^[0-9\-\,\.\b]*$/);
+    if (allowedChars.test(input)) {
+      let correctedSurcharge = fixComma(input);
+      return correctedSurcharge;
+    } else {
+      alert("bruk kun tall(0-9), komma(,) eller prikk(.)");
+      return;
+    }
+  }
   return (
     <div className="d-flex">
       <div className="ms-3 border border-dark p-3 card inputs-card ">
-        <div className="csv-part">
-          <label htmlFor="csvInput" style={{ display: "block" }}>
-            <p className="input-text">
-              1. Laste opp måleverdier CSV fil fra Elhub:{" "}
-            </p>
-          </label>
-          <Instructions></Instructions>
-
-          <input
-            onChange={handleCsvFile}
-            id="csvInput"
-            name="file"
-            type="File"
-          />
+        <div className="csv-part d-flex flex-column">
+          <div className="upload mb-2">
+            <label htmlFor="csvInput" style={{ display: "block" }}>
+              <p className="input-text">
+                1. Laste opp måleverdier CSV fil fra Elhub:{" "}
+              </p>
+            </label>
+            <Instructions></Instructions>
+            <input
+              onChange={handleCsvFile}
+              id="csvInput"
+              name="file"
+              type="File"
+            />
+          </div>
+          <div className="network">
+            {/* change the w-25 when adjusting responsiveness */}
+            <div className="border border-dark d-flex flex-column card inputs-card ">
+              <h4 className="ms-2 text-decoration-underline">Nettleie</h4>
+              <div className="d-flex flex-column ms-2 mb-1">
+                <h5 className="me-2 network-rates-title">Fastledd:</h5>
+                <div className="d-flex">
+                  <input
+                    className="network-rates-inputs"
+                    type="text"
+                    onChange={(e) => {
+                      setCapacityPrice(validateInput(e.target.value));
+                    }}
+                  />
+                  <h6>kr</h6>
+                </div>
+                <h5 className="me-2 network-rates-title">Energiledd Dag:</h5>
+                <div className="d-flex">
+                  <input
+                    className="network-rates-inputs"
+                    type="text"
+                    onChange={(e) => {
+                      setNetworkDayPrice(validateInput(e.target.value));
+                    }}
+                  />
+                  <h6>øre(ink. avgifter)</h6>
+                </div>
+                <h5 className="me-2 network-rates-title">
+                  Energiledd Natt/Helg:
+                </h5>
+                <div className="d-flex">
+                  <input
+                    className="network-rates-inputs"
+                    type="text"
+                    onChange={(e) => {
+                      setNetworkNightOrWeekendtPrice(
+                        validateInput(e.target.value)
+                      );
+                    }}
+                  />
+                  <h6>øre (ink. avgifter)</h6>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <hr />
         <div className="drop-down d-flex flex-column">
@@ -67,9 +128,7 @@ export default function InputsForm({
                 className="surcharge-input"
                 type="text"
                 onChange={(e) => {
-                  let correctedSurcharge = fixComma(e.target.value);
-
-                  setsurcharge(correctedSurcharge);
+                  setSurcharge(validateInput(e.target.value));
                 }}
               />
               <h4>Øre</h4>
@@ -81,8 +140,7 @@ export default function InputsForm({
                 type="text"
                 value={fee}
                 onChange={(e) => {
-                  let correctedFee = fixComma(e.target.value);
-                  setFee(correctedFee);
+                  setFee(validateInput(e.target.value));
                 }}
               />
               <h4>Kr</h4>
@@ -93,8 +151,6 @@ export default function InputsForm({
               <input
                 className="fixed-checkbox ms-2"
                 type="checkbox"
-                name="fixed=price-data"
-                id="fixed=price-data"
                 onClick={(e) => {
                   setHasFixedPrice(!hasFixedPrice);
                 }}
@@ -118,23 +174,12 @@ export default function InputsForm({
             </div>
           </div>
           <div className="calculate-btn">
-            {totalMonthPrice ? (
-              <button
-                className="calculate btn btn-danger ms-5 my-3"
-                onClick={() => {
-                  window.location.reload();
-                }}
-              >
-                Ny regning
-              </button>
-            ) : (
-              <button
-                className="calculate btn btn-success ms-5 my-3 "
-                onClick={parseCsvJson}
-              >
-                Regne ut!
-              </button>
-            )}
+            <button
+              className="calculate btn btn-success ms-5 my-3 "
+              onClick={parseCsvJson}
+            >
+              Regne ut!
+            </button>
           </div>
         </div>
         <div className="border fw-bold border-dark border-2 mt-3">
