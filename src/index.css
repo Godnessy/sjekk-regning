@@ -13,6 +13,10 @@ body {
   grid-template-rows: 1fr;
 }
 
+.description-text{
+  color: white
+}
+
 .usage-price-container{
   display: flex;
   flex-direction: row;
@@ -118,6 +122,12 @@ body {
   font-size: 2em !important;
 position: relative;
 left: 0%;
+}
+
+.reset-btn{
+  font: 2em !important;
+  position: relative;
+  right: 1%;
 }
 
 .surcharge-title{
@@ -255,6 +265,32 @@ margin-left: 1%;
 .github-link{
   width: 90%;
 }
+
+.support{
+  background: linear-gradient(90deg, #7efff5 50%, rgba(255, 255, 255, 0) 50%);
+  width: 100%;
+}
+.report{
+  width: 25%;
+  position: absolute;
+  right:10px;
+  top:10px;
+  
+}
+
+.chart-bar{
+  position: relative;
+  height: 40vh;
+  width: 80vw;
+}
+
+@media screen and (max-width: 2500px){
+  .report{
+    width: 10%;
+  }
+ }
+
+
 @media screen and (max-width: 1000px) {
  .surcharge-input{
   width: 2em;
@@ -264,5 +300,141 @@ margin-left: 1%;
     right:0;
     left: 5%;
   }
+  .site-descrip{
+    margin-left: 10% !important;
+    margin-right: 10% !important;
+  }
+
+  .report{
+    width: 10%;
+  }
+
 }
+
+@media screen and (max-width: 800px) {
+    .report{
+      width: 20%;
+      right:35px;
+    }
+}
+
+
+@media screen and (max-width: 500px) {
+  .page-container{
+    display: flex;
+    flex-direction: column;
+  }
+  .inputs-container{
+    flex-direction: column;
+    margin: 2% 5% 2% 5% !important
+  }
+  .inputs-card{
+    justify-self: center;
+    margin: 2% 9% 2% 10% !important;
+    position: relative;
+    left:2%;
+  }
+
+  .inputs-and-button{
+    flex-direction: column;
+  }
+
+  
+
+  .reset-btn{
+    position: relative;
+    right: 5%;
+  }
+  .usage-price-container{
+    flex-direction: column;
+  }
+
+  .site-descrip{
+    margin-left: 40% !important;
+    margin-right: 40% !important;
+  }
+
+  .daily-prices{
+    margin: 2% 5% 2% 6% !important;
+  }
+  .hourly-prices{
+    margin: 2% 9% 2% 10% !important;
+    align-self: center;
+  }
+  
+  .hourly-prices{
+    position: relative;
+    left: 3%;
+  }
+  .cooporation, .logo-pris{
+    display:none;
+  }
+
+  .surcharge-input{
+    width: 2em;
+  }
+  .price-exp{
+   width:auto;
+   padding: 0.3rem;
+  }
+  .logo{
+   position: relative;
+   left: 90%;
+  }
+
+  .extras-container{
+    display:flex;
+    flex-direction: column;
+  }
+
+  .fixed-price{
+    margin-left: -20px;
+   width: 14em;
+  }
+
+
+    .report{
+      width: 25%;
+      right:10px;
+    }
+   
+    .support{
+      width: 120%;
+    }
+  
+
+  @keyframes arrow {
+    0% {right:10px ; top:20%}
+    50% {right:10px ; top:21%}
+    100% {right:10px ; top:20%}
+  }
+ }
+
+ @media screen and (max-width: 400px) {
+  .hourly-prices{
+  margin-right: 14% !important;
+  }
+  .logo{
+    position: relative;
+    left:65%;
+  }
+  .reset-btn{
+    right:9%;
+  }
+  .support{
+    width: 140%;
+  }
+ }
+
+
+ @media screen and (max-width: 370px) {
+  .hourly-prices{
+    margin-right: 14% !important;
+    }
+   
+  .table-hourly{
+    margin-right: 10%;
+  }
+  
+ }
 

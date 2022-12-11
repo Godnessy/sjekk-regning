@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import Papa, { parse, unparse } from "papaparse";
-import { Card, Nav } from "react-bootstrap";
 import { db } from "../firebase-config.js";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { useAuth } from "../context/AuthContext.js";
+import { getStorage, ref, uploadBytes } from "firebase/storage";
 import kommunes from "../Resources/kommuneList.json";
 import KommuneDropdown from "../Components/KommuneDropdown";
 import DailyPrices from "../Components/DailyPrices.js";
@@ -13,6 +12,9 @@ import Instructions from "../Components/Instructions.js";
 import Results from "../Components/Results.js";
 import InputsForm from "../Components/InputsForm.js";
 import BioLink from "../Components/BioLink.js";
+import MonthlyChart from "../Components/MonthlyChart.js";
+const storage = getStorage();
+
 const allowedExtensions = ["csv"];
 
 function Home() {
@@ -25,6 +27,8 @@ function Home() {
   const [totalMonthPrice, setTotalMonthPrice] = useState();
   const [surcharge, setsurcharge] = useState("0");
   const [fee, setFee] = useState(0);
+  const [lastDay, setLastDay] = useState("");
+  const [avgMonthly, setAvgMonthly] = useState(0);
   const [govSupport, setGovSupport] = useState(0);
   const [myGovSupport, setMyGovSupport] = useState(0);
   const [networkDayPrice, setNetworkDayPrice] = useState(0);
@@ -33,7 +37,10 @@ function Home() {
   const [fixedPrice, setFixedPrice] = useState(0);
   const [hasFixedPrice, setHasFixedPrice] = useState(false);
   const checkboxRef = useRef();
+  const fileRef = ref(storage, file.name);
+
   let tempMonthPrice = 0;
+  let tempMonthAvg = 0;
   let totalUsage = 0;
   let hoursCounter = 0;
   let avgPriceTimesUsage = 0;
@@ -52,14 +59,24 @@ function Home() {
     12: "December",
   };
 
+  const uploadFailedFile = async () => {
+    if (!file) {
+      alert("Kan ikke se at en fil var velgt");
+      return;
+    }
+    try {
+      const storageRef = ref(storage, file?.name);
+      uploadBytes(storageRef, file);
+    } catch (error) {}
+  };
+
   const getMonthPrices = async (month) => {
     const monthRef = doc(db, "price-history", `${month}-22`);
     //quick way to track usage while in beta - will be removed.
-    // const usageCounterRef = doc(db, "usage-counter", `usage`);
-    // const usageCounterSnap = await getDoc(usageCounterRef);
-    // let usageCounter = usageCounterSnap.data().usage;
-    // console.log(usageCounter + 1);
-    // await setDoc(usageCounterRef, { usage: usageCounter + 1 });
+    const usageCounterRef = doc(db, "usage-counter", `usage`);
+    const usageCounterSnap = await getDoc(usageCounterRef);
+    let usageCounter = usageCounterSnap.data().usage;
+    await setDoc(usageCounterRef, { usage: usageCounter + 1 });
     try {
       const docSnap = await getDoc(monthRef);
       if (docSnap.exists()) {
@@ -76,7 +93,7 @@ function Home() {
     setError("");
     if (e.target.files.length) {
       const inputFile = e.target.files[0];
-      const fileExtension = inputFile?.type.split("/")[1];
+      const fileExtension = inputFile.type.split("/")[1];
       setFile(inputFile);
     }
   };
@@ -86,47 +103,46 @@ function Home() {
     setError("");
     const reader = new FileReader();
     reader.onload = async ({ target }) => {
-      let newResult;
-      let csv = Papa.parse(target.result, {
-        header: true,
+      const strWithoutCommas = target.result.replaceAll(/['"]+/g, "");
+      let csv = Papa.parse(strWithoutCommas, {
+        header: false,
         quoteChar: '"',
         skipEmptyLines: true,
-        transform: (val, col) => {
-          const removeQuotations = val.replaceAll(/['"]+/g, "");
-          const doubleCommasRegex = /,,/i;
-          const removeDoubleCommas = removeQuotations.replace(
-            doubleCommasRegex,
-            ""
-          );
-          return removeQuotations;
-        },
         complete: function (results) {
-          const CSVArr = [];
-          if (results.data.length == 0) {
-            return setError("CSV filen er tomt");
-          }
-          if (!results.data[0].Til) {
-            results.data.map((item) => {
-              const splitLineIntoArr = item.Fra.split("");
-              const findLastCommaIndex = splitLineIntoArr.lastIndexOf(",");
-              splitLineIntoArr.splice(findLastCommaIndex, 1, ".");
-              const fixedLineStr = [splitLineIntoArr.join("")];
-              const fixedLine = fixedLineStr[0].split(",");
-              CSVArr.push(fixedLine);
+          try {
+            const fixedHeaders = ["Fra", "Til", "KWH 60 Forbruk", "Kvalitet"];
+            const CSVArr = [];
+            if (results.data.length == 0) {
+              return setError("CSV filen er tomt");
+            }
+
+            const removingOldHeaders = results.data.shift();
+            const arrWithoutHeaders = results.data;
+            const arrWithFixedUsage = arrWithoutHeaders.map((hour) => {
+              const {
+                startTime = hour[0],
+                finishTime = hour[1],
+                usagePart1 = hour[2],
+                usagePart2 = hour[3],
+              } = hour;
+              const result = [
+                startTime,
+                finishTime,
+                `${
+                  isNaN(usagePart2) ? usagePart1 : usagePart1 + "." + usagePart2
+                }`,
+              ];
+              return result;
             });
             const unParsed = Papa.unparse({
-              fields: ["Fra", "Til", "KWH 60 Forbruk"],
-              data: CSVArr,
+              fields: ["Fra", "Til", "KWH 60 Forbruk", "Kvalitet"],
+              data: arrWithFixedUsage,
             });
-            newResult = Papa.parse(unParsed, { header: true });
-          }
+            const newResult = Papa.parse(unParsed, { header: true });
+            extractCurrentMonth(newResult.data);
+          } catch (error) {}
         },
       });
-      if (newResult) {
-        extractCurrentMonth(newResult.data, false);
-      } else {
-        extractCurrentMonth(csv.data, true);
-      }
     };
     reader.readAsText(file);
   };
@@ -146,6 +162,7 @@ function Home() {
   const createPriceForHour = (zonePrices, time) => {
     if (zonePrices) {
       const basePrice = Number(zonePrices[time]);
+      tempMonthAvg = tempMonthAvg + basePrice;
       const calculatedPrice = basePrice + Number(surcharge);
       return calculatedPrice;
     } else {
@@ -163,18 +180,19 @@ function Home() {
     return 0;
   };
 
+  const createGovSupport = (monthlyAvg) => {
+    const calculation = (monthlyAvg - 87.5) * 0.9;
+    return calculation;
+  };
+
   useEffect(() => {}, [selectedKommune]);
   useEffect(() => {}, [totalMonthPrice]);
 
-  const extractCurrentMonth = async (usageData, isNew) => {
+  const extractCurrentMonth = async (usageData) => {
     const month = usageData[0].Fra.split(".")[1];
     setSelectedMonth(monthObj[month]);
     const prices = await getMonthPrices(monthObj[month]);
-    if (isNew) {
-      calculateMonthlyValues(usageData, true, prices);
-    } else {
-      calculateMonthlyValues(usageData, false, prices);
-    }
+    calculateMonthlyValues(usageData, prices);
   };
 
   const fixComma = (str) => {
@@ -182,17 +200,17 @@ function Home() {
     return Number(fixed);
   };
 
-  function calculateMonthlyValues(usageData, isNew, prices) {
-    function extractUsage(value, NeedsFixing) {
-      const newValue = NeedsFixing ? value.replace(",", ".") : value;
-      return newValue;
+  function calculateMonthlyValues(usageData, prices) {
+    function extractUsage(value) {
+      return value.replace(",", ".");
     }
     setsurcharge(surcharge);
     const dataForHour = usageData.map((hour, idx) => {
       const values = hour.Fra.split(" ");
       const date = values[0];
+      idx == usageData.length - 1 && setLastDay(date);
       const time = values[1];
-      const usage = extractUsage(hour["KWH 60 Forbruk"], isNew);
+      const usage = extractUsage(hour["KWH 60 Forbruk"]);
       const dayPrices = collectDayPrices(prices, date);
       const selectedZonePrices = createSelectedPriceZone(
         selectedKommune.value,
@@ -223,39 +241,34 @@ function Home() {
     }, 0);
     setTotalMonthPrice(totalMonthPrice);
     setUsageData(dataForHour);
+    setAvgMonthly(tempMonthAvg / hoursCounter);
+    setGovSupport(createGovSupport(tempMonthAvg / hoursCounter));
     setTotalKwh(totalUsage);
   }
 
   function convertCommaToNumber(str) {
-    console.log(str);
     const fixComma = str.replace(",", ".");
-    console.log(fixComma);
     const newResult = Number(fixComma);
-    console.log(newResult);
     return newResult;
   }
 
-  if (window.innerWidth < 750) {
-    console.log("potato");
-    return (
-      <div>
-        <Navbar></Navbar>
-        <div className="align-self-center m-5">
-          <Card>
-            SjekkRegn er ikke tilpasset for mobiltelefoner ennå. Bruk et
-            nettbrett eller en datamaskin for å få tilgang til SjekkRegning.no.
-            Mobilstøtte kommer snart!
-          </Card>
-        </div>
-      </div>
-    );
-  } else {
+  if (!usageData) {
     return (
       <>
-        <Navbar />
-        <div className="page-container">
-          <div className="d-flex flex-row justify-content-center">
-            <div className="d-flex justify-content-center my-2">
+        <Navbar uploadFailedFile={uploadFailedFile} file={file} />
+        <div className="start-container d-flex flex-column ">
+          <div className="site-descrip d-flex flex-column align-self-center mt-4">
+            {" "}
+            <h2 className="description-text align-self-center ms-2 me-2">
+              Velkommen til SjekkRegning.no!
+            </h2>
+            <h4 className="description-text align-self-center ms-2 me-2">
+              Her kan du sjekke om strømregning du fikk er korrekt eller om du
+              har betalt for mye eller sjekke denne måneds forbruk.
+            </h4>
+          </div>
+          <div className="d-flex flex-column container justify-content-center">
+            <div className="d-flex justify-content-center my-5">
               <InputsForm
                 handleCsvFile={handleCsvFile}
                 selectedMonth={selectedMonth}
@@ -276,8 +289,23 @@ function Home() {
                 setHasFixedPrice={setHasFixedPrice}
                 convertCommaToNumber={convertCommaToNumber}
                 fixComma={fixComma}
-                totalMonthPrice={totalMonthPrice}
               />
+            </div>
+            <div className="bio-link d-flex mt-5 justify-content-center">
+              <BioLink></BioLink>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <Navbar />
+
+        <div className="page-container">
+          <div className="inputs-container justify-content-center my-2 d-flex flex-column">
+            <div className="align-self-center">
               {totalMonthPrice && (
                 <Results
                   totalMonthPrice={totalMonthPrice}
@@ -288,42 +316,50 @@ function Home() {
                   selectedMonth={selectedMonth}
                   hasFixedPrice={hasFixedPrice}
                   fixedPrice={fixedPrice}
-                  selectedKommune={selectedKommune}
+                  avgPrice={avgMonthly}
+                  govSupport={govSupport}
+                  lastDay={lastDay}
+                  zone={selectedKommune.value}
+                />
+              )}
+            </div>
+            <button
+              className="reset-btn calculate-after w-25 align-self-center btn btn-danger ms-5 my-3"
+              onClick={() => {
+                window.location.reload();
+              }}
+            >
+              Ny regning
+            </button>
+            <div className="align-self-center chart">
+              <MonthlyChart usageData={usageData} />
+            </div>
+          </div>
+
+          <div className="usage-price-container my-2 d-flex ">
+            <div className="daily-prices me-4">
+              {usageData && (
+                <DailyPrices
+                  dataForHour={usageData}
+                  totalMonthPrice={totalMonthPrice}
+                  hasFixedPrice={hasFixedPrice}
+                  fixedPrice={fixedPrice}
+                />
+              )}
+            </div>
+            <div className=" hourly-prices ms-3">
+              {usageData && (
+                <HourlyPrices
+                  dataForHour={usageData}
+                  hasFixedPrice={hasFixedPrice}
+                  fixedPrice={fixedPrice}
                 />
               )}
             </div>
           </div>
         </div>
-
-        <div className="usage-price-container my-2 d-flex">
-          <div className="ms-3">
-            {usageData && (
-              <HourlyPrices
-                dataForHour={usageData}
-                hasFixedPrice={hasFixedPrice}
-                fixedPrice={fixedPrice}
-              />
-            )}
-          </div>
-          <div className="me-4">
-            {usageData && (
-              <DailyPrices
-                dataForHour={usageData}
-                totalMonthPrice={totalMonthPrice}
-                hasFixedPrice={hasFixedPrice}
-                fixedPrice={fixedPrice}
-              />
-            )}
-          </div>
-        </div>
-        {!totalMonthPrice && (
-          <div className="bio-link d-flex mt-5 justify-content-center">
-            <BioLink></BioLink>
-          </div>
-        )}
       </>
     );
-    // }
   }
 }
 

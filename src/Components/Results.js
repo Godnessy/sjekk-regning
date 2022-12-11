@@ -1,4 +1,4 @@
-import { React, useEffect } from "react";
+import { React, useState, useEffect, useRef } from "react";
 import { Card } from "react-bootstrap";
 
 function Results({
@@ -10,21 +10,56 @@ function Results({
   selectedMonth,
   hasFixedPrice,
   fixedPrice,
-  selectedKommune,
+  govSupport,
+  lastDay,
+  zone,
 }) {
-  const zone = selectedKommune.value;
+  const [isSupport, setIsSupport] = useState(false);
+  const [totalWithSupport, setTotalWithSupport] = useState(false);
+  const govSupportCheckboxRef = useRef();
+  useEffect(() => {
+    avgPrice > 70 ? setIsSupport(true) : setIsSupport(false);
+  }, [avgPrice]);
+
+  const calculateGovSupport = () => {
+    return ((totalUsage * govSupport) / 100).toFixed(2);
+  };
+  const createGovSupportDiv = () => {
+    if (avgPrice > 70) {
+      return (
+        <h3 className="ps-2">Din strømstøtte: {calculateGovSupport()} kr</h3>
+      );
+    } else {
+      return "";
+    }
+  };
+
+  const getGovSupport = (totalWithSupport) => {
+    return totalWithSupport ? calculateGovSupport() : 0;
+  };
+
   return (
     <Card className="mx-4">
       <div className="d-flex align-content-left flex-column">
         <h2 className="text-decoration-underline p-2">
-          Forventet regning for {month}
+          Estimert regning for {month}
         </h2>
-        <h2 className="ps-2">Total forbruk: {totalUsage.toFixed(0)} kWh</h2>
-        <h3 className="ps-2">Sone: {zone}</h3>
-        {hasFixedPrice && (
-          <h3 className="ps-2">Fast pris pr kwh: {fixedPrice}</h3>
+        <h2 className="ps-2 my-1">
+          Total forbruk: {totalUsage.toFixed(0)} kWh
+        </h2>
+        <h3 className="ps-2 my-1">
+          Snitt pris for {zone}: {avgPrice.toFixed(2)} øre pr kwh
+        </h3>
+        {!hasFixedPrice && (
+          <h3 className="ps-2 my-1">
+            Strømstøtte {lastDay}:{" "}
+            {avgPrice > 70 ? (
+              <p className="support"> {govSupport.toFixed(2)} øre pr kwh</p>
+            ) : (
+              <p>Ingen strømstøtte</p>
+            )}
+          </h3>
         )}
-        <h3></h3>
         <hr />
         {surcharge && surcharge !== 0 ? (
           <h2 className="ps-2">
@@ -34,11 +69,17 @@ function Results({
         ) : (
           <div></div>
         )}
+        {!hasFixedPrice ? (
+          createGovSupportDiv(totalUsage, govSupport)
+        ) : (
+          <h3 className="ps-2">Strømstøtte for fastpris kommer snart!</h3>
+        )}
+
         {fee !== 0 && <h2 className="ps-2">Månedspris : {fee} kr</h2>}
         {!hasFixedPrice && (
           <h2 className="ps-2">
-            Din kWh snittpris :{" "}
-            {((totalMonthPrice / totalUsage) * 100).toFixed(2)} øre pr kwh
+            Din snittpris : {((totalMonthPrice / totalUsage) * 100).toFixed(2)}{" "}
+            øre pr kwh
           </h2>
         )}
         {hasFixedPrice && (
@@ -68,8 +109,37 @@ function Results({
         )}
         <h2 className="mt-3 mx-1 total-price">
           Å betale for {month}:{" "}
-          {(Number(totalMonthPrice) + Number(fee)).toFixed(2)} kr
+          {(
+            Number(totalMonthPrice) -
+            getGovSupport(totalWithSupport) +
+            Number(fee)
+          ).toFixed(2)}{" "}
+          kr
         </h2>
+        {!hasFixedPrice && (
+          <div className=" d-flex align-items-center ">
+            <input
+              className="fixed-checkbox ms-2"
+              type="checkbox"
+              name="supportCheckBox"
+              id="supportCheckBox"
+              ref={govSupportCheckboxRef}
+              onClick={(e) => {
+                setTotalWithSupport(!totalWithSupport);
+              }}
+            />
+            <label className="ps-1" htmlFor="supportCheckBox">
+              <h4>
+                Viser total <b>{totalWithSupport ? "med" : "uten"}</b>{" "}
+                Strømstøtte
+              </h4>
+              <p>
+                Trykk boksen for å vise total{" "}
+                <b>{totalWithSupport ? "uten" : "med"}</b> strømstøtte.
+              </p>
+            </label>
+          </div>
+        )}
         <div className="price-exp mx-2 align-self-center">
           {!hasFixedPrice && (
             <p className="mx-2 align-self-center">
@@ -77,19 +147,6 @@ function Results({
               og ikke månedsgjennomsnitt.
             </p>
           )}
-          <hr />
-          <p className="mx-2 align-self-center mt-2">
-            <mark>
-              Fant du en betydelig forskjell mellom våre beregninger og din
-              regning?
-            </mark>
-            Vi anbefaler deg å ta kontakt med Ole Nyborg Markussen på{" "}
-            <a href="http://https://www.facebook.com/groups/1055189454988378">
-              {" "}
-              Prismatch Strøm
-            </a>{" "}
-            som hjelper folk med denne typen problemer - gratis.
-          </p>
         </div>
       </div>
     </Card>
