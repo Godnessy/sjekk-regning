@@ -124,10 +124,7 @@ function Results({
                 <td>{avgPrice.toFixed(2)} øre</td>
                 <td>
                   {avgPrice > 70 ? (
-                    <p className="support">
-                      {" "}
-                      {govSupport.toFixed(2)} øre pr kwh
-                    </p>
+                    <p> {govSupport.toFixed(2)} øre pr kwh</p>
                   ) : (
                     <p>Ingen strømstøtte</p>
                   )}
@@ -196,7 +193,7 @@ function Results({
                   <td>{totalUsagedisplay}</td>
                   <td>{networkDayPrice}</td>
                   <td>øre</td>
-                  <td>{finalDayRate}</td>
+                  <td>{finalDayRate.toFixed(2)}</td>
                 </tr>
               )}
               {finalNightRate && (

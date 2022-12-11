@@ -75,19 +75,6 @@ body {
   margin: 0 5% 0 5%;
 }
 
-@media screen and (max-width: 767px) {
-  .tg {
-    width: auto !important;
-  }
-  .tg col {
-    width: auto !important;
-  }
-  .tg-wrap {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    margin: 0px;
-  }
-}
 @media screen and (max-width: 1200px) {
   .price-exp {
     width: 20em;
@@ -306,8 +293,8 @@ body {
 
 .chart-bar {
   position: relative;
-  height: 40vh;
-  width: 80vw;
+  height: 70vh;
+  width: 70vh;
 }
 
 /* Network rates */
