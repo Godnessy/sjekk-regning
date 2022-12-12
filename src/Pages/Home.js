@@ -13,6 +13,7 @@ import Results from "../Components/Results.js";
 import InputsForm from "../Components/InputsForm.js";
 import BioLink from "../Components/BioLink.js";
 import MonthlyChart from "../Components/MonthlyChart.js";
+import Loading from "../Components/Loading.js";
 const storage = getStorage();
 
 const allowedExtensions = ["csv"];
@@ -30,7 +31,6 @@ function Home() {
   const [lastDay, setLastDay] = useState("");
   const [avgMonthly, setAvgMonthly] = useState(0);
   const [govSupport, setGovSupport] = useState(0);
-  const [CalculateWithNetowrk, setCalculateWithNetwork] = useState(true);
   const [usageDayHours, setUsageDayHours] = useState(0);
   const [usageNightHours, setUsageNightHours] = useState(0);
   const [networkDayPrice, setNetworkDayPrice] = useState("0");
@@ -40,6 +40,7 @@ function Home() {
   const [fixedPrice, setFixedPrice] = useState(0);
   const [hasFixedPrice, setHasFixedPrice] = useState(false);
   const [capacityPrice, setCapacityPrice] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const checkboxRef = useRef();
 
   const fileRef = ref(storage, file.name);
@@ -107,6 +108,7 @@ function Home() {
     if (!file) return setError("Har du glemt å velge CSV fil?");
     else if (!selectedKommune) return setError("Velg kommune fra listen");
     setError("");
+    setIsLoading(true);
     const reader = new FileReader();
     reader.onload = async ({ target }) => {
       const strWithoutCommas = target.result.replaceAll(/['"]+/g, "");
@@ -289,8 +291,16 @@ function Home() {
     setAvgMonthly(tempMonthAvg / hoursCounter);
     setGovSupport(createGovSupport(tempMonthAvg / hoursCounter));
     setTotalKwh(totalUsage);
+    setIsLoading(false);
   }
 
+  if (isLoading) {
+    return (
+      <>
+        <Loading isLoading={isLoading} />
+      </>
+    );
+  }
   if (!usageData) {
     return (
       <>

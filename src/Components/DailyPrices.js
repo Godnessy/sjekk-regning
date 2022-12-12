@@ -34,7 +34,9 @@ function DailyPrices({ dataForHour, hasFixedPrice, fixedPrice }) {
 
   return (
     <div className="card daily-prices p-2 vh-10">
-      <h2 className="text-decoration-underline">Forbruk og kostnad pr dag</h2>
+      <h2 className="text-decoration-underline">
+        Forbruk og kostnad pr dag - strøm
+      </h2>
       <table className="table daily-table table-striped">
         <thead>
           <tr>

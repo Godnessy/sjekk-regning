@@ -5,7 +5,7 @@ function HourlyPrices({ dataForHour, hasFixedPrice, fixedPrice }) {
   return (
     <div className="card p-2">
       <h2 className="text-decoration-underline">
-        Detaljerte time for time beregninger
+        Detaljerte time for time beregninger - strøm
       </h2>
       <table className="table table-hourly table-striped">
         <thead>

@@ -286,8 +286,8 @@ body {
 .report {
   width: 25%;
   position: absolute;
-  right: 10px;
-  top: 10px;
+  right: 1%;
+  top: 25%;
 }
 
 .chart {
@@ -308,6 +308,12 @@ body {
   max-width: 100%;
   width: 100%;
 }
+
+.loading {
+  position: relative;
+  left: 47%;
+  top: 10rem;
+}
 @media screen and (max-width: 2500px) {
   .report {
     width: 10%;
@@ -317,6 +323,10 @@ body {
 @media screen and (max-width: 1000px) {
   .surcharge-input {
     width: 2em;
+  }
+
+  .chart {
+    display: none;
   }
 
   .fixed-price {
@@ -333,16 +343,21 @@ body {
 
   .report {
     width: 10%;
+    position: absolute;
+    right: 2%;
+    top: 10px;
   }
 }
 
 @media screen and (max-width: 800px) {
   .report {
     width: 20%;
-    right: 35px;
+    right: 2%;
+    top: 25px;
   }
 
-  .table {
+  .loading {
+    left: 43%;
   }
 }
 
@@ -361,7 +376,10 @@ body {
 }
 
 @media screen and (max-width: 600px) {
-  .table {
+  .report {
+    font-size: 0.6em;
+    top: 10%;
+    right: 3%;
   }
 }
 
@@ -451,6 +469,10 @@ body {
     font-size: 0.9em;
   }
 
+  .loading {
+    position: relative;
+    left: 39%;
+  }
   @keyframes arrow {
     0% {
       right: 10px;
@@ -487,7 +509,11 @@ body {
     left: -30%;
   }
   .table {
-    font-size: 0.9em;
+    font-size: 0.85em;
+  }
+  .loading {
+    position: relative;
+    left: 21%;
   }
 }
 
