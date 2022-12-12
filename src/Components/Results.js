@@ -12,6 +12,7 @@ function Results({
   hasFixedPrice,
   fixedPrice,
   govSupport,
+  isGovSupport,
   lastDay,
   zone,
   networkDayPrice,
@@ -21,22 +22,25 @@ function Results({
   capacityPrice,
 }) {
   const [isSupport, setIsSupport] = useState(false);
-  const [totalWithSupport, setTotalWithSupport] = useState(false);
-  const [finalDayRate, setFinalDayRate] = useState();
-  const [finalNightRate, setFinalNightRate] = useState();
-  const govSupportCheckboxRef = useRef();
+  const [finalDayRate, setFinalDayRate] = useState(0);
+  const [finalNightRate, setFinalNightRate] = useState(0);
 
   const totalUsagedisplay = totalUsage && totalUsage.toFixed(2);
-  useEffect(() => {
-    avgPrice > 70 ? setIsSupport(true) : setIsSupport(false);
-  }, [avgPrice]);
 
+  useEffect(() => {
+    setNetworkRates(
+      networkDayPrice,
+      networkNightOrWeekendtPrice,
+      UsageDayHours,
+      UsageNightHours
+    );
+  }, [totalMonthPrice]);
   const calculateGovSupport = () => {
     return (totalUsage * govSupport) / 100;
   };
 
-  const getPersonalGovSupport = (totalWithSupport) => {
-    return totalWithSupport ? calculateGovSupport() : 0;
+  const getPersonalGovSupport = (isGovSupport) => {
+    return isGovSupport ? calculateGovSupport() : 0;
   };
 
   const setNetworkRates = (
@@ -66,19 +70,14 @@ function Results({
       (networkNightOrWeekendtPrice / 100) * UsageNightHours;
     return { finalDayRate, finalNightRate };
   };
-
-  const calculateNetworkFinalPrice = () => {
-    console.log(
-      finalDayRate,
-      finalNightRate,
-      capacityPrice,
-      getPersonalGovSupport(true)
-    );
-    const result =
-      finalDayRate +
-      finalNightRate +
-      capacityPrice -
-      getPersonalGovSupport(true);
+  const calculateNetworkFinalPrice = (
+    dayRate,
+    nightRate,
+    capacityPrice = 0,
+    getPersonalGovSupport
+  ) => {
+    console.log(dayRate, nightRate, capacityPrice);
+    const result = dayRate + nightRate + capacityPrice - getPersonalGovSupport;
     return result;
   };
 
@@ -86,20 +85,24 @@ function Results({
     return Number(totalMonthPrice) + Number(fee);
   };
 
-  const calculateAvgPriceZone = () =>
-    ((totalMonthPrice / totalUsage) * 100).toFixed(2);
-  useEffect(() => {
-    setNetworkRates(
-      networkDayPrice,
-      networkNightOrWeekendtPrice,
-      UsageDayHours,
-      UsageNightHours
+  const totalMonthBill = (hasFixedPrice) => {
+    const networkRatesWithGovSupport = calculateNetworkFinalPrice(
+      finalDayRate,
+      finalNightRate,
+      capacityPrice,
+      getPersonalGovSupport(isGovSupport)
     );
-  }, [totalMonthPrice]);
+    if (hasFixedPrice) {
+      const totalWithFixedPrice =
+        totalUsage * (fixedPrice / 100) + networkRatesWithGovSupport;
 
-  const totalMonthBill =
-    Number(calculatePowerPrice()) + calculateNetworkFinalPrice();
-
+      return totalWithFixedPrice.toFixed(2);
+    } else {
+      return (
+        Number(calculatePowerPrice()) + networkRatesWithGovSupport
+      ).toFixed(2);
+    }
+  };
   window.scrollTo(0, 0);
   return (
     <Card className="results-card">
@@ -107,7 +110,7 @@ function Results({
         <h2 className="text-decoration-underline ms-2">
           Estimert regning for {month}
         </h2>
-        <div class="all-result-tables">
+        <div className="all-result-tables">
           <table className="table">
             <thead>
               <tr>
@@ -124,7 +127,7 @@ function Results({
                 <td>{totalUsage.toFixed(0)} kWh</td>
                 <td>{avgPrice.toFixed(2)} øre</td>
                 <td>
-                  {avgPrice > 70 ? (
+                  {isGovSupport ? (
                     <p> {govSupport.toFixed(2)} øre pr kwh</p>
                   ) : (
                     <p>Ingen strømstøtte</p>
@@ -176,52 +179,62 @@ function Results({
                 <tr>
                   <th scope="row">Strøm totalt</th>
                   <td>{totalUsage.toFixed(2)}</td>
-                  <td>time for time</td>
+                  <td>{!hasFixedPrice ? "time for time" : fixedPrice}</td>
                   <td>Øre</td>
                   <td>
                     {hasFixedPrice
-                      ? totalUsage * Number(fixedPrice)
+                      ? (totalUsage * (fixedPrice / 100)).toFixed(2)
                       : calculatePowerPrice().toFixed(2)}
                   </td>
                 </tr>
-                <tr>
-                  <th scope="row">Kapasitet Fastledd</th>
-                  <td>1</td>
-                  <td>{capacityPrice}</td>
-                  <td>kr</td>
-                  <td>{capacityPrice}</td>
-                </tr>
-                {finalDayRate && (
+                {capacityPrice && (
+                  <tr>
+                    <th scope="row">Kapasitet Fastledd</th>
+                    <td>1</td>
+                    <td>{capacityPrice}</td>
+                    <td>kr</td>
+                    <td>{capacityPrice}</td>
+                  </tr>
+                )}
+                {finalDayRate ? (
                   <tr>
                     <th scope="row">Dag/Høy ledd</th>
-                    <td>{totalUsagedisplay}</td>
+                    <td>{UsageDayHours.toFixed(2)}</td>
                     <td>{networkDayPrice}</td>
                     <td>øre</td>
                     <td>{finalDayRate.toFixed(2)}</td>
                   </tr>
+                ) : (
+                  ""
                 )}
-                {finalNightRate && (
+                {finalNightRate ? (
                   <tr>
                     <th scope="row">Natt/Helg ledd</th>
-                    <td>{totalUsagedisplay}</td>
+                    <td>{UsageNightHours.toFixed(2)}</td>
                     <td>{networkNightOrWeekendtPrice}</td>
                     <td>øre</td>
                     <td>{finalNightRate.toFixed(2)}</td>
                   </tr>
+                ) : (
+                  ""
                 )}
-                <tr>
-                  <th scope="row">Strømstøtte:</th>
-                  <td>{totalUsagedisplay}</td>
-                  <td>{govSupport.toFixed(2)}</td>
-                  <td>øre</td>
-                  <td>{getPersonalGovSupport(true).toFixed(2)}</td>
-                </tr>
+                {isGovSupport ? (
+                  <tr>
+                    <th scope="row">Strømstøtte:</th>
+                    <td>{totalUsagedisplay}</td>
+                    <td>{isGovSupport ? govSupport.toFixed(2) : 0}</td>
+                    <td>øre</td>
+                    <td>-{getPersonalGovSupport(isGovSupport).toFixed(2)}</td>
+                  </tr>
+                ) : (
+                  ""
+                )}
               </tbody>
             </table>
           </div>
           <div>
             <h2 className="ms-2">
-              Total Sum for {month}:{totalMonthBill.toFixed(2)} kr{" "}
+              Total Sum for {month}:{totalMonthBill(hasFixedPrice)} kr{" "}
             </h2>
           </div>
         </div>

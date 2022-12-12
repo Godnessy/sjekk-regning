@@ -83,7 +83,9 @@ export default function InputsForm({
                       setNetworkDayPrice(validateInput(e.target.value));
                     }}
                   />
-                  <h6>øre(ink. avgifter)</h6>
+                  <h6>
+                    øre (<b>ink. avgifter!</b>)
+                  </h6>
                 </div>
                 <h5 className="me-2 network-rates-title">
                   Energiledd Natt/Helg:
@@ -98,7 +100,9 @@ export default function InputsForm({
                       );
                     }}
                   />
-                  <h6>øre (ink. avgifter)</h6>
+                  <h6>
+                    øre (<b>ink. avgifter!</b>)
+                  </h6>
                 </div>
               </div>
             </div>
@@ -162,12 +166,11 @@ export default function InputsForm({
             <div className="d-flex flex-row ms-2">
               <input
                 className="fixed-price-input"
-                type="number"
+                type="text"
                 ref={checkboxRef}
                 disabled
-                value={fixedPrice}
                 onChange={(e) => {
-                  setFixedPrice(e.target.value);
+                  setFixedPrice(validateInput(e.target.value));
                 }}
               />
               <h4>Øre pr. kwh</h4>

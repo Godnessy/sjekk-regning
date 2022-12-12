@@ -31,6 +31,7 @@ function Home() {
   const [lastDay, setLastDay] = useState("");
   const [avgMonthly, setAvgMonthly] = useState(0);
   const [govSupport, setGovSupport] = useState(0);
+  const [isGovSupport, setIsGovSupport] = useState(false);
   const [usageDayHours, setUsageDayHours] = useState(0);
   const [usageNightHours, setUsageNightHours] = useState(0);
   const [networkDayPrice, setNetworkDayPrice] = useState("0");
@@ -80,10 +81,10 @@ function Home() {
   const getMonthPrices = async (month) => {
     const monthRef = doc(db, "price-history", `${month}-22`);
     //quick way to track usage while in beta - will be removed.
-    const usageCounterRef = doc(db, "usage-counter", `usage`);
-    const usageCounterSnap = await getDoc(usageCounterRef);
-    let usageCounter = usageCounterSnap.data().usage;
-    await setDoc(usageCounterRef, { usage: usageCounter + 1 });
+    // const usageCounterRef = doc(db, "usage-counter", `usage`);
+    // const usageCounterSnap = await getDoc(usageCounterRef);
+    // let usageCounter = usageCounterSnap.data().usage;
+    // await setDoc(usageCounterRef, { usage: usageCounter + 1 });
     try {
       const docSnap = await getDoc(monthRef);
       if (docSnap.exists()) {
@@ -189,8 +190,10 @@ function Home() {
   };
 
   const createGovSupport = (monthlyAvg) => {
+    const govSupportBoolean = monthlyAvg > 70;
+    setIsGovSupport(govSupportBoolean);
     const calculation = (monthlyAvg - 87.5) * 0.9;
-    return calculation;
+    return govSupportBoolean ? calculation : 0;
   };
 
   useEffect(() => {}, [selectedKommune]);
@@ -314,6 +317,7 @@ function Home() {
             <h4 className="description-text align-self-center ms-2 me-2">
               Her kan du sjekke om strømregning du fikk er korrekt eller om du
               har betalt for mye eller sjekke denne måneds forbruk.
+              <p className="fw-bold">Nå med Nettleie!</p>
             </h4>
           </div>
           <div className="d-flex flex-column container justify-content-center">
@@ -330,6 +334,7 @@ function Home() {
                 setSurcharge={setSurcharge}
                 fee={fee}
                 setFee={setFee}
+                setFixedPrice={setFixedPrice}
                 parseCsvJson={parseCsvJson}
                 fixedPrice={fixedPrice}
                 hasFixedPrice={hasFixedPrice}
@@ -370,6 +375,7 @@ function Home() {
                 fixedPrice={fixedPrice}
                 avgPrice={avgMonthly}
                 govSupport={govSupport}
+                isGovSupport={isGovSupport}
                 lastDay={lastDay}
                 zone={selectedKommune.value}
                 networkDayPrice={networkDayPrice}
