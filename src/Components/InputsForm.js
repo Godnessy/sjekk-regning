@@ -48,6 +48,10 @@ export default function InputsForm({
             <label htmlFor="csvInput" style={{ display: "block" }}>
               <p className="input-text">
                 1. Laste opp måleverdier CSV fil fra Elhub:{" "}
+                <p class="csv-file-exp">
+                  Csv-fil er en fil du får fra Elhub som inneholder alle dine
+                  bruksverdier for måneden.{" "}
+                </p>
               </p>
             </label>
             <Instructions></Instructions>

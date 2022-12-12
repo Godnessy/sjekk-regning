@@ -185,7 +185,10 @@ body {
 .input-text {
   font-size: 2em;
 }
-
+.csv-file-exp {
+  font-weight: normal;
+  font-size: 0.5em;
+}
 .csv-modal {
   font-size: 1.5em;
   cursor: pointer;
