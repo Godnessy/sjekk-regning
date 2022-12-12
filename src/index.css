@@ -508,8 +508,9 @@ body {
     top: 10%;
     left: -30%;
   }
-  .table {
-    font-size: 0.85em;
+  .detailed-table {
+    font-size: 0.75em;
+    width: 100%;
   }
   .loading {
     position: relative;
