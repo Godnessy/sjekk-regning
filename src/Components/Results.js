@@ -102,40 +102,42 @@ function Results({
 
   return (
     <Card className="results-card">
-      <div className="d-flex align-content-left w-90 flex-column">
+      <div className="d-flex align-content-left flex-column">
         <h2 className="text-decoration-underline ms-2">
           Estimert regning for {month}
         </h2>
         <div class="all-result-tables">
-          <div className="tg-wrap">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th scope="col">Total Forbruk</th>
-                  <th scope="col">Snittpris {zone}</th>
-                  <th scope="col">
-                    {" "}
-                    Strømstøtte {zone} {lastDay}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>{totalUsage.toFixed(0)} kWh</td>
-                  <td>{avgPrice.toFixed(2)} øre</td>
-                  <td>
-                    {avgPrice > 70 ? (
-                      <p> {govSupport.toFixed(2)} øre pr kwh</p>
-                    ) : (
-                      <p>Ingen strømstøtte</p>
-                    )}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <table className="table">
+            <thead>
+              <tr>
+                <th scope="col">Total Forbruk</th>
+                <th scope="col">Snittpris {zone}</th>
+                <th scope="col">
+                  {" "}
+                  Strømstøtte {zone} {lastDay}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{totalUsage.toFixed(0)} kWh</td>
+                <td>{avgPrice.toFixed(2)} øre</td>
+                <td>
+                  {avgPrice > 70 ? (
+                    <p> {govSupport.toFixed(2)} øre pr kwh</p>
+                  ) : (
+                    <p>Ingen strømstøtte</p>
+                  )}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
           <div className="Totals-table mt-1 ms-1">
-            <table className="table table-striped">
+            <table
+              className="table 
+             table-striped detailed-table"
+            >
               <thead>
                 <tr>
                   <th scope="col">Priselement</th>
@@ -217,7 +219,7 @@ function Results({
             </table>
           </div>
           <div>
-            <h2>
+            <h2 className="ms-2">
               Total Sum for {month}:{totalMonthBill.toFixed(2)} kr{" "}
             </h2>
           </div>

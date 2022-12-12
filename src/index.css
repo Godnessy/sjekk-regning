@@ -81,9 +81,7 @@ body {
 
 .results-card {
   width: 50%;
-
-  position: relative;
-  left: 20%;
+  margin-left: 25%;
 }
 
 @media screen and (max-width: 1200px) {
@@ -94,6 +92,11 @@ body {
 @media screen and (max-width: 890px) {
   .price-exp {
     width: 15em;
+  }
+
+  .results-card {
+    width: 80%;
+    margin-left: 10%;
   }
 }
 
@@ -202,10 +205,6 @@ body {
   display: flex;
 }
 
-.results-card {
-  background-color: lightgreen;
-}
-
 .modal-arrow {
   width: 10%;
   position: absolute;
@@ -297,20 +296,18 @@ body {
   width: 80vw;
   justify-self: center;
 }
-.Totals-table {
-  width: 100%;
-  max-width: 100%;
-}
-.table-striped {
-  overflow: auto;
-  max-width: 100%;
-}
 
 /* Network rates */
 .network-rates-inputs {
   width: 50%;
 }
-
+.all-result-tables {
+  max-width: 99%;
+}
+.table {
+  max-width: 100%;
+  width: 100%;
+}
 @media screen and (max-width: 2500px) {
   .report {
     width: 10%;
@@ -344,6 +341,9 @@ body {
     width: 20%;
     right: 35px;
   }
+
+  .table {
+  }
 }
 
 @media screen and (max-width: 700px) {
@@ -351,13 +351,17 @@ body {
     flex-direction: column;
     margin: 0.5em 1em 0.5em 1em;
   }
-  .daily-prices {
-  }
+
   .hourly-prices {
     margin-top: 1em;
     justify-self: center;
     position: relative;
     right: 1em;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .table {
   }
 }
 
@@ -438,6 +442,14 @@ body {
   .support {
     width: 120%;
   }
+  .results-card {
+    width: 100%;
+    margin-left: 1%;
+  }
+  .table {
+    width: 100%;
+    font-size: 0.9em;
+  }
 
   @keyframes arrow {
     0% {
@@ -474,14 +486,20 @@ body {
     top: 10%;
     left: -30%;
   }
+  .table {
+    font-size: 0.9em;
+  }
 }
 
-@media screen and (max-width: 370px) {
+@media screen and (max-width: 375px) {
   .hourly-prices {
     margin-right: 14% !important;
   }
 
   .table-hourly {
     margin-right: 10%;
+  }
+  .detailed-table {
+    font-size: 0.75em;
   }
 }
