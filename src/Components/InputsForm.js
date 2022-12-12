@@ -60,7 +60,7 @@ export default function InputsForm({
           </div>
           <div className="network">
             {/* change the w-25 when adjusting responsiveness */}
-            <div className="border border-dark d-flex flex-column card inputs-card ">
+            <div className="border border-dark d-flex flex-column card network-inputs ">
               <h4 className="ms-2 text-decoration-underline">Nettleie</h4>
               <div className="d-flex flex-column ms-2 mb-1">
                 <h5 className="me-2 network-rates-title">Fastledd:</h5>
@@ -120,7 +120,7 @@ export default function InputsForm({
           {error && <h2 className="text-danger d-flex ">{error} </h2>}
         </div>
         <hr />
-        <div className="d-flex justify extras-container">
+        <div className="extras-container">
           <div className="d-flex flex-column">
             <div className="d-flex surcharge">
               <h3 className="me-2 surcharge-title">Påslag</h3>

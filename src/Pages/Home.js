@@ -348,30 +348,29 @@ function Home() {
 
         <div className="page-container">
           <div className="inputs-container justify-content-center my-2 d-flex flex-column">
-            <div className="align-self-center">
-              {totalMonthPrice && (
-                <Results
-                  totalMonthPrice={totalMonthPrice}
-                  fee={fee}
-                  totalUsage={totalKwh}
-                  month={selectedMonth}
-                  surcharge={surcharge}
-                  selectedMonth={selectedMonth}
-                  hasFixedPrice={hasFixedPrice}
-                  fixedPrice={fixedPrice}
-                  avgPrice={avgMonthly}
-                  govSupport={govSupport}
-                  lastDay={lastDay}
-                  zone={selectedKommune.value}
-                  networkDayPrice={networkDayPrice}
-                  networkNightOrWeekendtPrice={networkNightOrWeekendtPrice}
-                  UsageDayHours={usageDayHours}
-                  UsageNightHours={usageNightHours}
-                  capacityPrice={capacityPrice}
-                  setCapacityPrice={setCapacityPrice}
-                />
-              )}
-            </div>
+            {totalMonthPrice && (
+              <Results
+                totalMonthPrice={totalMonthPrice}
+                fee={fee}
+                totalUsage={totalKwh}
+                month={selectedMonth}
+                surcharge={surcharge}
+                selectedMonth={selectedMonth}
+                hasFixedPrice={hasFixedPrice}
+                fixedPrice={fixedPrice}
+                avgPrice={avgMonthly}
+                govSupport={govSupport}
+                lastDay={lastDay}
+                zone={selectedKommune.value}
+                networkDayPrice={networkDayPrice}
+                networkNightOrWeekendtPrice={networkNightOrWeekendtPrice}
+                UsageDayHours={usageDayHours}
+                UsageNightHours={usageNightHours}
+                capacityPrice={capacityPrice}
+                setCapacityPrice={setCapacityPrice}
+              />
+            )}
+
             <button
               className="reset-btn calculate-after w-25 align-self-center btn btn-danger ms-5 my-3"
               onClick={() => {
@@ -380,30 +379,32 @@ function Home() {
             >
               Ny regning
             </button>
-            <div className="align-self-center chart">
-              <MonthlyChart usageData={usageData} />
+            <div className="results-d-flex">
+              <div className="align-self-center chart">
+                <MonthlyChart usageData={usageData} />
+              </div>
             </div>
-          </div>
 
-          <div className="usage-price-container my-2 d-flex ">
-            <div className="daily-prices me-4">
-              {usageData && (
-                <DailyPrices
-                  dataForHour={usageData}
-                  totalMonthPrice={totalMonthPrice}
-                  hasFixedPrice={hasFixedPrice}
-                  fixedPrice={fixedPrice}
-                />
-              )}
-            </div>
-            <div className=" hourly-prices ms-3">
-              {usageData && (
-                <HourlyPrices
-                  dataForHour={usageData}
-                  hasFixedPrice={hasFixedPrice}
-                  fixedPrice={fixedPrice}
-                />
-              )}
+            <div className="usage-price-container my-2 d-flex ">
+              <div className="daily-prices me-4">
+                {usageData && (
+                  <DailyPrices
+                    dataForHour={usageData}
+                    totalMonthPrice={totalMonthPrice}
+                    hasFixedPrice={hasFixedPrice}
+                    fixedPrice={fixedPrice}
+                  />
+                )}
+              </div>
+              <div className=" hourly-prices ms-3">
+                {usageData && (
+                  <HourlyPrices
+                    dataForHour={usageData}
+                    hasFixedPrice={hasFixedPrice}
+                    fixedPrice={fixedPrice}
+                  />
+                )}
+              </div>
             </div>
           </div>
         </div>

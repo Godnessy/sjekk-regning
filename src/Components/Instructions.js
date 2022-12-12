@@ -76,8 +76,6 @@ function Instructions() {
             </Card>
             <Card className="mb-3 border border-5 border-dark">
               <Card.Title className="ms-3 fs-4 text-danger mt-2">
-                Systemet vårt er i betamodus og kan bare beregne priser for
-                oktober 2022 akkurat nå! Flere måneder kommer snart.
                 <p className="text-dark">Steg 7/8</p>
               </Card.Title>
               <Card.Body>

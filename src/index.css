@@ -53,6 +53,10 @@ body {
   top: 15%;
 }
 
+.network-inputs {
+  width: 60%;
+}
+
 .logo {
   width: 6em;
   margin-top: 10px;
@@ -73,6 +77,13 @@ body {
 
 .results-table {
   margin: 0 5% 0 5%;
+}
+
+.results-card {
+  width: 50%;
+
+  position: relative;
+  left: 20%;
 }
 
 @media screen and (max-width: 1200px) {
@@ -207,6 +218,15 @@ body {
   animation-delay: 0;
 }
 
+.extras-container {
+  display: grid;
+  grid-template-columns: 3;
+  grid-template-rows: 2;
+  grid-template-areas:
+    "extras fixed-price button"
+    "extras2 fixed-price button ";
+}
+
 @keyframes arrow {
   0% {
     right: 10px;
@@ -234,26 +254,6 @@ body {
 .fixed-price {
   position: relative;
   right: 10%;
-}
-
-.tg {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-.tg td {
-  font-family: Arial, sans-serif;
-  font-size: 1.5em;
-  word-break: normal;
-}
-
-.tg th {
-  font-family: Arial, sans-serif;
-  font-size: 1.5em;
-  font-weight: normal;
-  word-break: normal;
-}
-.tg .tg-0lax {
-  vertical-align: top;
 }
 
 .left-side-table {
@@ -291,10 +291,19 @@ body {
   top: 10px;
 }
 
-.chart-bar {
+.chart {
   position: relative;
-  height: 70vh;
-  width: 70vh;
+  left: 10%;
+  width: 80vw;
+  justify-self: center;
+}
+.Totals-table {
+  width: 100%;
+  max-width: 100%;
+}
+.table-striped {
+  overflow: auto;
+  max-width: 100%;
 }
 
 /* Network rates */
@@ -314,9 +323,12 @@ body {
   }
 
   .fixed-price {
-    right: 0;
-    left: 5%;
+    grid-area: extras2;
+    width: 80%;
+    position: relative;
+    left: 1%;
   }
+
   .site-descrip {
     margin-left: 10% !important;
     margin-right: 10% !important;
@@ -331,6 +343,21 @@ body {
   .report {
     width: 20%;
     right: 35px;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .usage-price-container {
+    flex-direction: column;
+    margin: 0.5em 1em 0.5em 1em;
+  }
+  .daily-prices {
+  }
+  .hourly-prices {
+    margin-top: 1em;
+    justify-self: center;
+    position: relative;
+    right: 1em;
   }
 }
 
@@ -350,6 +377,12 @@ body {
     left: 2%;
   }
 
+  .calculate {
+    font-size: 1em !important;
+    top: 50%;
+    width: 70%;
+  }
+
   .inputs-and-button {
     flex-direction: column;
   }
@@ -357,9 +390,6 @@ body {
   .reset-btn {
     position: relative;
     right: 5%;
-  }
-  .usage-price-container {
-    flex-direction: column;
   }
 
   .site-descrip {
@@ -396,14 +426,8 @@ body {
     left: 90%;
   }
 
-  .extras-container {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .fixed-price {
-    margin-left: -20px;
-    width: 14em;
+  .fixed-price-input {
+    width: 80%;
   }
 
   .report {
@@ -444,6 +468,11 @@ body {
   }
   .support {
     width: 140%;
+  }
+  .calculate {
+    position: relative;
+    top: 10%;
+    left: -30%;
   }
 }
 
