@@ -513,7 +513,7 @@ body {
   }
   .loading {
     position: relative;
-    left: 21%;
+    left: 27%;
   }
 }
 
@@ -527,5 +527,9 @@ body {
   }
   .detailed-table {
     font-size: 0.75em;
+  }
+  .loading {
+    position: relative;
+    left: 31%;
   }
 }
