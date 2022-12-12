@@ -100,6 +100,7 @@ function Results({
   const totalMonthBill =
     Number(calculatePowerPrice()) + calculateNetworkFinalPrice();
 
+  window.scrollTo(0, 0);
   return (
     <Card className="results-card">
       <div className="d-flex align-content-left flex-column">
