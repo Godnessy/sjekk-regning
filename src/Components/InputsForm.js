@@ -46,13 +46,15 @@ export default function InputsForm({
         <div className="csv-part d-flex flex-column">
           <div className="upload mb-2">
             <label htmlFor="csvInput" style={{ display: "block" }}>
-              <p className="input-text">
-                1. Laste opp måleverdier CSV fil fra Elhub:{" "}
-                <p class="csv-file-exp">
+              <section>
+                <p className="input-text">
+                  1. Laste opp måleverdier CSV fil fra Elhub:{" "}
+                </p>
+                <p className="csv-file-exp">
                   Csv-fil er en fil du får fra Elhub som inneholder alle dine
                   bruksverdier for måneden.{" "}
                 </p>
-              </p>
+              </section>
             </label>
             <Instructions></Instructions>
             <input

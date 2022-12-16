@@ -64,7 +64,7 @@ function Home() {
     "09": "September",
     10: "October",
     11: "November",
-    12: "Desember",
+    12: "December",
   };
 
   const uploadFailedFile = async () => {

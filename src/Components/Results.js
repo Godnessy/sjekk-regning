@@ -24,8 +24,21 @@ function Results({
   const [isSupport, setIsSupport] = useState(false);
   const [finalDayRate, setFinalDayRate] = useState(0);
   const [finalNightRate, setFinalNightRate] = useState(0);
-
   const totalUsagedisplay = totalUsage && totalUsage.toFixed(2);
+  const norwegianMonths = {
+    January: "Januar",
+    February: "Februar",
+    March: "Mars",
+    April: "April",
+    May: "Mai",
+    June: "Juni",
+    July: "Juli",
+    August: "August",
+    September: "September",
+    October: "Oktober",
+    November: "November",
+    December: "Desember",
+  };
 
   useEffect(() => {
     setNetworkRates(
@@ -108,7 +121,7 @@ function Results({
     <Card className="results-card">
       <div className="d-flex align-content-left flex-column">
         <h2 className="text-decoration-underline ms-2">
-          Estimert regning for {month}
+          Estimert regning for {norwegianMonths[month]}
         </h2>
         <div className="all-result-tables">
           <table className="table">
@@ -234,7 +247,8 @@ function Results({
           </div>
           <div>
             <h2 className="ms-2">
-              Total Sum for {month}:{totalMonthBill(hasFixedPrice)} kr{" "}
+              Total Sum for {norwegianMonths[month]}:
+              {totalMonthBill(hasFixedPrice)} kr{" "}
             </h2>
           </div>
         </div>
