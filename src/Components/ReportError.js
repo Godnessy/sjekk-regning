@@ -9,6 +9,7 @@ function ReportError({ uploadFailedFile, file }) {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [text, setText] = useState("");
+  const [email, setEmail] = useState("");
 
   const sendInFile = async () => {
     await uploadFailedFile();
@@ -16,7 +17,7 @@ function ReportError({ uploadFailedFile, file }) {
     setShow(false);
   };
 
-  const sendInMsgFile = async (text) => {
+  const sendInMsgFile = async (text, email) => {
     if (text == "" || !file) {
       console.log(file);
       console.log(text);
@@ -25,12 +26,13 @@ function ReportError({ uploadFailedFile, file }) {
       );
       return;
     }
-    await sendInMessage(text);
+    await sendInMessage(text, email);
     await uploadFailedFile();
     setShow(false);
+    setEmail("");
   };
 
-  const sendInMessage = async (text) => {
+  const sendInMessage = async (text, email = "") => {
     if (text == "") {
       alert("Vennligst skriv en melding før du sender");
       return;
@@ -39,6 +41,8 @@ function ReportError({ uploadFailedFile, file }) {
     const dateToSend = date.toLocaleDateString();
     const docRef = await addDoc(collection(db, "userFeedback"), {
       [dateToSend]: text,
+      Email: email,
+      Read: false,
     });
     setText("");
     alert("Takk for tilbakemelding! ");
@@ -78,7 +82,7 @@ function ReportError({ uploadFailedFile, file }) {
             </h2>
             <br></br>
             <p>Melding:</p>
-            <div className="d-flex flex-row">
+            <div className="d-flex flex-column">
               <input
                 type="text"
                 name=""
@@ -88,10 +92,24 @@ function ReportError({ uploadFailedFile, file }) {
                   setText(e.target.value);
                 }}
               />
+              <br></br>
+              <p>Vil du få et svar? skriv inn Epost:</p>
+              <input
+                type="text"
+                name=""
+                id=""
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setText("");
+                  setEmail("");
+                }}
+              />
               <button
-                className="btn"
+                className="btn report-reset-button"
                 onClick={() => {
                   setText("");
+                  setEmail("");
                 }}
               >
                 Reset
@@ -100,13 +118,13 @@ function ReportError({ uploadFailedFile, file }) {
             <div className="d-flex flex-row mt-2">
               <button
                 className="btn btn-success me-2"
-                onClick={() => sendInMsgFile(text)}
+                onClick={() => sendInMsgFile(text, email)}
               >
                 Send inn melding og fil
               </button>
               <button
                 className="btn btn-info"
-                onClick={() => sendInMessage(text)}
+                onClick={() => sendInMessage(text, email)}
               >
                 Send inn bare melding
               </button>

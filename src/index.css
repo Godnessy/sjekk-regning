@@ -317,6 +317,13 @@ body {
   left: 47%;
   top: 10rem;
 }
+
+/*Error reporting page */
+.report-reset-button {
+  font-size: 0.8em !important;
+  color: grey !important;
+}
+
 @media screen and (max-width: 2500px) {
   .report {
     width: 10%;
