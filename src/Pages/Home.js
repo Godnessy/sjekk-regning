@@ -105,6 +105,8 @@ function Home() {
       setFile(inputFile);
     }
   };
+
+  console.log(surcharge);
   const parseCsvJson = () => {
     if (!file) return setError("Har du glemt å velge CSV fil?");
     else if (!selectedKommune) return setError("Velg kommune fra listen");
@@ -172,7 +174,7 @@ function Home() {
     if (zonePrices) {
       const basePrice = Number(zonePrices[time]);
       tempMonthAvg = tempMonthAvg + basePrice;
-      const calculatedPrice = basePrice + Number(surcharge);
+      const calculatedPrice = basePrice;
       return calculatedPrice;
     } else {
       return 0;
@@ -213,7 +215,6 @@ function Home() {
     if (isWeekend) {
       dayNightHoursCounter.night = nightHours + usageForhour;
     } else {
-      //stuck here, calculation doesnt work and everything gets taken for day hour, checked type and its number.
       if (extractNumberFromHour >= 22 || extractNumberFromHour <= 5) {
         return (dayNightHoursCounter.night = nightHours + usageForhour);
       } else {

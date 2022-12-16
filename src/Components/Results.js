@@ -99,27 +99,41 @@ function Results({
     return result;
   };
 
-  const calculatePowerPrice = () => {
-    return Number(totalMonthPrice) + Number(fee);
+  const calculateSurcharge = (surcharge = 0) => {
+    return (surcharge * totalUsage) / 100;
   };
 
-  const totalMonthBill = (hasFixedPrice, WithPowerSupport) => {
+  const totalMonthBill = (
+    hasFixedPrice = false,
+    WithPowerSupport,
+    surcharge = 0,
+    fee = 0
+  ) => {
+    console.log(WithPowerSupport);
     const networkRatesWithGovSupport = calculateNetworkFinalPrice(
       finalDayRate,
       finalNightRate,
       capacityPrice,
       getPersonalGovSupport(WithPowerSupport)
     );
-    console.log(WithPowerSupport);
     if (hasFixedPrice) {
       const totalWithFixedPrice =
         totalUsage * (fixedPrice / 100) + networkRatesWithGovSupport;
 
       return totalWithFixedPrice.toFixed(2);
     } else {
+      console.log(
+        totalMonthPrice +
+          networkRatesWithGovSupport +
+          calculateSurcharge(surcharge) +
+          fee
+      );
       return (
-        Number(calculatePowerPrice()) + networkRatesWithGovSupport
-      ).toFixed(2);
+        totalMonthPrice +
+        networkRatesWithGovSupport +
+        calculateSurcharge(surcharge) +
+        fee
+      );
     }
   };
 
@@ -200,14 +214,14 @@ function Results({
                   </tr>
                 )}
                 <tr>
-                  <th scope="row">Strøm totalt</th>
+                  <th scope="row">Strøm</th>
                   <td>{totalUsage.toFixed(2)}</td>
                   <td>{!hasFixedPrice ? "time for time" : fixedPrice}</td>
                   <td>Øre</td>
                   <td>
                     {hasFixedPrice
                       ? (totalUsage * (fixedPrice / 100)).toFixed(2)
-                      : calculatePowerPrice().toFixed(2)}
+                      : totalMonthPrice.toFixed(2)}
                   </td>
                 </tr>
                 {capacityPrice && (
@@ -280,7 +294,13 @@ function Results({
           <div>
             <h2 className="ms-2">
               Total Sum for {norwegianMonths[month]}:
-              {totalMonthBill(hasFixedPrice, showWithPowerSupport)} kr{" "}
+              {totalMonthBill(
+                hasFixedPrice,
+                showWithPowerSupport,
+                surcharge,
+                fee
+              ).toFixed(2)}{" "}
+              kr{" "}
             </h2>
           </div>
         </div>
