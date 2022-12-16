@@ -1,5 +1,6 @@
 import { React, useState, useEffect, useRef } from "react";
-import { Card } from "react-bootstrap";
+import { ButtonGroup, Card } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 
 function Results({
   totalMonthPrice,
@@ -25,6 +26,11 @@ function Results({
   const [finalDayRate, setFinalDayRate] = useState(0);
   const [finalNightRate, setFinalNightRate] = useState(0);
   const totalUsagedisplay = totalUsage && totalUsage.toFixed(2);
+  const [showWithPowerSupport, setShowWithPowerSupport] = useState(true);
+
+  const showPowerSupport = (boolean) => {
+    setShowWithPowerSupport(boolean);
+  };
   const norwegianMonths = {
     January: "Januar",
     February: "Februar",
@@ -84,12 +90,11 @@ function Results({
     return { finalDayRate, finalNightRate };
   };
   const calculateNetworkFinalPrice = (
-    dayRate,
-    nightRate,
+    dayRate = 0,
+    nightRate = 0,
     capacityPrice = 0,
     getPersonalGovSupport
   ) => {
-    console.log(dayRate, nightRate, capacityPrice);
     const result = dayRate + nightRate + capacityPrice - getPersonalGovSupport;
     return result;
   };
@@ -98,13 +103,14 @@ function Results({
     return Number(totalMonthPrice) + Number(fee);
   };
 
-  const totalMonthBill = (hasFixedPrice) => {
+  const totalMonthBill = (hasFixedPrice, WithPowerSupport) => {
     const networkRatesWithGovSupport = calculateNetworkFinalPrice(
       finalDayRate,
       finalNightRate,
       capacityPrice,
-      getPersonalGovSupport(isGovSupport)
+      getPersonalGovSupport(WithPowerSupport)
     );
+    console.log(WithPowerSupport);
     if (hasFixedPrice) {
       const totalWithFixedPrice =
         totalUsage * (fixedPrice / 100) + networkRatesWithGovSupport;
@@ -116,7 +122,11 @@ function Results({
       ).toFixed(2);
     }
   };
-  window.scrollTo(0, 0);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <Card className="results-card">
       <div className="d-flex align-content-left flex-column">
@@ -245,10 +255,32 @@ function Results({
               </tbody>
             </table>
           </div>
+          <div className="d-flex ms-2">
+            <h3>Vis Sum</h3>
+            <ButtonGroup>
+              <Button
+                variant="outline-success"
+                value={true}
+                className="ms-2 me-2"
+                onClick={() => showPowerSupport(true)}
+              >
+                Med Strømstøtte
+              </Button>
+              <Button
+                variant="outline-danger"
+                value={false}
+                onClick={() => {
+                  showPowerSupport(false);
+                }}
+              >
+                Uten Strømstøtte
+              </Button>
+            </ButtonGroup>
+          </div>
           <div>
             <h2 className="ms-2">
               Total Sum for {norwegianMonths[month]}:
-              {totalMonthBill(hasFixedPrice)} kr{" "}
+              {totalMonthBill(hasFixedPrice, showWithPowerSupport)} kr{" "}
             </h2>
           </div>
         </div>
