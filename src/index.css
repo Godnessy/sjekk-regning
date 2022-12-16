@@ -503,6 +503,9 @@ body {
 }
 
 @media screen and (max-width: 400px) {
+  .daily-table {
+    font-size: 0.88em;
+  }
   .hourly-prices {
     margin-right: 14% !important;
   }
