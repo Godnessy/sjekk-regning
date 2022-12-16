@@ -14,6 +14,8 @@ function ReportError({ uploadFailedFile, file }) {
   const sendInFile = async () => {
     await uploadFailedFile();
     alert("Takk for at du deler filen med oss!");
+    setText("");
+    setEmail("");
     setShow(false);
   };
 
@@ -45,6 +47,7 @@ function ReportError({ uploadFailedFile, file }) {
       Read: false,
     });
     setText("");
+    setEmail("");
     alert("Takk for tilbakemelding! ");
     setShow(false);
   };
@@ -101,8 +104,6 @@ function ReportError({ uploadFailedFile, file }) {
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
-                  setText("");
-                  setEmail("");
                 }}
               />
               <button
