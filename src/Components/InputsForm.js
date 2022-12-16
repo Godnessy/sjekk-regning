@@ -65,7 +65,6 @@ export default function InputsForm({
             />
           </div>
           <div className="network">
-            {/* change the w-25 when adjusting responsiveness */}
             <div className="border border-dark d-flex flex-column card network-inputs ">
               <h4 className="ms-2 text-decoration-underline">Nettleie</h4>
               <div className="d-flex flex-column ms-2 mb-1">

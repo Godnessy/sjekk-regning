@@ -109,7 +109,6 @@ function Results({
     surcharge = 0,
     fee = 0
   ) => {
-    console.log(WithPowerSupport);
     const networkRatesWithGovSupport = calculateNetworkFinalPrice(
       finalDayRate,
       finalNightRate,
@@ -122,12 +121,6 @@ function Results({
 
       return totalWithFixedPrice.toFixed(2);
     } else {
-      console.log(
-        totalMonthPrice +
-          networkRatesWithGovSupport +
-          calculateSurcharge(surcharge) +
-          fee
-      );
       return (
         totalMonthPrice +
         networkRatesWithGovSupport +

@@ -42,6 +42,8 @@ function Home() {
   const [hasFixedPrice, setHasFixedPrice] = useState(false);
   const [capacityPrice, setCapacityPrice] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const [supportRateForMonth, setSupportRateForMonth] = useState();
+  const [selectedYear, setSelectedYear] = useState();
   const checkboxRef = useRef();
 
   const fileRef = ref(storage, file.name);
@@ -52,19 +54,52 @@ function Home() {
   let hoursCounter = 0;
   let avgPriceTimesUsage = 0;
   let dayNightHoursCounter = { day: 0, night: 0 };
+  const supportMonthObj = {
+    22: {
+      "01": 0.8,
+      "02": 0.8,
+      "03": 0.8,
+      "04": 0.8,
+      "05": 0.8,
+      "06": 0.8,
+      "07": 0.8,
+      "08": 0.8,
+      "09": 90,
+      10: 0.9,
+      11: 0.9,
+      12: 0.9,
+    },
+    23: {
+      "01": 0.9,
+      "02": 0.9,
+      "03": 0.9,
+      "04": 0.8,
+      "05": 0.8,
+      "06": 0.8,
+      "07": 0.8,
+      "08": 0.8,
+      "09": 0.8,
+      10: 0.9,
+      11: 0.9,
+      12: 0.9,
+    },
+  };
   const monthObj = {
-    "01": "January",
-    "02": "February",
-    "03": "March",
-    "04": "April",
-    "05": "May",
-    "06": "June",
-    "07": "July",
-    "08": "August",
-    "09": "September",
-    10: "October",
-    11: "November",
-    12: "December",
+    22: {
+      "01": "January",
+      "02": "February",
+      "03": "March",
+      "04": "April",
+      "05": "May",
+      "06": "June",
+      "07": "July",
+      "08": "August",
+      "09": "September",
+      10: "October",
+      11: "November",
+      12: "December",
+    },
+    23: {},
   };
 
   const uploadFailedFile = async () => {
@@ -81,10 +116,10 @@ function Home() {
   const getMonthPrices = async (month) => {
     const monthRef = doc(db, "price-history", `${month}-22`);
     //quick way to track usage while in beta - will be removed.
-    const usageCounterRef = doc(db, "usage-counter", `usage`);
-    const usageCounterSnap = await getDoc(usageCounterRef);
-    let usageCounter = usageCounterSnap.data().usage;
-    await setDoc(usageCounterRef, { usage: usageCounter + 1 });
+    // const usageCounterRef = doc(db, "usage-counter", `usage`);
+    // const usageCounterSnap = await getDoc(usageCounterRef);
+    // let usageCounter = usageCounterSnap.data().usage;
+    // await setDoc(usageCounterRef, { usage: usageCounter + 1 });
     try {
       const docSnap = await getDoc(monthRef);
       if (docSnap.exists()) {
@@ -106,7 +141,6 @@ function Home() {
     }
   };
 
-  console.log(surcharge);
   const parseCsvJson = () => {
     if (!file) return setError("Har du glemt å velge CSV fil?");
     else if (!selectedKommune) return setError("Velg kommune fra listen");
@@ -191,10 +225,11 @@ function Home() {
     return 0;
   };
 
-  const createGovSupport = (monthlyAvg) => {
+  const createGovSupport = (monthlyAvg, SupportRateForMonth) => {
     const govSupportBoolean = monthlyAvg > 70;
     setIsGovSupport(govSupportBoolean);
-    const calculation = (monthlyAvg - 87.5) * 0.9;
+    console.log(SupportRateForMonth);
+    const calculation = (monthlyAvg - 87.5) * SupportRateForMonth;
     return govSupportBoolean ? calculation : 0;
   };
 
@@ -202,10 +237,25 @@ function Home() {
   useEffect(() => {}, [totalMonthPrice]);
 
   const extractCurrentMonth = async (usageData) => {
+    const wholeYear = usageData[0].Fra.split(".")[2].split(" ")[0];
+    const year = wholeYear.split("0")[1];
+    if (year <= 21) {
+      alert(
+        `Vi har ikke pris informasjon for ${wholeYear} , Vi kan kun estimere fakturaer fra og med januar 2022`
+      );
+      window.location.reload();
+      return;
+    }
     const month = usageData[0].Fra.split(".")[1];
-    setSelectedMonth(monthObj[month]);
-    const prices = await getMonthPrices(monthObj[month]);
-    calculateMonthlyValues(usageData, prices);
+
+    const SupportRateForMonth = supportMonthObj[year][month];
+    const selecetedMonth = monthObj[year][month];
+    setSupportRateForMonth(SupportRateForMonth);
+    setSelectedMonth(selecetedMonth);
+    setSelectedYear(wholeYear);
+
+    const prices = await getMonthPrices(monthObj[year][month]);
+    calculateMonthlyValues(usageData, prices, SupportRateForMonth);
   };
 
   const extractDifferentRates = (hour, usageForhour, isWeekend) => {
@@ -249,9 +299,8 @@ function Home() {
     const sortedCapacityarr = capacityArr.sort((a, b) => a > b);
   }
 
-  function calculateMonthlyValues(usageData, prices) {
+  function calculateMonthlyValues(usageData, prices, SupportRateForMonth) {
     setSurcharge(surcharge);
-
     const dataForHour = usageData.map((hour, idx) => {
       const values = hour.Fra.split(" ");
       const date = values[0];
@@ -293,7 +342,9 @@ function Home() {
     setTotalMonthPrice(totalMonthPrice);
     setUsageData(dataForHour);
     setAvgMonthly(tempMonthAvg / hoursCounter);
-    setGovSupport(createGovSupport(tempMonthAvg / hoursCounter));
+    setGovSupport(
+      createGovSupport(tempMonthAvg / hoursCounter, SupportRateForMonth)
+    );
     setTotalKwh(totalUsage);
     setIsLoading(false);
   }
