@@ -21,6 +21,8 @@ function Results({
   UsageDayHours,
   UsageNightHours,
   capacityPrice,
+  supportRateForMonth,
+  selectedYear,
 }) {
   const [isSupport, setIsSupport] = useState(false);
   const [finalDayRate, setFinalDayRate] = useState(0);
@@ -119,7 +121,7 @@ function Results({
       const totalWithFixedPrice =
         totalUsage * (fixedPrice / 100) + networkRatesWithGovSupport;
 
-      return totalWithFixedPrice.toFixed(2);
+      return totalWithFixedPrice;
     } else {
       return (
         totalMonthPrice +
@@ -138,7 +140,7 @@ function Results({
     <Card className="results-card">
       <div className="d-flex align-content-left flex-column">
         <h2 className="text-decoration-underline ms-2">
-          Estimert regning for {norwegianMonths[month]}
+          Estimert regning for {norwegianMonths[month]} {selectedYear}
         </h2>
         <div className="all-result-tables">
           <table className="table">
@@ -250,7 +252,9 @@ function Results({
                 )}
                 {isGovSupport ? (
                   <tr>
-                    <th scope="row">Strømstøtte:</th>
+                    <th scope="row">
+                      Strømstøtte {supportRateForMonth * 100}%:
+                    </th>
                     <td>{totalUsagedisplay}</td>
                     <td>{isGovSupport ? govSupport.toFixed(2) : 0}</td>
                     <td>øre</td>

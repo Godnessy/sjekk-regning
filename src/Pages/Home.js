@@ -239,6 +239,7 @@ function Home() {
   const extractCurrentMonth = async (usageData) => {
     const wholeYear = usageData[0].Fra.split(".")[2].split(" ")[0];
     const year = wholeYear.split("0")[1];
+    const month = usageData[0].Fra.split(".")[1];
     if (year <= 21) {
       alert(
         `Vi har ikke pris informasjon for ${wholeYear} , Vi kan kun estimere fakturaer fra og med januar 2022`
@@ -246,7 +247,13 @@ function Home() {
       window.location.reload();
       return;
     }
-    const month = usageData[0].Fra.split(".")[1];
+    if (month <= "06") {
+      alert(
+        `Denne fakturaen er fra før den nye dag/natt nettleie modellen har blitt introdusert (Juli 2022), Vi støtter ennå ikke denne typen regninger, men jeg jobber med en ny versjon som vil tillate dette.`
+      );
+      window.location.reload();
+      return;
+    }
 
     const SupportRateForMonth = supportMonthObj[year][month];
     const selecetedMonth = monthObj[year][month];
@@ -436,6 +443,8 @@ function Home() {
                 UsageNightHours={usageNightHours}
                 capacityPrice={capacityPrice}
                 setCapacityPrice={setCapacityPrice}
+                selectedYear={selectedYear}
+                supportRateForMonth={supportRateForMonth}
               />
             )}
 
