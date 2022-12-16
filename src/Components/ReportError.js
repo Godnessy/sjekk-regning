@@ -96,7 +96,7 @@ function ReportError({ uploadFailedFile, file }) {
                 }}
               />
               <br></br>
-              <p>Vil du få et svar? skriv inn Epost:</p>
+              <p>Vil du ha svar? Skriv i e-posten din:</p>
               <input
                 type="text"
                 name=""
