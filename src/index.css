@@ -324,6 +324,18 @@ body {
   color: grey !important;
 }
 
+/* Tutorial button div */
+.tutorial {
+  font-size: 1.3em;
+  margin-left: 10%;
+}
+.tut-txt {
+  width: 50%;
+}
+.tut-btn {
+  font-size: 1.4em !important;
+}
+
 @media screen and (max-width: 2500px) {
   .report {
     width: 10%;

@@ -1,4 +1,4 @@
-import { React, useEffect } from "react";
+import { React, useEffect, useState, useRef } from "react";
 import Instructions from "./Instructions";
 import KommuneDropdown from "./KommuneDropdown";
 export default function InputsForm({
@@ -17,8 +17,6 @@ export default function InputsForm({
   checkboxRef,
   setHasFixedPrice,
   fixComma,
-  CalculateWithNetowrk,
-  setCalculateWithNetwork,
   networkDayPrice,
   setNetworkDayPrice,
   networkNightOrWeekendtPrice,
@@ -26,11 +24,24 @@ export default function InputsForm({
   capacityPrice,
   setCapacityPrice,
 }) {
+  const [networkDayPriceFromStorage, setNetworkDayPriceFromStorage] =
+    useState();
+  const [networkNightPriceFromStorage, setNetworkNightPriceFromStorage] =
+    useState();
+  const fileRef = useRef();
+
   useEffect(() => {
     checkboxRef.current.disabled = !hasFixedPrice;
   }, [hasFixedPrice]);
 
+  useEffect(() => {}, [networkDayPrice, networkNightOrWeekendtPrice]);
+
+  useEffect(() => {
+    console.log(fileRef);
+  }, []);
+
   function validateInput(input) {
+    console.log(input);
     const allowedChars = new RegExp(/^[0-9\-\,\.\b]*$/);
     if (allowedChars.test(input)) {
       let correctedSurcharge = fixComma(input);
@@ -62,55 +73,70 @@ export default function InputsForm({
               id="csvInput"
               name="file"
               type="File"
+              ref={fileRef}
             />
           </div>
-          <div className="network">
-            <div className="border border-dark d-flex flex-column card network-inputs ">
-              <h4 className="ms-2 text-decoration-underline">Nettleie</h4>
-              <div className="d-flex flex-column ms-2 mb-1">
-                <h5 className="me-2 network-rates-title">Fastledd:</h5>
-                <div className="d-flex">
-                  <input
-                    className="network-rates-inputs"
-                    type="text"
-                    onChange={(e) => {
-                      setCapacityPrice(validateInput(e.target.value));
-                    }}
-                  />
-                  <h6>kr</h6>
-                </div>
-                <h5 className="me-2 network-rates-title">Energiledd Dag:</h5>
-                <div className="d-flex">
-                  <input
-                    className="network-rates-inputs"
-                    type="text"
-                    onChange={(e) => {
-                      setNetworkDayPrice(validateInput(e.target.value));
-                    }}
-                  />
-                  <h6>
-                    øre (<b>ink. avgifter!</b>)
-                  </h6>
-                </div>
-                <h5 className="me-2 network-rates-title">
-                  Energiledd Natt/Helg:
-                </h5>
-                <div className="d-flex">
-                  <input
-                    className="network-rates-inputs"
-                    type="text"
-                    onChange={(e) => {
-                      setNetworkNightOrWeekendtPrice(
-                        validateInput(e.target.value)
-                      );
-                    }}
-                  />
-                  <h6>
-                    øre (<b>ink. avgifter!</b>)
-                  </h6>
+          <div className="network d-flex">
+            <div className="d-flex flex-row">
+              <div className="border border-dark d-flex flex-column card network-inputs ">
+                <h4 className="ms-2 text-decoration-underline">Nettleie</h4>
+                <div className="d-flex flex-column ms-2 mb-1">
+                  <h5 className="me-2 network-rates-title">Fastledd:</h5>
+                  <div className="d-flex">
+                    <input
+                      className="network-rates-inputs"
+                      type="text"
+                      onChange={(e) => {
+                        setCapacityPrice(validateInput(e.target.value));
+                      }}
+                    />
+                    <h6>kr</h6>
+                  </div>
+                  <h5 className="me-2 network-rates-title">Energiledd Dag:</h5>
+                  <div className="d-flex">
+                    <input
+                      className="network-rates-inputs"
+                      type="text"
+                      value={networkDayPriceFromStorage}
+                      onChange={(e) => {
+                        setNetworkDayPrice(validateInput(e.target.value));
+                      }}
+                    />
+                    <h6>
+                      øre (<b>ink. avgifter!</b>)
+                    </h6>
+                  </div>
+                  <h5 className="me-2 network-rates-title">
+                    Energiledd Natt/Helg:
+                  </h5>
+                  <div className="d-flex">
+                    <input
+                      className="network-rates-inputs"
+                      type="text"
+                      onChange={(e) => {
+                        setNetworkNightOrWeekendtPrice(
+                          validateInput(e.target.value)
+                        );
+                      }}
+                    />
+                    <h6>
+                      øre (<b>ink. avgifter!</b>)
+                    </h6>
+                  </div>
                 </div>
               </div>
+              <div className="storage-buttons d-flex flex-column">
+                <button className="save btn btn-success">Lagre Verdier</button>
+                <button className="delete btn btn-danger">Slett Verdier</button>
+              </div>
             </div>
+            {/* <div className="tutorial">
+              <p className="fw-bold tut-txt">
+                Vet ikke hva du skal gjøre her? Trykk på Eksampel knappen for en
+                demonstrasjon
+              </p>
+              <button className="btn btn-danger tut-btn"> Eksampel</button>
+            </div> */}
           </div>
         </div>
         <hr />
@@ -165,7 +191,7 @@ export default function InputsForm({
                 }}
               />
               <label htmlFor="fixed-price-data">
-                <h4>Har du fast pris?</h4>
+                <h4>Fast pris?</h4>
               </label>
             </div>
             <div className="d-flex flex-row ms-2">
