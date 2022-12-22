@@ -34,9 +34,9 @@ function Home() {
   const [isGovSupport, setIsGovSupport] = useState(false);
   const [usageDayHours, setUsageDayHours] = useState(0);
   const [usageNightHours, setUsageNightHours] = useState(0);
-  const [networkDayPrice, setNetworkDayPrice] = useState("0");
+  const [networkDayPrice, setNetworkDayPrice] = useState();
   const [networkNightOrWeekendtPrice, setNetworkNightOrWeekendtPrice] =
-    useState("0");
+    useState();
   const [totalKwh, setTotalKwh] = useState();
   const [fixedPrice, setFixedPrice] = useState(0);
   const [hasFixedPrice, setHasFixedPrice] = useState(false);

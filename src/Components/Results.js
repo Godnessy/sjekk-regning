@@ -24,7 +24,6 @@ function Results({
   supportRateForMonth,
   selectedYear,
 }) {
-  const [isSupport, setIsSupport] = useState(false);
   const [finalDayRate, setFinalDayRate] = useState(0);
   const [finalNightRate, setFinalNightRate] = useState(0);
   const totalUsagedisplay = totalUsage && totalUsage.toFixed(2);

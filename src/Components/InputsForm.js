@@ -1,4 +1,4 @@
-import { React, useEffect, useState, useRef } from "react";
+import { React, useEffect, useRef } from "react";
 import Instructions from "./Instructions";
 import KommuneDropdown from "./KommuneDropdown";
 export default function InputsForm({
@@ -24,24 +24,64 @@ export default function InputsForm({
   capacityPrice,
   setCapacityPrice,
 }) {
-  const [networkDayPriceFromStorage, setNetworkDayPriceFromStorage] =
-    useState();
-  const [networkNightPriceFromStorage, setNetworkNightPriceFromStorage] =
-    useState();
-  const fileRef = useRef();
+  const capacityRef = useRef();
+  const dayPriceRef = useRef();
+  const nightPriceRef = useRef();
+
+  function setValuealueToLocalStorage(TypeOfValue, value) {
+    localStorage.setItem(TypeOfValue, value);
+  }
+
+  function saveValuestoStorage() {
+    capacityPrice &&
+      setValuealueToLocalStorage("SJEKK_REGNING_CAPACITY", capacityPrice);
+    networkDayPrice &&
+      setValuealueToLocalStorage("SJEKK_REGNING_DAY_PRICE", networkDayPrice);
+    networkNightOrWeekendtPrice &&
+      setValuealueToLocalStorage(
+        "SJEKK_REGNING_NIGHT_PRICE",
+        networkNightOrWeekendtPrice
+      );
+  }
+
+  useEffect(() => {
+    const capacityFromStorage = localStorage.getItem("SJEKK_REGNING_CAPACITY");
+    const dayPricesFromStorage = localStorage.getItem(
+      "SJEKK_REGNING_DAY_PRICE"
+    );
+    const nightPricesFromStorage = localStorage.getItem(
+      "SJEKK_REGNING_NIGHT_PRICE"
+    );
+
+    try {
+      setCapacityPrice(capacityFromStorage);
+      setNetworkDayPrice(dayPricesFromStorage);
+      setNetworkNightOrWeekendtPrice(nightPricesFromStorage);
+      capacityRef.current.value = capacityFromStorage;
+      dayPriceRef.current.value = dayPricesFromStorage;
+      nightPriceRef.current.value = nightPricesFromStorage;
+    } catch (error) {
+      console.log(error.message);
+      alert(
+        "Kunne ikke bruke lagrede verdier, vennligst skriv inn verdier på nytt."
+      );
+    }
+  }, []);
+
+  function deleteValuesFromStorage() {
+    localStorage.removeItem("SJEKK_REGNING_CAPACITY");
+    localStorage.removeItem("SJEKK_REGNING_DAY_PRICE");
+    localStorage.removeItem("SJEKK_REGNING_NIGHT_PRICE");
+    capacityRef.current.value = "";
+    dayPriceRef.current.value = "";
+    nightPriceRef.current.value = "";
+  }
 
   useEffect(() => {
     checkboxRef.current.disabled = !hasFixedPrice;
   }, [hasFixedPrice]);
 
-  useEffect(() => {}, [networkDayPrice, networkNightOrWeekendtPrice]);
-
-  useEffect(() => {
-    console.log(fileRef);
-  }, []);
-
   function validateInput(input) {
-    console.log(input);
     const allowedChars = new RegExp(/^[0-9\-\,\.\b]*$/);
     if (allowedChars.test(input)) {
       let correctedSurcharge = fixComma(input);
@@ -73,7 +113,6 @@ export default function InputsForm({
               id="csvInput"
               name="file"
               type="File"
-              ref={fileRef}
             />
           </div>
           <div className="network d-flex">
@@ -86,6 +125,7 @@ export default function InputsForm({
                     <input
                       className="network-rates-inputs"
                       type="text"
+                      ref={capacityRef}
                       onChange={(e) => {
                         setCapacityPrice(validateInput(e.target.value));
                       }}
@@ -97,7 +137,7 @@ export default function InputsForm({
                     <input
                       className="network-rates-inputs"
                       type="text"
-                      value={networkDayPriceFromStorage}
+                      ref={dayPriceRef}
                       onChange={(e) => {
                         setNetworkDayPrice(validateInput(e.target.value));
                       }}
@@ -113,6 +153,7 @@ export default function InputsForm({
                     <input
                       className="network-rates-inputs"
                       type="text"
+                      ref={nightPriceRef}
                       onChange={(e) => {
                         setNetworkNightOrWeekendtPrice(
                           validateInput(e.target.value)
@@ -126,8 +167,22 @@ export default function InputsForm({
                 </div>
               </div>
               <div className="storage-buttons d-flex flex-column">
-                <button className="save btn btn-success">Lagre Verdier</button>
-                <button className="delete btn btn-danger">Slett Verdier</button>
+                <button
+                  className="save btn btn-success"
+                  onClick={() => {
+                    saveValuestoStorage();
+                  }}
+                >
+                  Lagre Verdier
+                </button>
+                <button
+                  className="delete btn btn-danger"
+                  onClick={() => {
+                    deleteValuesFromStorage();
+                  }}
+                >
+                  Slett Verdier
+                </button>
               </div>
             </div>
             {/* <div className="tutorial">
