@@ -7,6 +7,7 @@ export default function InputsForm({
   setSelectedKommune,
   selectedKommune,
   error,
+  surcharge,
   setSurcharge,
   fee,
   setFee,
@@ -27,6 +28,8 @@ export default function InputsForm({
   const capacityRef = useRef();
   const dayPriceRef = useRef();
   const nightPriceRef = useRef();
+  const surchargeRef = useRef();
+  const feeRef = useRef();
 
   function setValuealueToLocalStorage(TypeOfValue, value) {
     localStorage.setItem(TypeOfValue, value);
@@ -42,6 +45,9 @@ export default function InputsForm({
         "SJEKK_REGNING_NIGHT_PRICE",
         networkNightOrWeekendtPrice
       );
+    surcharge &&
+      setValuealueToLocalStorage("SJEKK_REGNING_SURCHARGE", surcharge);
+    fee && setValuealueToLocalStorage("SJEKK_REGNING_FEE", fee);
   }
 
   useEffect(() => {
@@ -52,14 +58,22 @@ export default function InputsForm({
     const nightPricesFromStorage = localStorage.getItem(
       "SJEKK_REGNING_NIGHT_PRICE"
     );
+    const surchargeFromStorage = localStorage.getItem(
+      "SJEKK_REGNING_SURCHARGE"
+    );
+    const feeFromStorage = localStorage.getItem("SJEKK_REGNING_FEE");
 
     try {
       setCapacityPrice(capacityFromStorage);
       setNetworkDayPrice(dayPricesFromStorage);
       setNetworkNightOrWeekendtPrice(nightPricesFromStorage);
+      setSurcharge(surchargeFromStorage);
+      setFee(feeFromStorage);
       capacityRef.current.value = capacityFromStorage;
       dayPriceRef.current.value = dayPricesFromStorage;
       nightPriceRef.current.value = nightPricesFromStorage;
+      surchargeRef.current.value = surchargeFromStorage;
+      feeRef.current.value = feeFromStorage;
     } catch (error) {
       console.log(error.message);
       alert(
@@ -72,9 +86,18 @@ export default function InputsForm({
     localStorage.removeItem("SJEKK_REGNING_CAPACITY");
     localStorage.removeItem("SJEKK_REGNING_DAY_PRICE");
     localStorage.removeItem("SJEKK_REGNING_NIGHT_PRICE");
+    localStorage.removeItem("SJEKK_REGNING_SURCHARGE");
+    localStorage.removeItem("SJEKK_REGNING_FEE");
+    setCapacityPrice();
+    setNetworkDayPrice();
+    setNetworkNightOrWeekendtPrice();
+    setSurcharge();
+    setFee();
     capacityRef.current.value = "";
     dayPriceRef.current.value = "";
     nightPriceRef.current.value = "";
+    surchargeRef.current.value = "";
+    feeRef.current.value = "";
   }
 
   useEffect(() => {
@@ -166,9 +189,9 @@ export default function InputsForm({
                   </div>
                 </div>
               </div>
-              <div className="storage-buttons d-flex flex-column">
+              <div className="storage-buttons-container d-flex flex-column">
                 <button
-                  className="save btn btn-success"
+                  className="save-btn btn btn-success"
                   onClick={() => {
                     saveValuestoStorage();
                   }}
@@ -176,7 +199,7 @@ export default function InputsForm({
                   Lagre Verdier
                 </button>
                 <button
-                  className="delete btn btn-danger"
+                  className="delete-btn btn btn-danger"
                   onClick={() => {
                     deleteValuesFromStorage();
                   }}
@@ -217,6 +240,7 @@ export default function InputsForm({
               <input
                 className="surcharge-input"
                 type="text"
+                ref={surchargeRef}
                 onChange={(e) => {
                   setSurcharge(validateInput(e.target.value));
                 }}
@@ -228,7 +252,7 @@ export default function InputsForm({
               <input
                 className="surcharge-input fee"
                 type="text"
-                value={fee}
+                ref={feeRef}
                 onChange={(e) => {
                   setFee(validateInput(e.target.value));
                 }}

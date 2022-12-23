@@ -336,6 +336,23 @@ body {
   font-size: 1.4em !important;
 }
 
+/* store and delete value buttons */
+.storage-buttons-container {
+  align-items: center;
+  margin-left: 1%;
+  margin-top: 10%;
+}
+
+.save-btn,
+.delete-btn {
+  height: 25%;
+  font-size: 1.2em !important;
+}
+
+.save-btn {
+  margin-bottom: 10%;
+}
+
 @media screen and (max-width: 2500px) {
   .report {
     width: 10%;
@@ -387,6 +404,9 @@ body {
 
   .loading {
     left: 43%;
+  }
+  .storage-buttons-container {
+    margin-top: 15%;
   }
 }
 

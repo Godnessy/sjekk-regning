@@ -135,7 +135,6 @@ function Home() {
   const handleCsvFile = (e) => {
     setError("");
     if (e.target.files.length) {
-      console.log(e);
       const inputFile = e.target.files[0];
       const fileExtension = inputFile.type.split("/")[1];
       setFile(inputFile);
@@ -229,7 +228,6 @@ function Home() {
   const createGovSupport = (monthlyAvg, SupportRateForMonth) => {
     const govSupportBoolean = monthlyAvg > 70;
     setIsGovSupport(govSupportBoolean);
-    console.log(SupportRateForMonth);
     const calculation = (monthlyAvg - 87.5) * SupportRateForMonth;
     return govSupportBoolean ? calculation : 0;
   };

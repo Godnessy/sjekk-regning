@@ -47,6 +47,16 @@ function Results({
     December: "Desember",
   };
 
+  // useEffect(() => {
+  //   console.log(
+  //     networkDayPrice,
+  //     networkNightOrWeekendtPrice,
+  //     fee,
+  //     surcharge,
+  //     capacityPrice
+  //   );
+  // }, []);
+
   useEffect(() => {
     setNetworkRates(
       networkDayPrice,
@@ -183,14 +193,14 @@ function Results({
                 </tr>
               </thead>
               <tbody>
-                {surcharge !== 0 && (
+                {surcharge && (
                   <tr>
                     <th scope="row">Påslag</th>
                     <td>{totalUsage.toFixed(2)}</td>
                     <td>{surcharge}</td>
                     <td>Øre</td>
                     <td>
-                      {surcharge && surcharge !== 0
+                      {surcharge !== 0
                         ? ((Number(surcharge) * totalUsage) / 100).toFixed(2)
                         : surcharge == 0
                         ? "0"
@@ -198,7 +208,7 @@ function Results({
                     </td>
                   </tr>
                 )}
-                {fee !== 0 && (
+                {fee && (
                   <tr>
                     <th scope="row">Fast beløp</th>
                     <td>1</td>
