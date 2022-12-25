@@ -47,16 +47,6 @@ function Results({
     December: "Desember",
   };
 
-  // useEffect(() => {
-  //   console.log(
-  //     networkDayPrice,
-  //     networkNightOrWeekendtPrice,
-  //     fee,
-  //     surcharge,
-  //     capacityPrice
-  //   );
-  // }, []);
-
   useEffect(() => {
     setNetworkRates(
       networkDayPrice,
@@ -126,6 +116,12 @@ function Results({
       capacityPrice,
       getPersonalGovSupport(WithPowerSupport)
     );
+    console.log(
+      finalDayRate,
+      finalNightRate,
+      capacityPrice,
+      getPersonalGovSupport(WithPowerSupport)
+    );
     if (hasFixedPrice) {
       const totalWithFixedPrice =
         totalUsage * (fixedPrice / 100) + networkRatesWithGovSupport;
@@ -136,7 +132,7 @@ function Results({
         totalMonthPrice +
         networkRatesWithGovSupport +
         calculateSurcharge(surcharge) +
-        fee
+        Number(fee)
       );
     }
   };

@@ -303,6 +303,9 @@ body {
 .network-rates-inputs {
   width: 50%;
 }
+.capacity-input {
+  margin-top: 1%;
+}
 .all-result-tables {
   max-width: 99%;
 }
@@ -373,6 +376,9 @@ body {
 
   .chart {
     display: none;
+  }
+  .surcharge-input {
+    width: 3em;
   }
 
   .fixed-price {
@@ -452,9 +458,11 @@ body {
   }
 
   .calculate {
-    font-size: 1em !important;
-    top: 50%;
-    width: 70%;
+    position: relative;
+    top: 60%;
+    margin-left: 0 !important;
+    margin: 0 !important;
+    font-size: 1.5em !important;
   }
 
   .inputs-and-button {
@@ -488,9 +496,6 @@ body {
     display: none;
   }
 
-  .surcharge-input {
-    width: 2em;
-  }
   .price-exp {
     width: auto;
     padding: 0.3rem;
@@ -500,8 +505,15 @@ body {
     left: 90%;
   }
 
+  .fixed-price {
+    margin-top: -15%;
+  }
+
   .fixed-price-input {
     width: 80%;
+    height: 2em;
+    align-self: center;
+    margin-right: 1%;
   }
 
   .report {
@@ -524,6 +536,13 @@ body {
   .loading {
     position: relative;
     left: 39%;
+  }
+
+  .save-btn,
+  .delete-btn {
+    height: auto;
+    padding: 10px;
+    font-size: 1em !important;
   }
   @keyframes arrow {
     0% {

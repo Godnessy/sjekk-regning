@@ -64,7 +64,7 @@ function Home() {
       "06": 0.8,
       "07": 0.8,
       "08": 0.8,
-      "09": 90,
+      "09": 0.9,
       10: 0.9,
       11: 0.9,
       12: 0.9,
@@ -116,10 +116,10 @@ function Home() {
   const getMonthPrices = async (month) => {
     const monthRef = doc(db, "price-history", `${month}-22`);
     //quick way to track usage while in beta - will be removed.
-    const usageCounterRef = doc(db, "usage-counter", `usage`);
-    const usageCounterSnap = await getDoc(usageCounterRef);
-    let usageCounter = usageCounterSnap.data().usage;
-    await setDoc(usageCounterRef, { usage: usageCounter + 1 });
+    // const usageCounterRef = doc(db, "usage-counter", `usage`);
+    // const usageCounterSnap = await getDoc(usageCounterRef);
+    // let usageCounter = usageCounterSnap.data().usage;
+    // await setDoc(usageCounterRef, { usage: usageCounter + 1 });
     try {
       const docSnap = await getDoc(monthRef);
       if (docSnap.exists()) {

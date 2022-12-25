@@ -64,11 +64,11 @@ export default function InputsForm({
     const feeFromStorage = localStorage.getItem("SJEKK_REGNING_FEE");
 
     try {
-      setCapacityPrice(capacityFromStorage);
-      setNetworkDayPrice(dayPricesFromStorage);
-      setNetworkNightOrWeekendtPrice(nightPricesFromStorage);
-      setSurcharge(surchargeFromStorage);
-      setFee(feeFromStorage);
+      setCapacityPrice(Number(capacityFromStorage));
+      setNetworkDayPrice(Number(dayPricesFromStorage));
+      setNetworkNightOrWeekendtPrice(Number(nightPricesFromStorage));
+      setSurcharge(Number(surchargeFromStorage));
+      setFee(Number(feeFromStorage));
       capacityRef.current.value = capacityFromStorage;
       dayPriceRef.current.value = dayPricesFromStorage;
       nightPriceRef.current.value = nightPricesFromStorage;
@@ -146,7 +146,7 @@ export default function InputsForm({
                   <h5 className="me-2 network-rates-title">Fastledd:</h5>
                   <div className="d-flex">
                     <input
-                      className="network-rates-inputs"
+                      className="network-rates-inputs capacity-input"
                       type="text"
                       ref={capacityRef}
                       onChange={(e) => {
