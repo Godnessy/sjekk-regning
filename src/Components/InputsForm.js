@@ -166,7 +166,7 @@ export default function InputsForm({
                       }}
                     />
                     <h6>
-                      øre (<b>ink. avgifter!</b>)
+                      øre (<b className="abc">ink. avgifter!</b>)
                     </h6>
                   </div>
                   <h5 className="me-2 network-rates-title">
@@ -184,7 +184,7 @@ export default function InputsForm({
                       }}
                     />
                     <h6>
-                      øre (<b>ink. avgifter!</b>)
+                      øre (<b className="abc">ink. avgifter!</b>)
                     </h6>
                   </div>
                 </div>
@@ -288,7 +288,7 @@ export default function InputsForm({
           </div>
           <div className="calculate-btn">
             <button
-              className="calculate btn btn-success ms-5 my-3 "
+              className="calculate btn btn-success my-3 "
               onClick={parseCsvJson}
             >
               Regne ut!

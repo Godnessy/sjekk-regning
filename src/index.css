@@ -84,6 +84,10 @@ body {
   margin-left: 25%;
 }
 
+.abc {
+  color: red;
+}
+
 @media screen and (max-width: 1200px) {
   .price-exp {
     width: 20em;
@@ -458,10 +462,9 @@ body {
   }
 
   .calculate {
-    position: relative;
+    position: relative !important;
     top: 60%;
-    margin-left: 0 !important;
-    margin: 0 !important;
+    right: 100px !important;
     font-size: 1.5em !important;
   }
 
@@ -579,7 +582,6 @@ body {
   }
   .calculate {
     position: relative;
-    top: 10%;
     left: -30%;
   }
   .detailed-table {
