@@ -13,7 +13,9 @@ body {
   ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   cursor: pointer !important;
 }
-
+.hidden {
+  display: none;
+}
 .zones-container {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;

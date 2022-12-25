@@ -116,10 +116,10 @@ function Home() {
   const getMonthPrices = async (month) => {
     const monthRef = doc(db, "price-history", `${month}-22`);
     //quick way to track usage while in beta - will be removed.
-    const usageCounterRef = doc(db, "usage-counter", `usage`);
-    const usageCounterSnap = await getDoc(usageCounterRef);
-    let usageCounter = usageCounterSnap.data().usage;
-    await setDoc(usageCounterRef, { usage: usageCounter + 1 });
+    // const usageCounterRef = doc(db, "usage-counter", `usage`);
+    // const usageCounterSnap = await getDoc(usageCounterRef);
+    // let usageCounter = usageCounterSnap.data().usage;
+    // await setDoc(usageCounterRef, { usage: usageCounter + 1 });
     try {
       const docSnap = await getDoc(monthRef);
       if (docSnap.exists()) {
@@ -132,10 +132,11 @@ function Home() {
     }
   };
 
-  const handleCsvFile = (e) => {
+  const handleCsvFile = (fileList) => {
+    console.log(fileList);
     setError("");
-    if (e.target.files.length) {
-      const inputFile = e.target.files[0];
+    if (fileList.length) {
+      const inputFile = fileList[0];
       const fileExtension = inputFile.type.split("/")[1];
       setFile(inputFile);
     }
@@ -148,6 +149,7 @@ function Home() {
     setIsLoading(true);
     const reader = new FileReader();
     reader.onload = async ({ target }) => {
+      console.log(target.result);
       const strWithoutCommas = target.result.replaceAll(/['"]+/g, "");
       let csv = Papa.parse(strWithoutCommas, {
         header: false,
@@ -185,7 +187,9 @@ function Home() {
             });
             const newResult = Papa.parse(unParsed, { header: true });
             extractCurrentMonth(newResult.data);
-          } catch (error) {}
+          } catch (error) {
+            console.log(error);
+          }
         },
       });
     };
@@ -236,6 +240,7 @@ function Home() {
   useEffect(() => {}, [totalMonthPrice]);
 
   const extractCurrentMonth = async (usageData) => {
+    console.log(usageData);
     const wholeYear = usageData[0].Fra.split(".")[2].split(" ")[0];
     const year = wholeYear.split("0")[1];
     const month = usageData[0].Fra.split(".")[1];
@@ -391,6 +396,7 @@ function Home() {
                 surcharge={surcharge}
                 setSurcharge={setSurcharge}
                 fee={fee}
+                setFile={setFile}
                 setFee={setFee}
                 setFixedPrice={setFixedPrice}
                 parseCsvJson={parseCsvJson}
@@ -405,6 +411,7 @@ function Home() {
                 setNetworkDayPrice={setNetworkDayPrice}
                 capacityPrice={capacityPrice}
                 setCapacityPrice={setCapacityPrice}
+                extractCurrentMonth={extractCurrentMonth}
               />
             </div>
             <div className="bio-link d-flex mt-5 justify-content-center">

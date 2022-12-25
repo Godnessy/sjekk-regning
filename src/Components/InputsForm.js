@@ -1,6 +1,8 @@
 import { React, useEffect, useRef } from "react";
 import Instructions from "./Instructions";
+import Papa, { parse, unparse } from "papaparse";
 import KommuneDropdown from "./KommuneDropdown";
+import example from "../Resources/eksampel.js";
 export default function InputsForm({
   handleCsvFile,
   kommuneList,
@@ -24,12 +26,15 @@ export default function InputsForm({
   setNetworkNightOrWeekendtPrice,
   capacityPrice,
   setCapacityPrice,
+  setFile,
+  extractCurrentMonth,
 }) {
   const capacityRef = useRef();
   const dayPriceRef = useRef();
   const nightPriceRef = useRef();
   const surchargeRef = useRef();
   const feeRef = useRef();
+  const fileRef = useRef();
 
   function setValuealueToLocalStorage(TypeOfValue, value) {
     localStorage.setItem(TypeOfValue, value);
@@ -132,10 +137,14 @@ export default function InputsForm({
             </label>
             <Instructions></Instructions>
             <input
-              onChange={handleCsvFile}
-              id="csvInput"
+              onChange={(e) => {
+                console.log(e);
+                handleCsvFile(e.target.files);
+              }}
+              id="csvInputBtn"
               name="file"
               type="File"
+              ref={fileRef}
             />
           </div>
           <div className="network d-flex">
@@ -208,13 +217,39 @@ export default function InputsForm({
                 </button>
               </div>
             </div>
-            {/* <div className="tutorial">
+            <div className="tutorial">
               <p className="fw-bold tut-txt">
                 Vet ikke hva du skal gjøre her? Trykk på Eksampel knappen for en
                 demonstrasjon
               </p>
-              <button className="btn btn-danger tut-btn"> Eksampel</button>
-            </div> */}
+              <button
+                className="btn btn-danger tut-btn"
+                onClick={() => {
+                  Papa.parse(example, {
+                    header: true,
+                    complete: function (results) {
+                      // results object contains parsed csv data
+                      let csvData = results.data;
+                      console.log(csvData);
+                      // create a new csv file and fill it with csvData
+                      let csvFile = new File(csvData, "example.csv", {
+                        type: "text/csv",
+                      });
+                      let list = new DataTransfer();
+                      list.items.add(csvFile);
+                      let myFileList = list.files;
+                      console.log(myFileList);
+                      fileRef.current.files = myFileList;
+
+                      extractCurrentMonth(myFileList);
+                    },
+                  });
+                }}
+              >
+                {" "}
+                Eksampel
+              </button>
+            </div>
           </div>
         </div>
         <hr />
