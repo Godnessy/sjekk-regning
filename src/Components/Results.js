@@ -28,6 +28,9 @@ function Results({
   const [finalNightRate, setFinalNightRate] = useState(0);
   const totalUsagedisplay = totalUsage && totalUsage.toFixed(2);
   const [showWithPowerSupport, setShowWithPowerSupport] = useState(true);
+  const [personalAvgPrice, setPersonalAvgPrice] = useState();
+  const [personlAvgPriceBiggerThanZone, setPersonlAvgPriceBiggerThanZone] =
+    useState(false);
 
   const showPowerSupport = (boolean) => {
     setShowWithPowerSupport(boolean);
@@ -58,6 +61,15 @@ function Results({
   const calculateGovSupport = () => {
     return (totalUsage * govSupport) / 100;
   };
+
+  useEffect(() => {
+    console.log(personlAvgPriceBiggerThanZone);
+    setPersonlAvgPriceBiggerThanZone(personalAvgPrice < avgPrice);
+  }, [personalAvgPrice]);
+
+  useEffect(() => {
+    setPersonalAvgPrice((totalMonthPrice / totalUsage) * 100);
+  }, [totalUsage, totalMonthPrice]);
 
   const getPersonalGovSupport = (isGovSupport) => {
     return isGovSupport ? calculateGovSupport() : 0;
@@ -116,12 +128,7 @@ function Results({
       capacityPrice,
       getPersonalGovSupport(WithPowerSupport)
     );
-    console.log(
-      finalDayRate,
-      finalNightRate,
-      capacityPrice,
-      getPersonalGovSupport(WithPowerSupport)
-    );
+
     if (hasFixedPrice) {
       const totalWithFixedPrice =
         totalUsage * (fixedPrice / 100) + networkRatesWithGovSupport;
@@ -153,6 +160,7 @@ function Results({
               <tr>
                 <th scope="col">Total Forbruk</th>
                 <th scope="col">Snittpris {zone}</th>
+                <th scope="col">Din Snittpris</th>
                 <th scope="col">
                   {" "}
                   Strømstøtte {zone} {lastDay}
@@ -161,8 +169,22 @@ function Results({
             </thead>
             <tbody>
               <tr>
-                <td>{totalUsage.toFixed(0)} kWh</td>
+                <td>
+                  <b>{totalUsage.toFixed(2)} kWh</b>
+                </td>
                 <td>{avgPrice.toFixed(2)} øre</td>
+                {personalAvgPrice && (
+                  <td
+                    className={
+                      personlAvgPriceBiggerThanZone
+                        ? "avg-price-lower"
+                        : "avg-price-higher"
+                    }
+                  >
+                    {personalAvgPrice.toFixed(2)} øre
+                    <p className="avg-price-extra"> ink evt påslag</p>
+                  </td>
+                )}
                 <td>
                   {isGovSupport ? (
                     <p> {govSupport.toFixed(2)} øre pr kwh</p>
