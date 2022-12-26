@@ -141,14 +141,8 @@ function Home() {
     if (e.target.files.length) {
       const inputFile = e.target.files[0];
       const fileExtension = inputFile.type.split("/")[1];
-      if (fileExtension !== "csv") {
-        alert(
-          'Feil fil type, vennligst laste opp CSV filen fra Elhub, du kan få veiledning ved å trykke på "Vet ikke hva CSV fil er? Klikk her for Elhub veiledning. '
-        );
-        handleCsvFile(null);
-      } else {
-        setFile(inputFile);
-      }
+
+      setFile(inputFile);
     }
   };
 
