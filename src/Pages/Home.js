@@ -126,7 +126,7 @@ function Home() {
     try {
       const docSnap = await getDoc(monthRef);
       if (docSnap.exists()) {
-        // updateUsageCounter();
+        updateUsageCounter();
         return docSnap.data();
       } else {
         console.log("Doc does not exist");
