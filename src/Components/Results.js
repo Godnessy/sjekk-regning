@@ -182,7 +182,6 @@ function Results({
                     }
                   >
                     {personalAvgPrice.toFixed(2)} øre
-                    <p className="avg-price-extra"> ink evt påslag</p>
                   </td>
                 )}
                 <td>
