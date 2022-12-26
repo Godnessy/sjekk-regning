@@ -63,7 +63,6 @@ function Results({
   };
 
   useEffect(() => {
-    console.log(personlAvgPriceBiggerThanZone);
     setPersonlAvgPriceBiggerThanZone(personalAvgPrice < avgPrice);
   }, [personalAvgPrice]);
 

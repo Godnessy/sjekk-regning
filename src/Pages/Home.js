@@ -110,6 +110,7 @@ function Home() {
     try {
       const storageRef = ref(storage, file?.name);
       uploadBytes(storageRef, file);
+      alert("Takk for at du deler filen med oss!");
     } catch (error) {}
   };
 
@@ -125,7 +126,7 @@ function Home() {
     try {
       const docSnap = await getDoc(monthRef);
       if (docSnap.exists()) {
-        updateUsageCounter();
+        // updateUsageCounter();
         return docSnap.data();
       } else {
         console.log("Doc does not exist");
@@ -140,7 +141,14 @@ function Home() {
     if (e.target.files.length) {
       const inputFile = e.target.files[0];
       const fileExtension = inputFile.type.split("/")[1];
-      setFile(inputFile);
+      if (fileExtension !== "csv") {
+        alert(
+          'Feil fil type, vennligst laste opp CSV filen fra Elhub, du kan få veiledning ved å trykke på "Vet ikke hva CSV fil er? Klikk her for Elhub veiledning. '
+        );
+        handleCsvFile(null);
+      } else {
+        setFile(inputFile);
+      }
     }
   };
 
@@ -368,7 +376,11 @@ function Home() {
   if (!usageData) {
     return (
       <>
-        <Navbar uploadFailedFile={uploadFailedFile} file={file} />
+        <Navbar
+          uploadFailedFile={uploadFailedFile}
+          file={file}
+          handleCsvFile={handleCsvFile}
+        />
         <div className="start-container d-flex flex-column ">
           <div className="site-descrip d-flex flex-column align-self-center mt-4">
             {" "}
