@@ -11,7 +11,6 @@ body {
     #0083b0,
     #00b4db
   ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  cursor: pointer !important;
 }
 .hidden {
   display: none;
@@ -84,6 +83,20 @@ body {
 .results-card {
   width: 50%;
   margin-left: 25%;
+}
+
+.avg-price-lower {
+  color: lightgreen;
+  font-weight: bold;
+}
+.avg-price-higher {
+  color: red;
+  font-weight: bold;
+}
+.avg-price-extra {
+  color: black;
+  font-weight: 400;
+  font-size: 0.8em;
 }
 
 @media screen and (max-width: 1200px) {
@@ -305,6 +318,9 @@ body {
 .network-rates-inputs {
   width: 50%;
 }
+.capacity-input {
+  margin-top: 1%;
+}
 .all-result-tables {
   max-width: 99%;
 }
@@ -375,6 +391,9 @@ body {
 
   .chart {
     display: none;
+  }
+  .surcharge-input {
+    width: 3em;
   }
 
   .fixed-price {
@@ -454,9 +473,10 @@ body {
   }
 
   .calculate {
-    font-size: 1em !important;
-    top: 50%;
-    width: 70%;
+    position: relative !important;
+    top: 60%;
+    right: 100px !important;
+    font-size: 1.5em !important;
   }
 
   .inputs-and-button {
@@ -490,9 +510,6 @@ body {
     display: none;
   }
 
-  .surcharge-input {
-    width: 2em;
-  }
   .price-exp {
     width: auto;
     padding: 0.3rem;
@@ -502,8 +519,15 @@ body {
     left: 90%;
   }
 
+  .fixed-price {
+    margin-top: -15%;
+  }
+
   .fixed-price-input {
     width: 80%;
+    height: 2em;
+    align-self: center;
+    margin-right: 1%;
   }
 
   .report {
@@ -517,6 +541,7 @@ body {
   .results-card {
     width: 100%;
     margin-left: 1%;
+    cursor: crosshair !important;
   }
   .table {
     width: 100%;
@@ -526,6 +551,13 @@ body {
   .loading {
     position: relative;
     left: 39%;
+  }
+
+  .save-btn,
+  .delete-btn {
+    height: auto;
+    padding: 10px;
+    font-size: 1em !important;
   }
   @keyframes arrow {
     0% {
@@ -562,7 +594,6 @@ body {
   }
   .calculate {
     position: relative;
-    top: 10%;
     left: -30%;
   }
   .detailed-table {

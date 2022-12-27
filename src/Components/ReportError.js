@@ -4,25 +4,29 @@ import { db } from "../firebase-config.js";
 import { doc, setDoc } from "firebase/firestore";
 import { collection, addDoc } from "firebase/firestore";
 
-function ReportError({ uploadFailedFile, file }) {
+function ReportError({ uploadFailedFile, file, handleCsvFile }) {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [text, setText] = useState("");
   const [email, setEmail] = useState("");
+  const [sentFile, setSentFile] = useState(false);
 
   const sendInFile = async () => {
-    await uploadFailedFile();
-    alert("Takk for at du deler filen med oss!");
-    setText("");
-    setEmail("");
-    setShow(false);
+    if (file) {
+      await uploadFailedFile();
+
+      setText("");
+      setEmail("");
+      setShow(false);
+      return;
+    } else {
+      await uploadFailedFile();
+    }
   };
 
   const sendInMsgFile = async (text, email) => {
     if (text == "" || !file) {
-      console.log(file);
-      console.log(text);
       alert(
         "Mangler melding eller fil, sjekk at du har velgt en fil og har fylt ut meldingen"
       );
@@ -41,15 +45,20 @@ function ReportError({ uploadFailedFile, file }) {
     }
     const date = new Date();
     const dateToSend = date.toLocaleDateString();
-    const docRef = await addDoc(collection(db, "userFeedback"), {
-      [dateToSend]: text,
+    const time = String(date).split(" ")[4];
+    const dateForID = dateToSend.replaceAll("/", "-") + "-" + time;
+    const docRef = await setDoc(doc(db, "userFeedback", dateForID), {
+      Message: text,
       Email: email,
       Read: false,
+      Implemented: false,
+      sentWithFile: sentFile,
     });
     setText("");
     setEmail("");
     alert("Takk for tilbakemelding! ");
     setShow(false);
+    setSentFile(false);
   };
 
   return (
@@ -70,21 +79,7 @@ function ReportError({ uploadFailedFile, file }) {
       >
         <Modal.Header closeButton>
           <div className="pe-2">
-            <h2>
-              Har du opplevd eller funnet en feil på nettsiden? <br></br>Gjerne
-              fortell oss hva som skjedde! Har du prøvd å sjekke regningen din
-              og det fungerte ikke? Kan du sende inn bruksfilen din slik at vi
-              kan analysere den og fikse problemet slik at dette ikke skjer for
-              deg eller andre brukere igjen.<br></br> hvis du ikke ønsker å
-              sende inn en melding eller filen din kan du klikke på
-              avbryt-knappen -
-              <b className="text-danger">
-                Ingen personlig informasjon <br></br>vil bli samlet inn uansett
-                om du sender inn filen eller ikke.
-              </b>{" "}
-            </h2>
-            <br></br>
-            <p>Melding:</p>
+            <p className="fw-bold">Melding:</p>
             <div className="d-flex flex-column">
               <input
                 type="text"
@@ -96,11 +91,11 @@ function ReportError({ uploadFailedFile, file }) {
                 }}
               />
               <br></br>
-              <p>Vil du ha svar? Skriv i e-posten din:</p>
+              <p className="fw-bold">Vil du ha svar? Skriv i e-posten din:</p>
               <input
-                type="text"
-                name=""
-                id=""
+                type="email"
+                name="emailOfSender"
+                id="email"
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
@@ -116,6 +111,19 @@ function ReportError({ uploadFailedFile, file }) {
                 Reset
               </button>
             </div>
+            <p className="fw-bold">
+              Prøvde du å kjøre en fil og det fungerte ikke? du kan sende den
+              til oss for analysering:
+            </p>
+            <input
+              id="csvInput"
+              name="file"
+              type="File"
+              onChange={(e) => {
+                handleCsvFile(e);
+                setSentFile(true);
+              }}
+            />
             <div className="d-flex flex-row mt-2">
               <button
                 className="btn btn-success me-2"
