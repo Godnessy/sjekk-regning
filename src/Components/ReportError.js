@@ -48,7 +48,7 @@ function ReportError({ uploadFailedFile, file, handleCsvFile }) {
     const time = String(date).split(" ")[4];
     const dateForID = dateToSend.replaceAll("/", "-") + "-" + time;
     const docRef = await setDoc(doc(db, "userFeedback", dateForID), {
-      [dateToSend]: text,
+      Message: text,
       Email: email,
       Read: false,
       Implemented: false,
@@ -58,6 +58,7 @@ function ReportError({ uploadFailedFile, file, handleCsvFile }) {
     setEmail("");
     alert("Takk for tilbakemelding! ");
     setShow(false);
+    setSentFile(false);
   };
 
   return (
@@ -93,8 +94,8 @@ function ReportError({ uploadFailedFile, file, handleCsvFile }) {
               <p className="fw-bold">Vil du ha svar? Skriv i e-posten din:</p>
               <input
                 type="email"
-                name=""
-                id=""
+                name="emailOfSender"
+                id="email"
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
