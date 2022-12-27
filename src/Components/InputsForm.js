@@ -1,4 +1,4 @@
-import { React, useEffect, useRef } from "react";
+import { React, useEffect, useRef, useState } from "react";
 import Instructions from "./Instructions";
 import Papa, { parse, unparse } from "papaparse";
 import KommuneDropdown from "./KommuneDropdown";
@@ -28,6 +28,9 @@ export default function InputsForm({
   setCapacityPrice,
   setFile,
   extractCurrentMonth,
+  formatCSVFile,
+  isDemo,
+  setIsDemo,
 }) {
   const capacityRef = useRef();
   const dayPriceRef = useRef();
@@ -35,6 +38,7 @@ export default function InputsForm({
   const surchargeRef = useRef();
   const feeRef = useRef();
   const fileRef = useRef();
+  const [demoUsageValues, setDemoUsageValues] = useState(example);
 
   function setValuealueToLocalStorage(TypeOfValue, value) {
     localStorage.setItem(TypeOfValue, value);
@@ -53,6 +57,9 @@ export default function InputsForm({
     surcharge &&
       setValuealueToLocalStorage("SJEKK_REGNING_SURCHARGE", surcharge);
     fee && setValuealueToLocalStorage("SJEKK_REGNING_FEE", fee);
+  }
+  function updateUI(element, value) {
+    return (element.current.value = value);
   }
 
   useEffect(() => {
@@ -74,11 +81,11 @@ export default function InputsForm({
       setNetworkNightOrWeekendtPrice(Number(nightPricesFromStorage));
       setSurcharge(Number(surchargeFromStorage));
       setFee(Number(feeFromStorage));
-      capacityRef.current.value = capacityFromStorage;
-      dayPriceRef.current.value = dayPricesFromStorage;
-      nightPriceRef.current.value = nightPricesFromStorage;
-      surchargeRef.current.value = surchargeFromStorage;
-      feeRef.current.value = feeFromStorage;
+      updateUI(capacityRef, capacityFromStorage);
+      updateUI(dayPriceRef, dayPricesFromStorage);
+      updateUI(nightPriceRef, nightPricesFromStorage);
+      updateUI(surchargeRef, surchargeFromStorage);
+      updateUI(feeRef, feeFromStorage);
     } catch (error) {
       console.log(error.message);
       alert(
@@ -109,6 +116,50 @@ export default function InputsForm({
     checkboxRef.current.disabled = !hasFixedPrice;
   }, [hasFixedPrice]);
 
+  function setupDemoValues() {
+    setIsDemo(true);
+    Papa.parse(example, {
+      header: true,
+      complete: function (results) {
+        // results object contains parsed csv data
+        let csvData = results.data;
+        // create a new csv file and fill it with csvData
+        let csvFile = new File(csvData, "example.csv", {
+          type: "text/csv",
+        });
+        let list = new DataTransfer();
+        list.items.add(csvFile);
+        let myFileList = list.files;
+        fileRef.current.files = myFileList;
+        setFile(myFileList[0]);
+        updateUI(capacityRef, 350);
+        setCapacityPrice(350);
+        updateUI(dayPriceRef, "49,9");
+        setNetworkDayPrice(49.9);
+        updateUI(nightPriceRef, "39,9");
+        setNetworkNightOrWeekendtPrice(39.9);
+        updateUI(surchargeRef, "0,78");
+        setSurcharge(0.79);
+        updateUI(feeRef, 39);
+        setFee(39);
+        setSelectedKommune({ label: "Oslo", value: "NO1" });
+      },
+    });
+  }
+
+  const displayDemoResults = () => {
+    const resultsArr = [];
+    const strWithouQuotationsMarks = demoUsageValues.replaceAll(/['"]+/g, "");
+    const CSVinArr = strWithouQuotationsMarks.split("\n");
+    CSVinArr.map((arr) => {
+      const splitArr = arr.split(",");
+      resultsArr.push(splitArr);
+    });
+    const formattedCSV = formatCSVFile(resultsArr);
+    const parsedExampleJSON = Papa.parse(formattedCSV, { header: true });
+    extractCurrentMonth(parsedExampleJSON.data);
+  };
+
   function validateInput(input) {
     const allowedChars = new RegExp(/^[0-9\-\,\.\b]*$/);
     if (allowedChars.test(input)) {
@@ -138,7 +189,6 @@ export default function InputsForm({
             <Instructions></Instructions>
             <input
               onChange={(e) => {
-                console.log(e);
                 handleCsvFile(e.target.files);
               }}
               id="csvInputBtn"
@@ -225,25 +275,7 @@ export default function InputsForm({
               <button
                 className="btn btn-danger tut-btn"
                 onClick={() => {
-                  Papa.parse(example, {
-                    header: true,
-                    complete: function (results) {
-                      // results object contains parsed csv data
-                      let csvData = results.data;
-                      console.log(csvData);
-                      // create a new csv file and fill it with csvData
-                      let csvFile = new File(csvData, "example.csv", {
-                        type: "text/csv",
-                      });
-                      let list = new DataTransfer();
-                      list.items.add(csvFile);
-                      let myFileList = list.files;
-                      console.log(myFileList);
-                      fileRef.current.files = myFileList;
-
-                      extractCurrentMonth(myFileList);
-                    },
-                  });
+                  setupDemoValues();
                 }}
               >
                 {" "}
@@ -260,6 +292,8 @@ export default function InputsForm({
               className="kommune-select"
               kommuneList={kommuneList}
               setSelectedKommune={setSelectedKommune}
+              isDemo={isDemo}
+              demoValue={"Oslo"}
             />
             {selectedKommune && (
               <h4> Din kommune tilhører sone: {selectedKommune.value}</h4>
@@ -324,7 +358,9 @@ export default function InputsForm({
           <div className="calculate-btn">
             <button
               className="calculate btn btn-success my-3 "
-              onClick={parseCsvJson}
+              onClick={() => {
+                !isDemo ? parseCsvJson() : displayDemoResults();
+              }}
             >
               Regne ut!
             </button>

@@ -44,6 +44,7 @@ function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [supportRateForMonth, setSupportRateForMonth] = useState();
   const [selectedYear, setSelectedYear] = useState();
+  const [isDemo, setIsDemo] = useState(false);
   const checkboxRef = useRef();
 
   const fileRef = ref(storage, file.name);
@@ -115,10 +116,10 @@ function Home() {
   };
 
   const updateUsageCounter = async () => {
-    const usageCounterRef = doc(db, "usage-counter", `usage`);
-    const usageCounterSnap = await getDoc(usageCounterRef);
-    let usageCounter = usageCounterSnap.data().usage;
-    await setDoc(usageCounterRef, { usage: usageCounter + 1 });
+    // const usageCounterRef = doc(db, "usage-counter", `usage`);
+    // const usageCounterSnap = await getDoc(usageCounterRef);
+    // let usageCounter = usageCounterSnap.data().usage;
+    // await setDoc(usageCounterRef, { usage: usageCounter + 1 });
   };
 
   const getMonthPrices = async (month) => {
@@ -126,7 +127,6 @@ function Home() {
     try {
       const docSnap = await getDoc(monthRef);
       if (docSnap.exists()) {
-        // updateUsageCounter();
         return docSnap.data();
       } else {
         console.log("Doc does not exist");
@@ -137,7 +137,6 @@ function Home() {
   };
 
   const handleCsvFile = (fileList) => {
-    console.log(fileList);
     setError("");
     if (fileList.length) {
       const inputFile = fileList[0];
@@ -147,6 +146,30 @@ function Home() {
     }
   };
 
+  function formatCSVFile(unformattedSTR) {
+    const removingOldHeaders = unformattedSTR.shift();
+    const arrWithoutHeaders = unformattedSTR;
+    const arrWithFixedUsage = arrWithoutHeaders.map((hour, idx) => {
+      const {
+        startTime = hour[0],
+        finishTime = hour[1],
+        usagePart1 = hour[2],
+        usagePart2 = hour[3],
+      } = hour;
+      const result = [
+        startTime,
+        finishTime,
+        `${isNaN(usagePart2) ? usagePart1 : usagePart1 + "." + usagePart2}`,
+      ];
+      return result;
+    });
+    const unParsed = Papa.unparse({
+      fields: ["Fra", "Til", "KWH 60 Forbruk", "Kvalitet"],
+      data: arrWithFixedUsage,
+    });
+    return unParsed;
+  }
+
   const parseCsvJson = () => {
     if (!file) return setError("Har du glemt å velge CSV fil?");
     else if (!selectedKommune) return setError("Velg kommune fra listen");
@@ -154,7 +177,6 @@ function Home() {
     setIsLoading(true);
     const reader = new FileReader();
     reader.onload = async ({ target }) => {
-      console.log(target.result);
       const strWithoutCommas = target.result.replaceAll(/['"]+/g, "");
       let csv = Papa.parse(strWithoutCommas, {
         header: false,
@@ -162,34 +184,10 @@ function Home() {
         skipEmptyLines: true,
         complete: function (results) {
           try {
-            const fixedHeaders = ["Fra", "Til", "KWH 60 Forbruk", "Kvalitet"];
-            const CSVArr = [];
             if (results.data.length == 0) {
               return setError("CSV filen er tomt");
             }
-
-            const removingOldHeaders = results.data.shift();
-            const arrWithoutHeaders = results.data;
-            const arrWithFixedUsage = arrWithoutHeaders.map((hour) => {
-              const {
-                startTime = hour[0],
-                finishTime = hour[1],
-                usagePart1 = hour[2],
-                usagePart2 = hour[3],
-              } = hour;
-              const result = [
-                startTime,
-                finishTime,
-                `${
-                  isNaN(usagePart2) ? usagePart1 : usagePart1 + "." + usagePart2
-                }`,
-              ];
-              return result;
-            });
-            const unParsed = Papa.unparse({
-              fields: ["Fra", "Til", "KWH 60 Forbruk", "Kvalitet"],
-              data: arrWithFixedUsage,
-            });
+            const unParsed = formatCSVFile(results.data);
             const newResult = Papa.parse(unParsed, { header: true });
             extractCurrentMonth(newResult.data);
           } catch (error) {
@@ -245,7 +243,6 @@ function Home() {
   useEffect(() => {}, [totalMonthPrice]);
 
   const extractCurrentMonth = async (usageData) => {
-    console.log(usageData);
     const wholeYear = usageData[0].Fra.split(".")[2].split(" ")[0];
     const year = wholeYear.split("0")[1];
     const month = usageData[0].Fra.split(".")[1];
@@ -269,7 +266,6 @@ function Home() {
     setSupportRateForMonth(SupportRateForMonth);
     setSelectedMonth(selecetedMonth);
     setSelectedYear(wholeYear);
-
     const prices = await getMonthPrices(monthObj[year][month]);
     calculateMonthlyValues(usageData, prices, SupportRateForMonth);
   };
@@ -337,7 +333,6 @@ function Home() {
         avgPriceTimesUsage = avgPriceTimesUsage + priceForHour * usage;
       }
       const totalPricePrHour = createTotalPricePrHour(usage, priceForHour);
-
       return {
         values,
         date,
@@ -362,6 +357,7 @@ function Home() {
       createGovSupport(tempMonthAvg / hoursCounter, SupportRateForMonth)
     );
     setTotalKwh(totalUsage);
+    updateUsageCounter();
     setIsLoading(false);
   }
 
@@ -421,6 +417,9 @@ function Home() {
                 capacityPrice={capacityPrice}
                 setCapacityPrice={setCapacityPrice}
                 extractCurrentMonth={extractCurrentMonth}
+                formatCSVFile={formatCSVFile}
+                isDemo={isDemo}
+                setIsDemo={setIsDemo}
               />
             </div>
             <div className="bio-link d-flex mt-5 justify-content-center">

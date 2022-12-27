@@ -35,6 +35,7 @@ function Results({
   const showPowerSupport = (boolean) => {
     setShowWithPowerSupport(boolean);
   };
+
   const norwegianMonths = {
     January: "Januar",
     February: "Februar",
