@@ -379,13 +379,12 @@ function Home() {
         <div className="start-container d-flex flex-column ">
           <div className="site-descrip d-flex flex-column align-self-center mt-4">
             {" "}
-            <h2 className="description-text align-self-center ms-2 me-2">
+            <h2 className="description-text-header align-self-center ms-2 me-2">
               Velkommen til SjekkRegning.no!
             </h2>
             <h4 className="description-text align-self-center ms-2 me-2">
-              Her kan du sjekke om strømregning du fikk er korrekt eller om du
-              har betalt for mye eller sjekke denne måneds forbruk.
-              <p className="fw-bold">Nå med Nettleie!</p>
+              Her kan du sjekke om strømregningen du fikk stemmer og estimere
+              regningen for denne måneden.
             </h4>
           </div>
           <div className="d-flex flex-column container justify-content-center">

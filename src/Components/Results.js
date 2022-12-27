@@ -327,15 +327,6 @@ function Results({
             </h2>
           </div>
         </div>
-
-        <div className="price-exp mx-2 align-self-center">
-          {!hasFixedPrice && (
-            <p className="mx-2 align-self-center">
-              Total månedspris beregnes utifra ditt forbruk for hver enkelt time
-              og ikke månedsgjennomsnitt.
-            </p>
-          )}
-        </div>
       </div>
     </Card>
   );

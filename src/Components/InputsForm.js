@@ -3,6 +3,7 @@ import Instructions from "./Instructions";
 import Papa, { parse, unparse } from "papaparse";
 import KommuneDropdown from "./KommuneDropdown";
 import example from "../Resources/eksampel.js";
+import Example from "./Example";
 export default function InputsForm({
   handleCsvFile,
   kommuneList,
@@ -121,9 +122,7 @@ export default function InputsForm({
     Papa.parse(example, {
       header: true,
       complete: function (results) {
-        // results object contains parsed csv data
         let csvData = results.data;
-        // create a new csv file and fill it with csvData
         let csvFile = new File(csvData, "example.csv", {
           type: "text/csv",
         });
@@ -185,8 +184,18 @@ export default function InputsForm({
                   bruksverdier for måneden.{" "}
                 </p>
               </section>
+              {isDemo && (
+                <p className="elhub-instructions">
+                  Veiledning med bilder for Elhub ⬇️
+                </p>
+              )}
             </label>
             <Instructions></Instructions>
+            {isDemo && (
+              <div className="file-instructions">
+                <p> ⬅️ Her velger du CSV filen fra Elhub</p>
+              </div>
+            )}
             <input
               onChange={(e) => {
                 handleCsvFile(e.target.files);
@@ -248,40 +257,76 @@ export default function InputsForm({
                   </div>
                 </div>
               </div>
-              <div className="storage-buttons-container d-flex flex-column">
+              {!isDemo ? (
+                <>
+                  <div className="storage-buttons-container d-flex flex-column">
+                    <button
+                      className="save-btn btn btn-success"
+                      onClick={() => {
+                        saveValuestoStorage();
+                      }}
+                    >
+                      Lagre Verdier
+                    </button>
+                    <button
+                      className="delete-btn btn btn-danger"
+                      onClick={() => {
+                        deleteValuesFromStorage();
+                      }}
+                    >
+                      Slett Verdier
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="network-help d-flex flex-column">
+                    {" "}
+                    <div className="network-help-header">
+                      <h4>{`<-`}Her Skriver du Nettleie elementer</h4>
+                    </div>
+                    <h5 className="example-capacity">
+                      {`1. Kapasitet ledd - avhenger av dine 3 høyeste brukstimer forrige måned - Se fakturaen din for
+                      riktige sum`}{" "}
+                    </h5>
+                    <h5>2.Dag satser </h5>
+                    <h5>3.Nett/Helg satser</h5>
+                    <h6>
+                      Husk at Dag og natt satser må skrives ink ENOVA,
+                      Merverdiavgift og El-avgift - Sjekk fakturaen din for
+                      riktige summer.
+                    </h6>
+                  </div>
+                </>
+              )}
+            </div>
+            {!isDemo ? (
+              <div className="tutorial">
+                <p className="fw-bold tut-txt">
+                  Vet ikke hva du skal gjøre her? Trykk på Eksampel knappen for
+                  en demonstrasjon
+                </p>
                 <button
-                  className="save-btn btn btn-success"
+                  className="btn btn-danger tut-btn"
                   onClick={() => {
-                    saveValuestoStorage();
+                    setupDemoValues();
                   }}
                 >
-                  Lagre Verdier
-                </button>
-                <button
-                  className="delete-btn btn btn-danger"
-                  onClick={() => {
-                    deleteValuesFromStorage();
-                  }}
-                >
-                  Slett Verdier
+                  {" "}
+                  Eksampel
                 </button>
               </div>
-            </div>
-            <div className="tutorial">
-              <p className="fw-bold tut-txt">
-                Vet ikke hva du skal gjøre her? Trykk på Eksampel knappen for en
-                demonstrasjon
-              </p>
-              <button
-                className="btn btn-danger tut-btn"
-                onClick={() => {
-                  setupDemoValues();
-                }}
-              >
-                {" "}
-                Eksampel
-              </button>
-            </div>
+            ) : (
+              <div className="example">
+                <button
+                  className="btn btn-danger exit-example"
+                  onClick={() => window.location.reload()}
+                >
+                  Forlat Eksampel
+                </button>{" "}
+                <Example></Example>{" "}
+              </div>
+            )}
           </div>
         </div>
         <hr />
@@ -302,6 +347,11 @@ export default function InputsForm({
           {error && <h2 className="text-danger d-flex ">{error} </h2>}
         </div>
         <hr />
+        {isDemo && (
+          <p className="fixed-price-example">
+            ⬇️Har du fast pris? trykke du på bokser
+          </p>
+        )}
         <div className="extras-container">
           <div className="d-flex flex-column">
             <div className="d-flex surcharge">
@@ -357,7 +407,11 @@ export default function InputsForm({
           </div>
           <div className="calculate-btn">
             <button
-              className="calculate btn btn-success my-3 "
+              className={
+                !isDemo
+                  ? "calculate btn btn-success my-3 "
+                  : "calculate demo-btn btn btn-success my-3"
+              }
               onClick={() => {
                 !isDemo ? parseCsvJson() : displayDemoResults();
               }}

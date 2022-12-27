@@ -114,7 +114,7 @@ function ReportError({ uploadFailedFile, file, handleCsvFile }) {
               </button>
             </div>
             <p className="fw-bold">
-              Prøvde du å kjøre en fil og det fungerte ikke? du kan sende den
+              Prøvde du å kjøre en fil og det fungerte ikke? du kan sende filen
               til oss for analysering:
             </p>
             <input
