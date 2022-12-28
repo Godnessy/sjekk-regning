@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import Papa, { parse, unparse } from "papaparse";
 import { db } from "../firebase-config.js";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { addDoc, doc, getDoc, setDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 import kommunes from "../Resources/kommuneList.json";
 import KommuneDropdown from "../Components/KommuneDropdown";
@@ -117,10 +117,33 @@ function Home() {
   };
 
   const updateUsageCounter = async () => {
-    // const usageCounterRef = doc(db, "usage-counter", `usage`);
-    // const usageCounterSnap = await getDoc(usageCounterRef);
-    // let usageCounter = usageCounterSnap.data().usage;
-    // await setDoc(usageCounterRef, { usage: usageCounter + 1 });
+    const usageCounterRef = doc(db, "usage-counter", `usage`);
+    const usageCounterSnap = await getDoc(usageCounterRef);
+    let usageCounter = usageCounterSnap.data().usage;
+    const currentCount = usageCounter + 1;
+    let today = new Date();
+    let date = today.getDate();
+    let month = today.getMonth() + 1;
+    let year = today.getFullYear();
+    let hours = today.getHours();
+    let minutes = today.getMinutes();
+    let seconds = today.getSeconds();
+
+    let dateTime =
+      date +
+      "/" +
+      month +
+      "/" +
+      year +
+      " " +
+      hours +
+      ":" +
+      minutes +
+      ":" +
+      seconds;
+
+    console.log(dateTime);
+    await setDoc(usageCounterRef, { usage: currentCount, lastUsed: dateTime });
   };
 
   const getMonthPrices = async (month) => {

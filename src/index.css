@@ -105,62 +105,8 @@ body {
   font-size: 0.8em;
 }
 
-@media screen and (max-width: 1200px) {
-  .price-exp {
-    width: 20em;
-  }
-}
-@media screen and (max-width: 890px) {
-  .price-exp {
-    width: 15em;
-  }
-
-  .results-card {
-    width: 80%;
-    margin-left: 10%;
-  }
-}
-
 .navbar {
   height: 5em;
-}
-
-@media screen and (max-width: 991px) {
-  .logo,
-  .logo-pris,
-  .cooporation {
-    position: relative;
-  }
-  .logo {
-    bottom: 1.5em;
-  }
-  .cooporation {
-    right: 15%;
-    bottom: 35%;
-  }
-  .logo-pris {
-    right: 30%;
-    bottom: 40%;
-  }
-}
-
-@media screen and (max-width: 790px) {
-  .logo,
-  .logo-pris,
-  .cooporation {
-    position: relative;
-  }
-  .logo {
-    bottom: 1.5em;
-  }
-  .cooporation {
-    right: 10%;
-    bottom: 35%;
-  }
-  .logo-pris {
-    right: 20%;
-    bottom: 40%;
-  }
 }
 
 .calculate {
@@ -221,6 +167,11 @@ body {
   width: 100%;
 }
 
+.fixed-price-checkbox-container {
+  display: flex;
+  flex-direction: row;
+}
+
 .csv-flow-title {
   font-size: 2em;
 }
@@ -275,8 +226,9 @@ body {
 }
 
 .fixed-price {
-  position: relative;
-  right: 10%;
+  height: 50%;
+  width: 80%;
+  padding: 5px;
 }
 
 .left-side-table {
@@ -308,10 +260,8 @@ body {
   width: 100%;
 }
 .report {
-  width: 5%;
   position: absolute;
-  right: 1%;
-  top: 25%;
+  right: 5%;
 }
 
 .chart {
@@ -349,6 +299,9 @@ body {
 }
 
 /* Tutorial button div */
+.network-help-small {
+  display: none;
+}
 .example {
   position: absolute;
   right: -2%;
@@ -356,24 +309,16 @@ body {
   z-index: 1;
 }
 .elhub-instructions {
-  position: absolute;
-  top: 14%;
-  left: 20%;
+  color: red;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+.file-instructions {
   color: red;
   font-size: 1.2em;
   font-weight: bold;
 }
 
-.file-instructions {
-  position: absolute;
-  left: 20%;
-  top: 21.9%;
-  color: red;
-  font-size: 1.3em;
-  z-index: 1;
-  font-weight: bold;
-  width: 70%;
-}
 .Example-txt {
   color: red;
   font-size: 80px;
@@ -433,12 +378,9 @@ body {
 }
 
 .fixed-price-example {
-  position: absolute;
   color: red;
   font-size: 1.3em;
   font-weight: bold;
-  top: 75%;
-  left: 37%;
 }
 /* store and delete value buttons */
 .storage-buttons-container {
@@ -464,6 +406,7 @@ body {
 @media screen and (max-width: 2500px) {
   .report {
     width: 10%;
+    top: 25%;
   }
 }
 @media screen and (max-width: 1400px) {
@@ -474,29 +417,44 @@ body {
   }
 }
 @media screen and (max-width: 1200px) {
-  .file-instructions {
-    left: 23%;
-    top: 22.4%;
+  .price-exp {
+    width: 20em;
+  }
+  .report {
+    top: 15%;
   }
 }
 
 @media screen and (max-width: 1000px) {
-  .surcharge-input {
-    width: 2em;
-  }
-
   .chart {
     display: none;
   }
   .surcharge-input {
-    width: 3em;
+    width: 2.5em;
+  }
+  .cookies-dec {
+    margin-top: 5%;
+  }
+
+  .fixed-price-container {
+    grid-area: extras2;
   }
 
   .fixed-price {
-    grid-area: extras2;
+    display: flex;
+    flex-direction: row;
+    border: none !important;
     width: 80%;
     position: relative;
-    left: 1%;
+    left: 0%;
+    margin-top: 2%;
+    height: 80%;
+  }
+
+  .fixed-price-checkbox-container {
+    display: flex;
+    flex-direction: row;
+    width: 50%;
   }
 
   .site-descrip {
@@ -507,32 +465,47 @@ body {
   .report {
     width: 10%;
     position: absolute;
-    right: 2%;
     top: 10px;
   }
 
-  .elhub-instructions {
-    top: 13%;
-  }
-  .file-instructions {
-    top: 20.5%;
-  }
-  .fixed-price-example {
-    top: 80%;
-    left: 3%;
-    z-index: 1;
-  }
   .calculate {
-    left: 50%;
-    top: 90%;
+    left: 10%;
+    top: 50%;
+  }
+}
+@media screen and (max-width: 991px) {
+  .logo,
+  .logo-pris,
+  .cooporation {
+    position: relative;
+  }
+  .logo {
+    bottom: 1.5em;
+  }
+  .cooporation {
+    right: 15%;
+    bottom: 35%;
+  }
+  .logo-pris {
+    right: 30%;
+    bottom: 40%;
+  }
+}
+@media screen and (max-width: 890px) {
+  .price-exp {
+    width: 15em;
+  }
+
+  .results-card {
+    width: 80%;
+    margin-left: 10%;
   }
 }
 
 @media screen and (max-width: 800px) {
   .report {
     width: 20%;
-    right: 2%;
-    top: 25px;
+    top: 25%;
   }
 
   .loading {
@@ -540,6 +513,39 @@ body {
   }
   .storage-buttons-container {
     margin-top: 15%;
+  }
+}
+@media screen and (max-width: 790px) {
+  .logo,
+  .logo-pris,
+  .cooporation {
+    position: relative;
+  }
+  .logo {
+    bottom: 1.5em;
+  }
+  .cooporation {
+    right: 10%;
+    bottom: 35%;
+  }
+  .logo-pris {
+    right: 20%;
+    bottom: 40%;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .example {
+    width: 70%;
+  }
+
+  .network-help {
+    width: 40%;
+  }
+
+  .calculate {
+    left: -3%;
+    top: 15%;
   }
 }
 
@@ -557,6 +563,26 @@ body {
   }
 }
 
+@media screen and (max-width: 639px) {
+  .example {
+    right: 0%;
+    display: flex;
+    flex-direction: column;
+    background-color: black;
+    width: 101%;
+    align-items: center;
+    justify-content: center;
+  }
+  .Example-txt {
+    font-size: 5em;
+    transform: rotate(0deg);
+  }
+
+  .exit-example {
+    left: 0;
+  }
+}
+
 @media screen and (max-width: 600px) {
   .report {
     font-size: 0.6em;
@@ -565,6 +591,14 @@ body {
   }
   .table {
     font-size: 0.9em;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .network-help h5 {
+    margin-left: 2%;
+    font-size: 1em;
+    width: 80%;
   }
 }
 
@@ -589,7 +623,7 @@ body {
 
   .calculate {
     position: relative !important;
-    top: 60%;
+    top: 49%;
     right: 100px !important;
     font-size: 1.5em !important;
   }
@@ -688,8 +722,35 @@ body {
       top: 20%;
     }
   }
-}
 
+  .cookies-dec {
+    margin-top: 15%;
+  }
+
+  .network-help h5 {
+    margin-left: 2%;
+    font-size: 0.7em;
+    width: 80%;
+  }
+
+  .fixed-price {
+    width: 100%;
+    position: relative;
+    top: 40px;
+    height: 80px;
+    flex-direction: row;
+    padding: 0px;
+  }
+
+  .other-fees-input {
+    position: rela;
+  }
+}
+@media screen and (max-width: 460px) {
+  .other-fees-title {
+    font-size: 1.1em;
+  }
+}
 @media screen and (max-width: 400px) {
   .daily-table {
     font-size: 0.88em;
@@ -719,6 +780,15 @@ body {
     position: relative;
     left: 27%;
   }
+  .Example-txt {
+    font-size: 4.5em;
+  }
+  .calculate {
+    top: 55%;
+  }
+  .other-fees-txt {
+    width: 80%;
+  }
 }
 
 @media screen and (max-width: 375px) {
@@ -735,5 +805,9 @@ body {
   .loading {
     position: relative;
     left: 31%;
+  }
+  .fixed-price {
+    padding: 0px;
+    margin-bottom: 10px;
   }
 }

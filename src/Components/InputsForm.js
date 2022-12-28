@@ -196,7 +196,7 @@ export default function InputsForm({
             <Instructions></Instructions>
             {isDemo && (
               <div className="file-instructions">
-                <p> ⬅️ Her velger du CSV filen fra Elhub</p>
+                <p> ⬇️ Her velger du CSV filen fra Elhub</p>
               </div>
             )}
             <input
@@ -214,7 +214,7 @@ export default function InputsForm({
               <div className="border border-dark d-flex flex-column card network-inputs ">
                 <h4 className="ms-2 text-decoration-underline">Nettleie</h4>
                 <div className="d-flex flex-column ms-2 mb-1">
-                  <h5 className="me-2 network-rates-title">Fastledd:</h5>
+                  <h5 className="me-2 network-rates-title">1. Fastledd:</h5>
                   <div className="d-flex">
                     <input
                       className="network-rates-inputs capacity-input"
@@ -226,7 +226,9 @@ export default function InputsForm({
                     />
                     <h6>kr</h6>
                   </div>
-                  <h5 className="me-2 network-rates-title">Energiledd Dag:</h5>
+                  <h5 className="me-2 network-rates-title">
+                    2. Energiledd Dag:
+                  </h5>
                   <div className="d-flex">
                     <input
                       className="network-rates-inputs"
@@ -241,7 +243,7 @@ export default function InputsForm({
                     </h6>
                   </div>
                   <h5 className="me-2 network-rates-title">
-                    Energiledd Natt/Helg:
+                    3. Energiledd Natt/Helg:
                   </h5>
                   <div className="d-flex">
                     <input
@@ -285,20 +287,20 @@ export default function InputsForm({
                 <>
                   <div className="network-help d-flex flex-column">
                     {" "}
-                    <div className="network-help-header">
-                      <h4>{`<-`}Her Skriver du Nettleie elementer</h4>
-                    </div>
+                    {/* <div className="network-help-header"> */}
+                    <h5>{`<-`}Her Skriver du Nettleie elementer</h5>
+                    {/* </div> */}
                     <h5 className="example-capacity">
-                      {`1. Kapasitet ledd - avhenger av dine 3 høyeste brukstimer forrige måned - Se fakturaen din for
-                      riktige sum`}{" "}
+                      1. Kapasitet ledd - avhenger av dine 3 høyeste brukstimer
+                      - Se fakturaen din for riktige sum.
                     </h5>
                     <h5>2.Dag satser </h5>
                     <h5>3.Nett/Helg satser</h5>
-                    <h6>
+                    <h5>
                       Husk at Dag og natt satser må skrives ink ENOVA,
                       Merverdiavgift og El-avgift - Sjekk fakturaen din for
                       riktige summer.
-                    </h6>
+                    </h5>
                   </div>
                 </>
               )}
@@ -350,11 +352,6 @@ export default function InputsForm({
           {error && <h2 className="text-danger d-flex ">{error} </h2>}
         </div>
         <hr />
-        {isDemo && (
-          <p className="fixed-price-example">
-            ⬇️Har du fast pris? trykke du på bokser
-          </p>
-        )}
         <div className="extras-container">
           <div className="d-flex flex-column">
             <div className="d-flex surcharge">
@@ -381,46 +378,55 @@ export default function InputsForm({
               />
               <h4>Kr</h4>
             </div>
-            <div className="other-fees-container d-flex flex-columns"></div>
-            <div className="other-fees d-flex">
-              <h3 className="me-2 other-fees-title">Andre gebyrer</h3>
-              <input
-                className="surcharge-input "
-                type="text"
-                ref={otherFeesRef}
-                onChange={(e) => {
-                  setOtherFees(validateInput(e.target.value));
-                }}
-              />
-              <h4>Kr</h4>
-            </div>
-            <p>F.esk Tripple-garanti,</p>
+            <div className="other-fees-container d-flex flex-column">
+              <div className="other-fees d-flex">
+                <h3 className="other-fees-title me-1 ">Andre gebyrer</h3>
+                <input
+                  className="surcharge-input other-fees-input "
+                  type="text"
+                  ref={otherFeesRef}
+                  onChange={(e) => {
+                    setOtherFees(validateInput(e.target.value));
+                  }}
+                />
+                <h4>Kr</h4>
+              </div>
+              <p className="other-fees-txt">
+                ⬆️f.esk Tripple-Garanti,opprinnelsesgaranti osv.
+              </p>
             </div>
           </div>
-          <div className="fixed-price border border-2 border-dark">
-            <div>
-              <input
-                className="fixed-checkbox ms-2"
-                type="checkbox"
-                onClick={(e) => {
-                  setHasFixedPrice(!hasFixedPrice);
-                }}
-              />
-              <label htmlFor="fixed-price-data">
+          <div className="fixed-price-container d-flex flex-column">
+            {" "}
+            {isDemo && (
+              <p className="fixed-price-example">
+                ⬇️Har du fast pris? Klikk på boksen
+              </p>
+            )}
+            <div className="fixed-price border border-2 border-dark">
+              <div className="fixed-price-checkbox-container">
+                <input
+                  className="fixed-checkbox ms-2"
+                  type="checkbox"
+                  onClick={(e) => {
+                    setHasFixedPrice(!hasFixedPrice);
+                  }}
+                />
+
                 <h4>Fast pris?</h4>
-              </label>
-            </div>
-            <div className="d-flex flex-row ms-2">
-              <input
-                className="fixed-price-input"
-                type="text"
-                ref={checkboxRef}
-                disabled
-                onChange={(e) => {
-                  setFixedPrice(validateInput(e.target.value));
-                }}
-              />
-              <h4>Øre pr. kwh</h4>
+              </div>
+              <div className="d-flex flex-row ms-2">
+                <input
+                  className="fixed-price-input"
+                  type="text"
+                  ref={checkboxRef}
+                  disabled
+                  onChange={(e) => {
+                    setFixedPrice(validateInput(e.target.value));
+                  }}
+                />
+                <h4>Øre pr. kwh</h4>
+              </div>
             </div>
           </div>
           <div className="calculate-btn">
@@ -438,7 +444,7 @@ export default function InputsForm({
             </button>
           </div>
         </div>
-        <div className="border fw-bold border-dark border-2 mt-3">
+        <div className="border cookies-dec fw-bold border-dark border-2">
           All informasjonen/filene du laster opp/deler her blir ikke lagret og
           vi bruker ikke informasjonskapsler.
         </div>
