@@ -28,6 +28,7 @@ function Home() {
   const [totalMonthPrice, setTotalMonthPrice] = useState();
   const [surcharge, setSurcharge] = useState(0);
   const [fee, setFee] = useState(0);
+  const [otherFees, setOtherFees] = useState(0);
   const [lastDay, setLastDay] = useState("");
   const [avgMonthly, setAvgMonthly] = useState(0);
   const [govSupport, setGovSupport] = useState(0);
@@ -419,6 +420,8 @@ function Home() {
                 formatCSVFile={formatCSVFile}
                 isDemo={isDemo}
                 setIsDemo={setIsDemo}
+                otherFees={otherFees}
+                setOtherFees={setOtherFees}
               />
             </div>
             <div className="bio-link d-flex mt-5 justify-content-center">
@@ -458,6 +461,7 @@ function Home() {
                 setCapacityPrice={setCapacityPrice}
                 selectedYear={selectedYear}
                 supportRateForMonth={supportRateForMonth}
+                otherFees={otherFees}
               />
             )}
 

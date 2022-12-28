@@ -26,6 +26,8 @@ export default function InputsForm({
   networkNightOrWeekendtPrice,
   setNetworkNightOrWeekendtPrice,
   capacityPrice,
+  otherFees,
+  setOtherFees,
   setCapacityPrice,
   setFile,
   extractCurrentMonth,
@@ -39,6 +41,7 @@ export default function InputsForm({
   const surchargeRef = useRef();
   const feeRef = useRef();
   const fileRef = useRef();
+  const otherFeesRef = useRef();
   const [demoUsageValues, setDemoUsageValues] = useState(example);
 
   function setValuealueToLocalStorage(TypeOfValue, value) {
@@ -377,6 +380,21 @@ export default function InputsForm({
                 }}
               />
               <h4>Kr</h4>
+            </div>
+            <div className="other-fees-container d-flex flex-columns"></div>
+            <div className="other-fees d-flex">
+              <h3 className="me-2 other-fees-title">Andre gebyrer</h3>
+              <input
+                className="surcharge-input "
+                type="text"
+                ref={otherFeesRef}
+                onChange={(e) => {
+                  setOtherFees(validateInput(e.target.value));
+                }}
+              />
+              <h4>Kr</h4>
+            </div>
+            <p>F.esk Tripple-garanti,</p>
             </div>
           </div>
           <div className="fixed-price border border-2 border-dark">
