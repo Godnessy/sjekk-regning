@@ -212,7 +212,7 @@ function Results({
                   </tr>
                 </thead>
                 <tbody>
-                  {surcharge && (
+                  {surcharge !== 0 && (
                     <tr>
                       <th scope="row">Påslag</th>
                       <td>{totalUsage.toFixed(2)}</td>
@@ -227,7 +227,7 @@ function Results({
                       </td>
                     </tr>
                   )}
-                  {fee && (
+                  {fee !== 0 && (
                     <tr>
                       <th scope="row">Fast beløp</th>
                       <td>1</td>
@@ -247,7 +247,7 @@ function Results({
                         : totalMonthPrice.toFixed(2)}
                     </td>
                   </tr>
-                  {capacityPrice && (
+                  {capacityPrice !== 0 && (
                     <tr>
                       <th scope="row">Kapasitet Fastledd</th>
                       <td>1</td>
