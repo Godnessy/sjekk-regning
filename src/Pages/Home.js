@@ -199,17 +199,19 @@ function Home() {
         quoteChar: '"',
         skipEmptyLines: true,
         complete: function (results) {
-          try {
-            if (results.data.length == 0) {
-              return setError("CSV filen er tomt");
-            }
-            const unParsed = formatCSVFile(results.data);
-            const newResult = Papa.parse(unParsed, { header: true });
-            extractCurrentMonth(newResult.data);
-          } catch (error) {}
-          return alert(
-            "Feil i filen - kunne ikke analysere - Vennligst bruk rapportfeilknappen øverst til høyre for å sende oss en melding og hvis du ønsker filen slik at vi kan analysere den og gi deg tilbakemelding. Takk skal du ha :)"
-          );
+          if (results.data.length == 0) {
+            return setError("CSV filen er tomt");
+          }
+          const unParsed = formatCSVFile(results.data);
+          const newResult = Papa.parse(unParsed, { header: true });
+          if (!newResult.data[0].Til) {
+            alert(
+              "Feil i filen - kunne ikke analysere - Vennligst bruk rapportfeilknappen øverst til høyre for å sende oss en melding og filen (hvis du ønsker) slik at vi kan analysere den og gi deg tilbakemelding. Takk skal du ha :)"
+            );
+            return reloadPage();
+          }
+          console.log("worked");
+          extractCurrentMonth(newResult.data);
         },
       });
     };
@@ -379,7 +381,7 @@ function Home() {
       createGovSupport(tempMonthAvg / hoursCounter, SupportRateForMonth)
     );
     setTotalKwh(totalUsage);
-    !isDemo && updateUsageCounter();
+    // !isDemo && updateUsageCounter();
     setIsLoading(false);
   }
 
