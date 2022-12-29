@@ -119,11 +119,10 @@ function Home() {
     return window.location.reload();
   };
   const updateUsageCounter = async () => {
-    console.log("usage counter updated");
-    // const usageCounterRef = doc(db, "usage-counter", `usage`);
-    // const usageCounterSnap = await getDoc(usageCounterRef);
-    // let usageCounter = usageCounterSnap.data().usage;
-    // await setDoc(usageCounterRef, { usage: usageCounter + 1 });
+    const usageCounterRef = doc(db, "usage-counter", `usage`);
+    const usageCounterSnap = await getDoc(usageCounterRef);
+    let usageCounter = usageCounterSnap.data().usage;
+    await setDoc(usageCounterRef, { usage: usageCounter + 1 });
   };
 
   const getMonthPrices = async (month) => {
