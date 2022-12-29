@@ -82,14 +82,17 @@ export default function InputsForm({
         div2.remove("hidden");
         div1.add("hidden");
       }
+      return;
     } else {
       return;
     }
   };
 
   const handleResize = (windowWidth) => {
-    const div1 = exampleDivRef.current.classList;
-    const div2 = exampleDiv2Ref.current.classList;
+    if (isDemo) {
+      const div1 = exampleDivRef.current.classList;
+      const div2 = exampleDiv2Ref.current.classList;
+    }
     window.addEventListener("resize", () => {
       setWindowWidth(window.innerWidth);
     });
@@ -222,7 +225,7 @@ export default function InputsForm({
         setSurcharge(0.79);
         updateUI(feeRef, 39);
         setFee(39);
-        setSelectedKommune({ label: "Oslo", value: "NO1" });
+        setSelectedKommune({ label: "Bergen", value: "NO5" });
       },
     });
   }
@@ -401,7 +404,7 @@ export default function InputsForm({
                 >
                   Forlat Eksampel
                 </button>{" "}
-                <div className="Example-txt">Eksampel</div>
+                <div className="example-txt">Eksampel</div>
               </div>
             )}
           </div>
@@ -415,7 +418,7 @@ export default function InputsForm({
               kommuneList={kommuneList}
               setSelectedKommune={setSelectedKommune}
               isDemo={isDemo}
-              demoValue={"Oslo"}
+              demoValue={"Bergen"}
             />
             {selectedKommune && (
               <h4> Din kommune tilhører sone: {selectedKommune.value}</h4>

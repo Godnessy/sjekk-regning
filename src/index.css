@@ -317,10 +317,9 @@ body {
   font-weight: bold;
 }
 
-.Example-txt {
+.example-txt {
   color: red;
   font-size: 80px;
-
   transform: rotate(45deg);
 }
 
@@ -412,6 +411,14 @@ body {
 .hidden {
   display: none;
 }
+.results-example {
+  align-self: center;
+  font-size: 3em;
+  color: red;
+  margin-bottom: 1%;
+  background-color: black;
+  border-radius: 5%;
+}
 
 @media screen and (max-width: 2500px) {
   .report {
@@ -424,6 +431,9 @@ body {
     font-size: 1.2em;
     width: 100%;
     max-width: 100%;
+  }
+  .usage-price-container {
+    margin: 0 2% 0 2%;
   }
 }
 @media screen and (max-width: 1200px) {
@@ -524,7 +534,21 @@ body {
   .storage-buttons-container {
     margin-top: 15%;
   }
+  .usage-price-container {
+    flex-direction: column;
+    margin: 0 -10px 0 2%;
+  }
+
+  .hourly-prices {
+    margin-top: 1em;
+    justify-self: center;
+    position: relative;
+    right: 1em;
+    margin-right: 1%;
+    margin-left: 2%;
+  }
 }
+
 @media screen and (max-width: 790px) {
   .logo,
   .logo-pris,
@@ -559,20 +583,6 @@ body {
   }
 }
 
-@media screen and (max-width: 700px) {
-  .usage-price-container {
-    flex-direction: column;
-    margin: 0.5em 1em 0.5em 1em;
-  }
-
-  .hourly-prices {
-    margin-top: 1em;
-    justify-self: center;
-    position: relative;
-    right: 1em;
-  }
-}
-
 @media screen and (max-width: 639px) {
   .example {
     right: 0%;
@@ -583,13 +593,16 @@ body {
     align-items: center;
     justify-content: center;
   }
-  .Example-txt {
+  .example-txt {
     font-size: 5em;
     transform: rotate(0deg);
   }
 
   .exit-example {
     left: 0;
+  }
+  .report {
+    top: 15%;
   }
 }
 
@@ -653,17 +666,13 @@ body {
   }
 
   .daily-prices {
-    margin: 2% 5% 2% 6% !important;
+    margin: 0 1px 0 1px !important;
   }
   .hourly-prices {
-    margin: 2% 9% 2% 10% !important;
+    margin: 2% 2% 30% 4% !important;
     align-self: center;
   }
 
-  .hourly-prices {
-    position: relative;
-    left: 3%;
-  }
   .cooporation,
   .logo-pris {
     display: none;
@@ -765,9 +774,7 @@ body {
   .daily-table {
     font-size: 0.88em;
   }
-  .hourly-prices {
-    margin-right: 14% !important;
-  }
+
   .logo {
     position: relative;
     left: 65%;
@@ -802,10 +809,6 @@ body {
 }
 
 @media screen and (max-width: 375px) {
-  .hourly-prices {
-    margin-right: 14% !important;
-  }
-
   .table-hourly {
     margin-right: 10%;
   }

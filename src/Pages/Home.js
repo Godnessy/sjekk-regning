@@ -356,7 +356,7 @@ function Home() {
         totalPricePrHour,
       };
     });
-    const totalMonthPrice = dataForHour.reduce((result, item, index) => {
+    const totalMonthPrice = dataForHour.reduce((result, item) => {
       return result + item.totalPricePrHour;
     }, 0);
     setCapacityRates(capacitySet);
@@ -369,7 +369,7 @@ function Home() {
       createGovSupport(tempMonthAvg / hoursCounter, SupportRateForMonth)
     );
     setTotalKwh(totalUsage);
-    // updateUsageCounter();
+    !isDemo && updateUsageCounter();
     setIsLoading(false);
   }
 
@@ -502,7 +502,7 @@ function Home() {
                   />
                 )}
               </div>
-              <div className=" hourly-prices ms-3">
+              <div className=" hourly-prices">
                 {usageData && (
                   <HourlyPrices
                     dataForHour={usageData}
