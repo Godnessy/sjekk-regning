@@ -5,6 +5,7 @@ import KommuneDropdown from "./KommuneDropdown";
 import example from "../Resources/eksampel.js";
 import Example from "./Example";
 export default function InputsForm({
+  file,
   handleCsvFile,
   kommuneList,
   setSelectedKommune,
@@ -42,11 +43,88 @@ export default function InputsForm({
   const feeRef = useRef();
   const fileRef = useRef();
   const otherFeesRef = useRef();
+  const exampleDivRef = useRef();
+  const exampleDiv2Ref = useRef();
+  const calculateBtnRef = useRef();
   const [demoUsageValues, setDemoUsageValues] = useState(example);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   function setValuealueToLocalStorage(TypeOfValue, value) {
     localStorage.setItem(TypeOfValue, value);
   }
+
+  const demoButtonDiv = () => {
+    return (
+      <>
+        <p className="fw-bold tut-txt">
+          Vet ikke hva du skal gjøre her? Trykk på Eksampel knappen for en
+          demonstrasjon
+        </p>
+        <button
+          className="btn btn-danger tut-btn"
+          onClick={() => {
+            setupDemoValues();
+          }}
+        >
+          Demo
+        </button>
+      </>
+    );
+  };
+  const changeDivDisplay = (windowWidth) => {
+    if (!isDemo) {
+      const div1 = exampleDivRef.current.classList;
+      const div2 = exampleDiv2Ref.current.classList;
+      if (windowWidth > 800) {
+        div1.remove("hidden");
+        div2.add("hidden");
+      } else {
+        div2.remove("hidden");
+        div1.add("hidden");
+      }
+    } else {
+      return;
+    }
+  };
+
+  const handleResize = (windowWidth) => {
+    const div1 = exampleDivRef.current.classList;
+    const div2 = exampleDiv2Ref.current.classList;
+    window.addEventListener("resize", () => {
+      setWindowWidth(window.innerWidth);
+    });
+    changeDivDisplay(windowWidth);
+  };
+
+  useEffect(() => {
+    handleResize(windowWidth);
+  }, []);
+
+  useEffect(() => {
+    changeDivDisplay(windowWidth);
+  }, [windowWidth]);
+
+  useEffect(() => {
+    if (
+      file &&
+      networkDayPrice &&
+      networkNightOrWeekendtPrice &&
+      capacityPrice &&
+      selectedKommune &&
+      fee &&
+      surcharge
+    ) {
+      calculateBtnRef.current.classList.add("demo-btn");
+    }
+  }, [
+    file,
+    networkDayPrice,
+    networkNightOrWeekendtPrice,
+    capacityPrice,
+    selectedKommune,
+    fee,
+    surcharge,
+  ]);
 
   function saveValuestoStorage() {
     capacityPrice &&
@@ -173,7 +251,12 @@ export default function InputsForm({
     }
   }
   return (
-    <div className="d-flex">
+    <div className="d-flex flex-column">
+      {!isDemo && (
+        <div ref={exampleDiv2Ref} className="tutorial2 hidden">
+          {demoButtonDiv()}
+        </div>
+      )}
       <div className="ms-3 border border-dark p-3 card inputs-card ">
         <div className="csv-part d-flex flex-column">
           <div className="upload mb-2">
@@ -305,21 +388,10 @@ export default function InputsForm({
                 </>
               )}
             </div>
+
             {!isDemo ? (
-              <div className="tutorial">
-                <p className="fw-bold tut-txt">
-                  Vet ikke hva du skal gjøre her? Trykk på Eksampel knappen for
-                  en demonstrasjon
-                </p>
-                <button
-                  className="btn btn-danger tut-btn"
-                  onClick={() => {
-                    setupDemoValues();
-                  }}
-                >
-                  {" "}
-                  Eksampel
-                </button>
+              <div ref={exampleDivRef} className="tutorial">
+                {demoButtonDiv()}
               </div>
             ) : (
               <div className="example">
@@ -329,7 +401,7 @@ export default function InputsForm({
                 >
                   Forlat Eksampel
                 </button>{" "}
-                <Example></Example>{" "}
+                <div className="Example-txt">Eksampel</div>
               </div>
             )}
           </div>
@@ -431,6 +503,7 @@ export default function InputsForm({
           </div>
           <div className="calculate-btn">
             <button
+              ref={calculateBtnRef}
               className={
                 !isDemo
                   ? "calculate btn btn-success my-3 "

@@ -12,9 +12,7 @@ body {
     #00b4db
   ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
-.hidden {
-  display: none;
-}
+
 .zones-container {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
@@ -341,16 +339,26 @@ body {
   padding: 2px;
   position: absolute;
   top: 27%;
-  right: 5%;
+  right: 4%;
   font-size: 1.3em;
   width: 30%;
   text-align: center;
 }
 
+.tutorial2 {
+  border: solid black 1px;
+  border-radius: 5%;
+  padding: 2px;
+  font-size: 1.2em;
+  width: 80%;
+  text-align: center;
+  align-self: center;
+  margin-bottom: 1%;
+}
+
 .tut-btn {
   font-size: 1.4em !important;
   position: relative;
-  /* right: 25%; */
 }
 
 .demo-btn {
@@ -400,7 +408,9 @@ body {
 }
 
 /* Example section */
-.tutorial {
+
+.hidden {
+  display: none;
 }
 
 @media screen and (max-width: 2500px) {
@@ -784,7 +794,7 @@ body {
     font-size: 4.5em;
   }
   .calculate {
-    top: 55%;
+    top: 48%;
   }
   .other-fees-txt {
     width: 80%;

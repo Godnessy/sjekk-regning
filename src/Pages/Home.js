@@ -129,20 +129,8 @@ function Home() {
     let minutes = today.getMinutes();
     let seconds = today.getSeconds();
 
-    let dateTime =
-      date +
-      "/" +
-      month +
-      "/" +
-      year +
-      " " +
-      hours +
-      ":" +
-      minutes +
-      ":" +
-      seconds;
+    let dateTime = `${date}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 
-    console.log(dateTime);
     await setDoc(usageCounterRef, { usage: currentCount, lastUsed: dateTime });
   };
 
@@ -381,7 +369,7 @@ function Home() {
       createGovSupport(tempMonthAvg / hoursCounter, SupportRateForMonth)
     );
     setTotalKwh(totalUsage);
-    updateUsageCounter();
+    // updateUsageCounter();
     setIsLoading(false);
   }
 
@@ -445,6 +433,7 @@ function Home() {
                 setIsDemo={setIsDemo}
                 otherFees={otherFees}
                 setOtherFees={setOtherFees}
+                file={file}
               />
             </div>
             <div className="bio-link d-flex mt-5 justify-content-center">
