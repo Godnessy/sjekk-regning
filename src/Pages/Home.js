@@ -380,7 +380,7 @@ function Home() {
       createGovSupport(tempMonthAvg / hoursCounter, SupportRateForMonth)
     );
     setTotalKwh(totalUsage);
-    !isDemo && updateUsageCounter();
+    // !isDemo && updateUsageCounter();
     setIsLoading(false);
   }
 
@@ -485,6 +485,7 @@ function Home() {
                 selectedYear={selectedYear}
                 supportRateForMonth={supportRateForMonth}
                 otherFees={otherFees}
+                isDemo={isDemo}
               />
             )}
 

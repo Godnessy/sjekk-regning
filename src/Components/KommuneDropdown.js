@@ -5,7 +5,8 @@ function KommuneDropdown({
   kommuneList,
   setSelectedKommune,
   isDemo,
-  demoValue,
+  displayValue,
+  // selectedKommune,
 }) {
   const dropDownValues = [];
   const kommuneRef = useRef();
@@ -14,14 +15,14 @@ function KommuneDropdown({
     dropDownValues.push({ label: kommuneName, value: areaCode })
   );
 
-  useEffect(() => {}, [kommuneRef]);
+  // useEffect(() => {}, [displayValue]);
 
   return (
     <>
       <Select
         options={dropDownValues}
         ref={kommuneRef}
-        inputValue={isDemo ? demoValue : undefined}
+        inputValue={isDemo ? displayValue : undefined}
         onChange={(opt) => {
           setSelectedKommune(opt);
         }}

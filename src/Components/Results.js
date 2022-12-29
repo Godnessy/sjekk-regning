@@ -24,6 +24,7 @@ function Results({
   supportRateForMonth,
   selectedYear,
   otherFees,
+  isDemo,
 }) {
   const [finalDayRate, setFinalDayRate] = useState(0);
   const [finalNightRate, setFinalNightRate] = useState(0);
@@ -156,7 +157,7 @@ function Results({
 
   return (
     <div className="d-flex flex-column">
-      <div className="results-example">Eksampel</div>
+      {isDemo && <div className="results-example">Eksampel</div>}
       <Card className="results-card">
         <div className="d-flex align-content-left flex-column">
           <h2 className="text-decoration-underline ms-2">

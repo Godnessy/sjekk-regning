@@ -142,6 +142,18 @@ export default function InputsForm({
     surcharge &&
       setValuealueToLocalStorage("SJEKK_REGNING_SURCHARGE", surcharge);
     fee && setValuealueToLocalStorage("SJEKK_REGNING_FEE", fee);
+    otherFees &&
+      setValuealueToLocalStorage("SJEKK_REGNING_OTHER_FEES", otherFees);
+    // selectedKommune &&
+    //   setValuealueToLocalStorage(
+    //     "SJEKK_REGNING_KOMMUNE_NAME",
+    //     selectedKommune.label
+    //   );
+    // selectedKommune &&
+    //   setValuealueToLocalStorage(
+    //     "SJEKK_REGNING_KOMMUNE_CODE",
+    //     selectedKommune.value
+    //   );
   }
   function updateUI(element, value) {
     return (element.current.value = value);
@@ -159,18 +171,33 @@ export default function InputsForm({
       "SJEKK_REGNING_SURCHARGE"
     );
     const feeFromStorage = localStorage.getItem("SJEKK_REGNING_FEE");
-
+    const otherFeesFromStorage = localStorage.getItem(
+      "SJEKK_REGNING_OTHER_FEES"
+    );
+    // const selectedKommuneName = localStorage.getItem(
+    //   "SJEKK_REGNING_KOMMUNE_NAME"
+    // );
+    // const selectedKommuneZone = localStorage.getItem(
+    //   "SJEKK_REGNING_KOMMUNE_CODE"
+    // );
+    // const selectedKommuneFromStorage = {
+    //   label: selectedKommuneName,
+    //   value: selectedKommuneZone,
+    // };
     try {
       setCapacityPrice(Number(capacityFromStorage));
       setNetworkDayPrice(Number(dayPricesFromStorage));
       setNetworkNightOrWeekendtPrice(Number(nightPricesFromStorage));
       setSurcharge(Number(surchargeFromStorage));
       setFee(Number(feeFromStorage));
+      setOtherFees(Number(otherFeesFromStorage));
       updateUI(capacityRef, capacityFromStorage);
       updateUI(dayPriceRef, dayPricesFromStorage);
       updateUI(nightPriceRef, nightPricesFromStorage);
       updateUI(surchargeRef, surchargeFromStorage);
       updateUI(feeRef, feeFromStorage);
+      updateUI(otherFeesRef, otherFeesFromStorage);
+      // setSelectedKommune(selectedKommuneFromStorage);
     } catch (error) {
       console.log(error.message);
       alert(
@@ -178,29 +205,42 @@ export default function InputsForm({
       );
     }
   }, []);
-
   function deleteValuesFromStorage() {
     localStorage.removeItem("SJEKK_REGNING_CAPACITY");
     localStorage.removeItem("SJEKK_REGNING_DAY_PRICE");
     localStorage.removeItem("SJEKK_REGNING_NIGHT_PRICE");
     localStorage.removeItem("SJEKK_REGNING_SURCHARGE");
     localStorage.removeItem("SJEKK_REGNING_FEE");
-    setCapacityPrice();
-    setNetworkDayPrice();
-    setNetworkNightOrWeekendtPrice();
-    setSurcharge();
-    setFee();
+    localStorage.removeItem("SJEKK_REGNING_FEE");
+    localStorage.removeItem("SJEKK_REGNING_OTHER_FEES");
+    localStorage.removeItem("SJEKK_REGNING_KOMMUNE_NAME");
+    localStorage.removeItem("SJEKK_REGNING_KOMMUNE_CODE");
+    setCapacityPrice(0);
+    setNetworkDayPrice(0);
+    setNetworkNightOrWeekendtPrice(0);
+    setSurcharge(0);
+    setFee(0);
+    setOtherFees(0);
+    setSelectedKommune(undefined);
     capacityRef.current.value = "";
     dayPriceRef.current.value = "";
     nightPriceRef.current.value = "";
     surchargeRef.current.value = "";
     feeRef.current.value = "";
+    otherFeesRef.current.value = "";
   }
 
   useEffect(() => {
     checkboxRef.current.disabled = !hasFixedPrice;
   }, [hasFixedPrice]);
 
+  const setDisplayValueForDropDown = () => {
+    // if (selectedKommune) {
+    //   console.log(selectedKommune);
+    //   return selectedKommune.label;
+    // } else
+    if (isDemo) return "Bergen";
+  };
   function setupDemoValues() {
     setIsDemo(true);
     Papa.parse(example, {
@@ -418,7 +458,8 @@ export default function InputsForm({
               kommuneList={kommuneList}
               setSelectedKommune={setSelectedKommune}
               isDemo={isDemo}
-              demoValue={"Bergen"}
+              selectedKommune={selectedKommune}
+              displayValue={setDisplayValueForDropDown()}
             />
             {selectedKommune && (
               <h4> Din kommune tilhører sone: {selectedKommune.value}</h4>
