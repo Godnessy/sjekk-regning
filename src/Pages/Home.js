@@ -210,7 +210,6 @@ function Home() {
             );
             return reloadPage();
           }
-          console.log("worked");
           extractCurrentMonth(newResult.data);
         },
       });

@@ -454,7 +454,7 @@ export default function InputsForm({
               <h4>Kr</h4>
             </div>
             <div className="other-fees-container d-flex flex-column">
-              {/* <div className="other-fees d-flex">
+              <div className="other-fees d-flex">
                 <h3 className="other-fees-title me-1 ">Andre gebyrer</h3>
                 <input
                   className="surcharge-input other-fees-input "
@@ -465,7 +465,7 @@ export default function InputsForm({
                   }}
                 />
                 <h4>Kr</h4>
-              </div> */}
+              </div>
               <p className="other-fees-txt">
                 ⬆️f.esk Tripple-Garanti,opprinnelsesgaranti osv.
               </p>

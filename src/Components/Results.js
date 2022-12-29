@@ -23,6 +23,7 @@ function Results({
   capacityPrice,
   supportRateForMonth,
   selectedYear,
+  otherFees,
 }) {
   const [finalDayRate, setFinalDayRate] = useState(0);
   const [finalNightRate, setFinalNightRate] = useState(0);
@@ -120,7 +121,8 @@ function Results({
     hasFixedPrice = false,
     WithPowerSupport,
     surcharge = 0,
-    fee = 0
+    fee = 0,
+    otherFees = 0
   ) => {
     const networkRatesWithGovSupport = calculateNetworkFinalPrice(
       finalDayRate,
@@ -131,7 +133,10 @@ function Results({
 
     if (hasFixedPrice) {
       const totalWithFixedPrice =
-        totalUsage * (fixedPrice / 100) + networkRatesWithGovSupport;
+        totalUsage * (fixedPrice / 100) +
+        networkRatesWithGovSupport +
+        fee +
+        otherFees;
 
       return totalWithFixedPrice;
     } else {
@@ -139,7 +144,8 @@ function Results({
         totalMonthPrice +
         networkRatesWithGovSupport +
         calculateSurcharge(surcharge) +
-        Number(fee)
+        Number(fee) +
+        otherFees
       );
     }
   };
@@ -236,6 +242,15 @@ function Results({
                       <td>{fee}</td>
                     </tr>
                   )}
+                  {otherFees !== 0 && (
+                    <tr>
+                      <th scope="row">Andre gebyrer</th>
+                      <td>1</td>
+                      <td>{otherFees}</td>
+                      <td>Kr</td>
+                      <td>{otherFees}</td>
+                    </tr>
+                  )}
                   <tr>
                     <th scope="row">Strøm</th>
                     <td>{totalUsage.toFixed(2)}</td>
@@ -323,7 +338,8 @@ function Results({
                   hasFixedPrice,
                   showWithPowerSupport,
                   surcharge,
-                  fee
+                  fee,
+                  otherFees
                 ).toFixed(2)}{" "}
                 kr{" "}
               </h2>
