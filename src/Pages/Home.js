@@ -14,6 +14,7 @@ import InputsForm from "../Components/InputsForm.js";
 import BioLink from "../Components/BioLink.js";
 import MonthlyChart from "../Components/MonthlyChart.js";
 import Loading from "../Components/Loading.js";
+import ReportError from "../Components/ReportError.js";
 const storage = getStorage();
 
 const allowedExtensions = ["csv"];
@@ -114,11 +115,15 @@ function Home() {
     } catch (error) {}
   };
 
+  const reloadPage = () => {
+    return window.location.reload();
+  };
   const updateUsageCounter = async () => {
-    const usageCounterRef = doc(db, "usage-counter", `usage`);
-    const usageCounterSnap = await getDoc(usageCounterRef);
-    let usageCounter = usageCounterSnap.data().usage;
-    await setDoc(usageCounterRef, { usage: usageCounter + 1 });
+    console.log("usage counter updated");
+    // const usageCounterRef = doc(db, "usage-counter", `usage`);
+    // const usageCounterSnap = await getDoc(usageCounterRef);
+    // let usageCounter = usageCounterSnap.data().usage;
+    // await setDoc(usageCounterRef, { usage: usageCounter + 1 });
   };
 
   const getMonthPrices = async (month) => {
@@ -191,6 +196,9 @@ function Home() {
             const newResult = Papa.parse(unParsed, { header: true });
             extractCurrentMonth(newResult.data);
           } catch (error) {}
+          return alert(
+            "Feil i filen - kunne ikke analysere - Vennligst bruk rapportfeilknappen øverst til høyre for å sende oss en melding og hvis du ønsker filen slik at vi kan analysere den og gi deg tilbakemelding. Takk skal du ha :)"
+          );
         },
       });
     };
@@ -241,32 +249,36 @@ function Home() {
   useEffect(() => {}, [totalMonthPrice]);
 
   const extractCurrentMonth = async (usageData) => {
-    const wholeYear = usageData[0].Fra.split(".")[2].split(" ")[0];
-    const year = wholeYear.split("0")[1];
-    const month = usageData[0].Fra.split(".")[1];
-    if (year <= 21) {
-      alert(
-        `Vi har ikke pris informasjon for ${wholeYear} , Vi kan kun estimere fakturaer fra og med januar 2022`
-      );
-      window.location.reload();
-      return;
-    }
-    if (month <= "06") {
-      alert(
-        `Denne fakturaen er fra før den nye dag/natt nettleie modellen har blitt introdusert (Juli 2022), Vi støtter ennå ikke denne typen regninger, men jeg jobber med en ny versjon som vil tillate dette.`
-      );
-      window.location.reload();
-      return;
-    }
+    try {
+      const wholeYear = usageData[0].Fra.split(".")[2].split(" ")[0];
+      const year = wholeYear.split("0")[1];
+      const month = usageData[0].Fra.split(".")[1];
+      if (year <= 21) {
+        alert(
+          `Vi har ikke pris informasjon for ${wholeYear} , Vi kan kun estimere fakturaer fra og med januar 2022`
+        );
+        reloadPage();
+        return;
+      }
+      if (month <= "06") {
+        alert(
+          `Denne fakturaen er fra før den nye dag/natt nettleie modellen har blitt introdusert (Juli 2022), Vi støtter ennå ikke denne typen regninger, men jeg jobber med en ny versjon som vil tillate dette.`
+        );
+        return reloadPage();
+      }
 
-    const SupportRateForMonth = supportMonthObj[year][month];
-    const selecetedMonth = monthObj[year][month];
-    setSupportRateForMonth(SupportRateForMonth);
-    setSelectedMonth(selecetedMonth);
-    setSelectedYear(wholeYear);
+      const SupportRateForMonth = supportMonthObj[year][month];
+      const selecetedMonth = monthObj[year][month];
 
-    const prices = await getMonthPrices(monthObj[year][month]);
-    calculateMonthlyValues(usageData, prices, SupportRateForMonth);
+      setSupportRateForMonth(SupportRateForMonth);
+      setSelectedMonth(selecetedMonth);
+      setSelectedYear(wholeYear);
+
+      const prices = await getMonthPrices(monthObj[year][month]);
+      calculateMonthlyValues(usageData, prices, SupportRateForMonth);
+    } catch (error) {
+      return reloadPage();
+    }
   };
 
   const extractDifferentRates = (hour, usageForhour, isWeekend) => {
@@ -459,7 +471,7 @@ function Home() {
             <button
               className="reset-btn calculate-after w-25 align-self-center btn btn-danger ms-5 my-3"
               onClick={() => {
-                window.location.reload();
+                reloadPage();
               }}
             >
               Ny regning
