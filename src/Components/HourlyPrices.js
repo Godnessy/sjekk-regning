@@ -1,6 +1,6 @@
 import React from "react";
 
-function HourlyPrices({ dataForHour, hasFixedPrice, fixedPrice }) {
+function HourlyPrices({ dataForHour, hasFixedPrice, fixedPrice, govSupport }) {
   let totalPrice = 0;
   return (
     <div className="card p-2">
@@ -10,11 +10,24 @@ function HourlyPrices({ dataForHour, hasFixedPrice, fixedPrice }) {
       <table className="table table-hourly table-striped">
         <thead>
           <tr>
-            <th scope="col">Dato</th>
-            <th scope="col">Time</th>
-            <th scope="col">Forbruk kWh</th>
-            <th scope="col">kWh pris</th>
-            <th scope="col">Total pris</th>
+            <th scope="col" className="table-headers">
+              Dato
+            </th>
+            <th scope="col" className="table-headers">
+              Time
+            </th>
+            <th scope="col" className="table-headers">
+              Forbruk kWh
+            </th>
+            <th scope="col" className="table-headers">
+              kWh pris
+            </th>
+            <th scope="col" className="table-headers">
+              Time pris
+            </th>
+            <th scope="col" className="table-headers">
+              Time pris ink støtte
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -22,6 +35,8 @@ function HourlyPrices({ dataForHour, hasFixedPrice, fixedPrice }) {
             let { date, time, usage, priceForHour, totalPricePrHour } = day;
             priceForHour = hasFixedPrice ? fixedPrice : priceForHour;
             totalPrice = totalPrice + Number(priceForHour);
+            const supportForHour = (usage * govSupport) / 100;
+            const hourlyPriceWithSupport = totalPricePrHour - supportForHour;
             return (
               <tr key={date + time}>
                 <th scope="row">{date}</th>
@@ -31,6 +46,9 @@ function HourlyPrices({ dataForHour, hasFixedPrice, fixedPrice }) {
                   {hasFixedPrice ? priceForHour : priceForHour.toFixed(2)} Øre
                 </td>
                 <td>{`${totalPricePrHour.toFixed(2)} nok`}</td>
+                <td
+                  className={hourlyPriceWithSupport < 0 ? "minus-price" : ""}
+                >{`${hourlyPriceWithSupport.toFixed(2)} nok`}</td>
               </tr>
             );
           })}

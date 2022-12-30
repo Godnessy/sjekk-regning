@@ -511,6 +511,7 @@ function Home() {
                     totalMonthPrice={totalMonthPrice}
                     hasFixedPrice={hasFixedPrice}
                     fixedPrice={fixedPrice}
+                    govSupport={govSupport}
                   />
                 )}
               </div>
@@ -520,6 +521,7 @@ function Home() {
                     dataForHour={usageData}
                     hasFixedPrice={hasFixedPrice}
                     fixedPrice={fixedPrice}
+                    govSupport={govSupport}
                   />
                 )}
               </div>

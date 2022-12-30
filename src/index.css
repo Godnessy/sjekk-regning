@@ -283,6 +283,14 @@ body {
   max-width: 100%;
   width: 100%;
 }
+.table-headers {
+  font-size: 0.8em;
+}
+
+.minus-price {
+  color: #82cd47 !important;
+  font-weight: 500;
+}
 
 .loading {
   position: relative;
@@ -533,6 +541,10 @@ body {
     width: 80%;
     margin-left: 10%;
   }
+  .usage-price-container {
+    flex-direction: column;
+    margin: 0 -10px 0 2%;
+  }
 }
 
 @media screen and (max-width: 800px) {
@@ -546,10 +558,6 @@ body {
   }
   .storage-buttons-container {
     margin-top: 15%;
-  }
-  .usage-price-container {
-    flex-direction: column;
-    margin: 0 -10px 0 2%;
   }
 
   .hourly-prices {
@@ -802,6 +810,11 @@ body {
 @media screen and (max-width: 400px) {
   .daily-table {
     font-size: 0.88em;
+  }
+
+  .hourly-prices {
+    margin: 2% 3% 30% 8% !important;
+    font-size: 0.9em;
   }
 
   .logo {

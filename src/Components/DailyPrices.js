@@ -1,6 +1,6 @@
 import { React, useState, useEffect } from "react";
 
-function DailyPrices({ dataForHour, hasFixedPrice, fixedPrice }) {
+function DailyPrices({ dataForHour, hasFixedPrice, fixedPrice, govSupport }) {
   const [dailyData, setDailyData] = useState([]);
 
   function calculateDailyValues(dataForHour) {
@@ -40,9 +40,18 @@ function DailyPrices({ dataForHour, hasFixedPrice, fixedPrice }) {
       <table className="table daily-table table-striped">
         <thead>
           <tr>
-            <th scope="col">Dato</th>
-            <th scope="col">Forbruk kWh</th>
-            <th scope="col">Pris for dagen</th>
+            <th scope="col" className="table-headers">
+              Dato
+            </th>
+            <th scope="col" className="table-headers">
+              Forbruk kWh
+            </th>
+            <th scope="col" className="table-headers">
+              Pris for dagen
+            </th>
+            <th scope="col" className="table-headers">
+              Pris ink strømstøtte
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -50,11 +59,16 @@ function DailyPrices({ dataForHour, hasFixedPrice, fixedPrice }) {
             const date = day[0];
             const totalUsage = day[1].totalUsage.toFixed(2);
             const totalPrice = day[1].totalPrice.toFixed(2);
+            const totalWithGovSupport =
+              totalPrice - (totalUsage * govSupport) / 100;
             return (
               <tr key={date}>
                 <th scope="row">{date}</th>
                 <td>{totalUsage}</td>
                 <td>{totalPrice} kr</td>
+                <td className={totalWithGovSupport < 0 ? "minus-price" : ""}>
+                  {totalWithGovSupport.toFixed(2)} kr
+                </td>
               </tr>
             );
           })}
