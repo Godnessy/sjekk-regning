@@ -43,16 +43,19 @@ function ReportError({ uploadFailedFile, file, handleCsvFile }) {
       alert("Vennligst skriv en melding før du sender");
       return;
     }
+    ///Thinking about splitting it into 2 options for docRef depending on email, waiting for answer from Miki
     const date = new Date();
     const dateToSend = date.toLocaleDateString();
     const time = String(date).split(" ")[4];
     const dateForID = dateToSend.replaceAll("/", "-") + "-" + time;
+    const answer = email ? { sentAnswer: false } : null;
     const docRef = await setDoc(doc(db, "userFeedback", dateForID), {
       Message: text,
       Email: email,
+      sentWithFile: sentFile,
       Read: false,
       Implemented: false,
-      sentWithFile: sentFile,
+      answer,
     });
     setText("");
     setEmail("");
