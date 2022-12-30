@@ -441,6 +441,21 @@ body {
   margin-bottom: 0;
 }
 
+.no-weekend-btn {
+  font-size: 0.8em;
+}
+
+.no-weekend-on {
+  color: red;
+  font-weight: bold;
+  font-size: 1.5em;
+}
+
+.no-weekend-txt {
+  font-size: 1em;
+  font-weight: 500;
+  color: red;
+}
 @media screen and (max-width: 2500px) {
   .report {
     width: 10%;
@@ -650,6 +665,12 @@ body {
     font-size: 1em;
     width: 80%;
   }
+  .no-weekend-text {
+    font-size: 1em;
+    position: relative;
+    top: 13%;
+    font-weight: 500;
+  }
 }
 
 @media screen and (max-width: 500px) {
@@ -775,7 +796,7 @@ body {
 
   .network-help h5 {
     margin-left: 2%;
-    font-size: 0.7em;
+    font-size: 0.9em;
     width: 80%;
   }
 
@@ -850,6 +871,14 @@ body {
   }
   .other-fees-txt {
     width: 80%;
+  }
+  .network-help h5 {
+    margin-left: 2%;
+    font-size: 0.7em;
+    width: 80%;
+  }
+  .no-network-btn {
+    font-size: 0.8em !important;
   }
 }
 

@@ -25,6 +25,7 @@ function Results({
   selectedYear,
   otherFees,
   isDemo,
+  hasNoWeekendRate,
 }) {
   const [finalDayRate, setFinalDayRate] = useState(0);
   const [finalNightRate, setFinalNightRate] = useState(0);
@@ -315,28 +316,42 @@ function Results({
                 </tbody>
               </table>
             </div>
-            <div className="d-flex ms-2">
-              <h3>Vis Sum</h3>
-              <ButtonGroup>
-                <Button
-                  variant="outline-success"
-                  value={true}
-                  className="ms-2 me-2"
-                  onClick={() => showPowerSupport(true)}
-                >
-                  Med Strømstøtte
-                </Button>
-                <Button
-                  variant="outline-danger"
-                  value={false}
-                  onClick={() => {
-                    showPowerSupport(false);
-                  }}
-                >
-                  Uten Strømstøtte
-                </Button>
-              </ButtonGroup>
+            <div className="d-flex flex-column">
+              {hasNoWeekendRate && (
+                <div className="no-weekend-exp border border-dark ms-2 mb-2 w-90">
+                  Nettleie-forklaring for kunder som ikke har helgepriser:
+                  Nettselskaper valgte å vise sine beregninger på ulike måter.
+                  Noen selskaper velger å trekke rabatten for nattprisen fra
+                  dagprisen i stedet for å vise den faktiske nattprisen. Vi
+                  bruker i stedet de faktiske prisene som kan plusses for å nå
+                  riktig sum. Forhåpentligvis vil en standard bli vedtatt i
+                  fremtiden.
+                </div>
+              )}
+              <div className="d-flex ms-2">
+                <h3>Vis Sum</h3>
+                <ButtonGroup>
+                  <Button
+                    variant="outline-success"
+                    value={true}
+                    className="ms-2 me-2"
+                    onClick={() => showPowerSupport(true)}
+                  >
+                    Med Strømstøtte
+                  </Button>
+                  <Button
+                    variant="outline-danger"
+                    value={false}
+                    onClick={() => {
+                      showPowerSupport(false);
+                    }}
+                  >
+                    Uten Strømstøtte
+                  </Button>
+                </ButtonGroup>
+              </div>
             </div>
+
             <div>
               <h2 className="ms-2">
                 Total Sum for {norwegianMonths[month]}:

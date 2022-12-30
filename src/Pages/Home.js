@@ -348,6 +348,7 @@ function Home() {
       const usage = Number(hour["KWH 60 Forbruk"]);
       capacitySet.add(usage);
       !hasNoWeekendRate && checkIsWeekend(date, time, usage);
+      extractDifferentRates(time, usage, false);
       const dayPrices = collectDayPrices(prices, date);
       const selectedZonePrices = createSelectedPriceZone(
         selectedKommune.value,
@@ -384,7 +385,7 @@ function Home() {
       createGovSupport(tempMonthAvg / hoursCounter, SupportRateForMonth)
     );
     setTotalKwh(totalUsage);
-    !isDemo && updateUsageCounter();
+    // !isDemo && updateUsageCounter();
     setIsLoading(false);
   }
 
@@ -492,6 +493,7 @@ function Home() {
                 supportRateForMonth={supportRateForMonth}
                 otherFees={otherFees}
                 isDemo={isDemo}
+                hasNoWeekendRate={hasNoWeekendRate}
               />
             )}
 

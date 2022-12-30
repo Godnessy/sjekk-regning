@@ -48,12 +48,14 @@ export default function InputsForm({
   const exampleDivRef = useRef();
   const exampleDiv2Ref = useRef();
   const calculateBtnRef = useRef();
+  const noWeekendBtnRef = useRef();
   const [demoUsageValues, setDemoUsageValues] = useState(example);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   function setValuealueToLocalStorage(TypeOfValue, value) {
     localStorage.setItem(TypeOfValue, value);
   }
+  useEffect(() => {}, [hasNoWeekendRate]);
 
   const demoButtonDiv = () => {
     return (
@@ -77,7 +79,7 @@ export default function InputsForm({
     if (!isDemo) {
       const div1 = exampleDivRef.current.classList;
       const div2 = exampleDiv2Ref.current.classList;
-      if (windowWidth > 800) {
+      if (windowWidth > 993) {
         div1.remove("hidden");
         div2.add("hidden");
       } else {
@@ -327,20 +329,51 @@ export default function InputsForm({
                 <p> ⬇️ Her velger du CSV filen fra Elhub</p>
               </div>
             )}
-            <input
-              onChange={(e) => {
-                handleCsvFile(e.target.files);
-              }}
-              id="csvInputBtn"
-              name="file"
-              type="File"
-              ref={fileRef}
-            />
+            <div className="d-flex flex-column">
+              <input
+                onChange={(e) => {
+                  handleCsvFile(e.target.files);
+                }}
+                id="csvInputBtn"
+                name="file"
+                type="File"
+                ref={fileRef}
+              />
+              {hasNoWeekendRate && (
+                <p className="no-weekend-txt">
+                  Obs! Dette modus er bare for kunder for nettselskaper som har
+                  ikke helg redusert satser som f.eks Glitre
+                </p>
+              )}
+            </div>
           </div>
           <div className="network d-flex">
             <div className="d-flex flex-row">
               <div className="border border-dark d-flex flex-column card network-inputs ">
-                <h4 className="ms-2 text-decoration-underline">Nettleie</h4>
+                <div className="d-flex flex-row">
+                  <h4 className="ms-2 me-1 text-decoration-underline">
+                    Nettleie
+                  </h4>{" "}
+                </div>
+                <div className="no-weekend-container d-flex flex-row">
+                  <button
+                    ref={noWeekendBtnRef}
+                    className={
+                      !hasNoWeekendRate
+                        ? "btn btn-success ms-1 no-network-btn "
+                        : " ms-1 btn btn-danger no-network-btn"
+                    }
+                    onClick={(e) => {
+                      setHasNoWeekendRate(!hasNoWeekendRate);
+                    }}
+                  >
+                    Har ikke helg satser
+                  </button>
+                  {hasNoWeekendRate && (
+                    <p className="no-weekend-on ms-2">På!</p>
+                  )}
+                </div>
+
                 <div className="d-flex flex-column ms-2 mb-1">
                   <h5 className="me-2 network-rates-title">1. Fastledd:</h5>
                   <div className="d-flex">
@@ -401,6 +434,7 @@ export default function InputsForm({
                     >
                       Lagre Verdier
                     </button>
+
                     <button
                       className="delete-btn btn btn-danger"
                       onClick={() => {
