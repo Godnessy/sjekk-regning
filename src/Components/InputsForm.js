@@ -35,6 +35,8 @@ export default function InputsForm({
   formatCSVFile,
   isDemo,
   setIsDemo,
+  hasNoWeekendRate,
+  setHasNoWeekendRate,
 }) {
   const capacityRef = useRef();
   const dayPriceRef = useRef();

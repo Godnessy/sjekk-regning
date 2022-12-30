@@ -18,6 +18,8 @@ import ReportError from "../Components/ReportError.js";
 const storage = getStorage();
 
 const allowedExtensions = ["csv"];
+const dagTimer = [];
+const nattHelgTimer = [];
 
 function Home() {
   const [error, setError] = useState("");
@@ -47,6 +49,7 @@ function Home() {
   const [supportRateForMonth, setSupportRateForMonth] = useState();
   const [selectedYear, setSelectedYear] = useState();
   const [isDemo, setIsDemo] = useState(false);
+  const [hasNoWeekendRate, setHasNoWeekendRate] = useState(false);
   const checkboxRef = useRef();
 
   const fileRef = ref(storage, file.name);
@@ -308,6 +311,7 @@ function Home() {
     }
   };
   const checkIsWeekend = (date, time, usage) => {
+    console.log(date);
     var days = [
       "Sunday",
       "Monday",
@@ -343,7 +347,7 @@ function Home() {
       const time = values[1];
       const usage = Number(hour["KWH 60 Forbruk"]);
       capacitySet.add(usage);
-      const isWeekend = checkIsWeekend(date, time, usage);
+      !hasNoWeekendRate && checkIsWeekend(date, time, usage);
       const dayPrices = collectDayPrices(prices, date);
       const selectedZonePrices = createSelectedPriceZone(
         selectedKommune.value,
@@ -445,6 +449,8 @@ function Home() {
                 otherFees={otherFees}
                 setOtherFees={setOtherFees}
                 file={file}
+                hasNoWeekendRate={hasNoWeekendRate}
+                setHasNoWeekendRate={setHasNoWeekendRate}
               />
             </div>
             <div className="bio-link d-flex mt-5 justify-content-center">
