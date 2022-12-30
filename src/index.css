@@ -318,7 +318,10 @@ body {
 }
 
 .example-txt {
-  color: red;
+  background: #b04beb;
+  background: linear-gradient(to bottom, #b04beb 0%, #4487d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   font-size: 80px;
   transform: rotate(45deg);
 }
@@ -328,9 +331,11 @@ body {
 }
 
 .exit-example {
+  border-color: black !important;
   position: relative;
   left: 150px;
   top: 20px;
+  background-color: purple !important;
 }
 .tutorial {
   border: solid black 1px;
@@ -414,10 +419,18 @@ body {
 .results-example {
   align-self: center;
   font-size: 3em;
-  color: red;
   margin-bottom: 1%;
-  background-color: black;
   border-radius: 5%;
+  background-color: white;
+  border-radius: 10px;
+}
+
+.results-example-txt {
+  background: #b04beb;
+  background: linear-gradient(to bottom, #b04beb 0%, #4487d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0;
 }
 
 @media screen and (max-width: 2500px) {
@@ -588,18 +601,24 @@ body {
     right: 0%;
     display: flex;
     flex-direction: column;
-    background-color: black;
-    width: 101%;
+    background-color: white;
+    width: 100%;
     align-items: center;
     justify-content: center;
   }
   .example-txt {
     font-size: 5em;
     transform: rotate(0deg);
+    background: #ebeb0c;
+    background: linear-gradient(to bottom left, #ebeb0c 0%, #55cbcf 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   .exit-example {
     left: 0;
+    background-color: purple !important;
+    border-color: black !important;
   }
   .report {
     top: 15%;
@@ -769,6 +788,16 @@ body {
   .other-fees-title {
     font-size: 1.1em;
   }
+  .results-example {
+    width: 80%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .results-example-txt {
+    font-size: 0.6em;
+    vertical-align: middle;
+  }
 }
 @media screen and (max-width: 400px) {
   .daily-table {
@@ -797,7 +826,10 @@ body {
     position: relative;
     left: 27%;
   }
-  .Example-txt {
+  .example {
+    height: 10%;
+  }
+  .example-txt {
     font-size: 4.5em;
   }
   .calculate {

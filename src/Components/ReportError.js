@@ -92,7 +92,7 @@ function ReportError({ uploadFailedFile, file, handleCsvFile }) {
               />
               <br></br>
               <p className="fw-bold">
-                Vil du ha et svar? Skriv i e-posten din:
+                Vil du ha et svar? Skriv inn e-posten din:
               </p>
               <input
                 type="email"
