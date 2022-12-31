@@ -50,6 +50,7 @@ function Home() {
   const [selectedYear, setSelectedYear] = useState();
   const [isDemo, setIsDemo] = useState(false);
   const [hasNoWeekendRate, setHasNoWeekendRate] = useState(false);
+  const [isSiteDown, setIsSiteDown] = useState(true);
   const checkboxRef = useRef();
 
   const fileRef = ref(storage, file.name);
@@ -347,7 +348,8 @@ function Home() {
       const time = values[1];
       const usage = Number(hour["KWH 60 Forbruk"]);
       capacitySet.add(usage);
-      !hasNoWeekendRate && checkIsWeekend(date, time, usage);
+      // !hasNoWeekendRate &&
+      checkIsWeekend(date, time, usage);
       extractDifferentRates(time, usage, false);
       const dayPrices = collectDayPrices(prices, date);
       const selectedZonePrices = createSelectedPriceZone(
@@ -385,10 +387,22 @@ function Home() {
       createGovSupport(tempMonthAvg / hoursCounter, SupportRateForMonth)
     );
     setTotalKwh(totalUsage);
-    !isDemo && updateUsageCounter();
+    // !isDemo && updateUsageCounter();
     setIsLoading(false);
   }
 
+  if (isSiteDown) {
+    return (
+      <>
+        <div className="d-flex align-content-center ">
+          <h1>
+            Nettsiden er nede for en viktig reparasjon, kommer tilbake innen en
+            time (ca kl. 13:00) Du kan ta kontakt på godnessy@gmail.com{" "}
+          </h1>
+        </div>
+      </>
+    );
+  }
   if (isLoading) {
     return (
       <>
