@@ -386,7 +386,7 @@ function Home() {
       createGovSupport(tempMonthAvg / hoursCounter, SupportRateForMonth)
     );
     setTotalKwh(totalUsage);
-    // !isDemo && updateUsageCounter();
+    !isDemo && updateUsageCounter();
     setIsLoading(false);
   }
 
