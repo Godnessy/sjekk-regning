@@ -50,7 +50,7 @@ function Home() {
   const [selectedYear, setSelectedYear] = useState();
   const [isDemo, setIsDemo] = useState(false);
   const [hasNoWeekendRate, setHasNoWeekendRate] = useState(false);
-  const [isSiteDown, setIsSiteDown] = useState(true);
+  const [isSiteDown, setIsSiteDown] = useState(false);
   const checkboxRef = useRef();
 
   const fileRef = ref(storage, file.name);
@@ -305,14 +305,13 @@ function Home() {
       dayNightHoursCounter.night = nightHours + usageForhour;
     } else {
       if (extractNumberFromHour >= 22 || extractNumberFromHour <= 5) {
-        return (dayNightHoursCounter.night = nightHours + usageForhour);
+        dayNightHoursCounter.night = nightHours + usageForhour;
       } else {
-        return (dayNightHoursCounter.day = dayHours + usageForhour);
+        dayNightHoursCounter.day = dayHours + usageForhour;
       }
     }
   };
   const checkIsWeekend = (date, time, usage) => {
-    console.log(date);
     var days = [
       "Sunday",
       "Monday",
@@ -324,8 +323,8 @@ function Home() {
     ];
     var d = new Date(date.split(".").reverse().join("/"));
     if (days[d.getDay()] == "Sunday" || days[d.getDay()] == "Saturday") {
-      return extractDifferentRates(time, usage, true);
-    } else return extractDifferentRates(time, usage, false);
+      return true;
+    } else return false;
   };
 
   //Needed because Norwegians write floats with a comma instead of a dot and it messes the math up in JS.
@@ -348,9 +347,9 @@ function Home() {
       const time = values[1];
       const usage = Number(hour["KWH 60 Forbruk"]);
       capacitySet.add(usage);
-      // !hasNoWeekendRate &&
-      checkIsWeekend(date, time, usage);
-      extractDifferentRates(time, usage, false);
+      const isHourInWeekend = checkIsWeekend(date);
+      extractDifferentRates(time, usage, !hasNoWeekendRate && isHourInWeekend);
+
       const dayPrices = collectDayPrices(prices, date);
       const selectedZonePrices = createSelectedPriceZone(
         selectedKommune.value,
