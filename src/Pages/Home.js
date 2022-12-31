@@ -161,7 +161,6 @@ function Home() {
     if (fileList.length) {
       const inputFile = fileList[0];
       const fileExtension = inputFile.type.split("/")[1];
-
       setFile(inputFile);
     }
   };

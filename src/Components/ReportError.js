@@ -124,7 +124,7 @@ function ReportError({ uploadFailedFile, file, handleCsvFile }) {
               name="file"
               type="File"
               onChange={(e) => {
-                handleCsvFile(e);
+                handleCsvFile(e.target.files);
                 setSentFile(true);
               }}
             />
