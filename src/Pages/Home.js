@@ -50,7 +50,7 @@ function Home() {
   const [selectedYear, setSelectedYear] = useState();
   const [isDemo, setIsDemo] = useState(false);
   const [hasNoWeekendRate, setHasNoWeekendRate] = useState(false);
-  const [isSiteDown, setIsSiteDown] = useState(false);
+  const [isSiteDown, setIsSiteDown] = useState(true);
   const checkboxRef = useRef();
 
   const fileRef = ref(storage, file.name);
@@ -235,7 +235,9 @@ function Home() {
   const createPriceForHour = (zonePrices, time) => {
     if (zonePrices) {
       const basePrice = Number(zonePrices[time]);
+      console.log(tempMonthAvg, basePrice);
       tempMonthAvg = tempMonthAvg + basePrice;
+      console.log(tempMonthAvg);
       const calculatedPrice = basePrice;
       return calculatedPrice;
     } else {
@@ -356,6 +358,7 @@ function Home() {
       );
       totalUsage = totalUsage + usage;
       hoursCounter++;
+      console.log(date, time);
       const priceForHour = createPriceForHour(selectedZonePrices, time);
       if (!isNaN(priceForHour)) {
         avgPriceTimesUsage = avgPriceTimesUsage + priceForHour * usage;
@@ -385,7 +388,7 @@ function Home() {
       createGovSupport(tempMonthAvg / hoursCounter, SupportRateForMonth)
     );
     setTotalKwh(totalUsage);
-    !isDemo && updateUsageCounter();
+    // !isDemo && updateUsageCounter();
     setIsLoading(false);
   }
 
