@@ -50,7 +50,7 @@ function Home() {
   const [selectedYear, setSelectedYear] = useState();
   const [isDemo, setIsDemo] = useState(false);
   const [hasNoWeekendRate, setHasNoWeekendRate] = useState(false);
-  const [isSiteDown, setIsSiteDown] = useState(true);
+  const [isSiteDown, setIsSiteDown] = useState(false);
   const checkboxRef = useRef();
 
   const fileRef = ref(storage, file.name);
@@ -388,7 +388,7 @@ function Home() {
       createGovSupport(tempMonthAvg / hoursCounter, SupportRateForMonth)
     );
     setTotalKwh(totalUsage);
-    // !isDemo && updateUsageCounter();
+    !isDemo && updateUsageCounter();
     setIsLoading(false);
   }
 
