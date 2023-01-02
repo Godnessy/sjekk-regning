@@ -587,13 +587,13 @@ export default function InputsForm({
               className={
                 !isDemo
                   ? "calculate btn btn-success my-3 "
-                  : "calculate demo-btn btn btn-success my-3"
+                  : " demo-btn btn btn-success my-3"
               }
               onClick={() => {
                 !isDemo ? parseCsvJson() : displayDemoResults();
               }}
             >
-              Regne ut!
+              {!isDemo ? "Regne ut!" : "Vis Demo Regning"}
             </button>
           </div>
         </div>
