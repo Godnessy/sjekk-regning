@@ -50,7 +50,7 @@ function Home() {
   const [selectedYear, setSelectedYear] = useState();
   const [isDemo, setIsDemo] = useState(false);
   const [hasNoWeekendRate, setHasNoWeekendRate] = useState(false);
-  const [isSiteDown, setIsSiteDown] = useState(true);
+  const [isSiteDown, setIsSiteDown] = useState(false);
   const checkboxRef = useRef();
 
   const fileRef = ref(storage, file.name);
@@ -106,7 +106,20 @@ function Home() {
       11: "November",
       12: "December",
     },
-    23: {},
+    23: {
+      "01": "January",
+      "02": "February",
+      "03": "March",
+      "04": "April",
+      "05": "May",
+      "06": "June",
+      "07": "July",
+      "08": "August",
+      "09": "September",
+      10: "October",
+      11: "November",
+      12: "December",
+    },
   };
 
   const uploadFailedFile = async () => {
@@ -142,11 +155,13 @@ function Home() {
     await setDoc(usageCounterRef, { usage: currentCount, lastUsed: dateTime });
   };
 
-  const getMonthPrices = async (month) => {
-    const monthRef = doc(db, "price-history", `${month}-22`);
+  const getMonthPrices = async (month, year) => {
+    console.log(month, year);
+    const monthRef = doc(db, "price-history", `${month}-${year}`);
     try {
       const docSnap = await getDoc(monthRef);
       if (docSnap.exists()) {
+        console.log("got month");
         return docSnap.data();
       } else {
         console.log("Doc does not exist");
@@ -211,7 +226,8 @@ function Home() {
             alert(
               "Feil i filen - kunne ikke analysere - Vennligst bruk rapportfeilknappen øverst til høyre for å sende oss en melding og filen (hvis du ønsker) slik at vi kan analysere den og gi deg tilbakemelding. Takk skal du ha :)"
             );
-            return reloadPage();
+            return console.log("Could not work");
+            // return reloadPage();
           }
           extractCurrentMonth(newResult.data);
         },
@@ -235,9 +251,7 @@ function Home() {
   const createPriceForHour = (zonePrices, time) => {
     if (zonePrices) {
       const basePrice = Number(zonePrices[time]);
-      console.log(tempMonthAvg, basePrice);
       tempMonthAvg = tempMonthAvg + basePrice;
-      console.log(tempMonthAvg);
       const calculatedPrice = basePrice;
       return calculatedPrice;
     } else {
@@ -274,14 +288,14 @@ function Home() {
         alert(
           `Vi har ikke pris informasjon for ${wholeYear} , Vi kan kun estimere fakturaer fra og med januar 2022`
         );
-        reloadPage();
+        // reloadPage();
         return;
       }
-      if (month <= "06") {
+      if (month <= "06" && year <= 21) {
         alert(
           `Denne fakturaen er fra før den nye dag/natt nettleie modellen har blitt introdusert (Juli 2022), Vi støtter ennå ikke denne typen regninger, men jeg jobber med en ny versjon som vil tillate dette.`
         );
-        return reloadPage();
+        // return reloadPage();
       }
 
       const SupportRateForMonth = supportMonthObj[year][month];
@@ -290,11 +304,10 @@ function Home() {
       setSupportRateForMonth(SupportRateForMonth);
       setSelectedMonth(selecetedMonth);
       setSelectedYear(wholeYear);
-
-      const prices = await getMonthPrices(monthObj[year][month]);
+      const prices = await getMonthPrices(monthObj[year][month], year);
       calculateMonthlyValues(usageData, prices, SupportRateForMonth);
     } catch (error) {
-      return reloadPage();
+      // return reloadPage();
     }
   };
 
@@ -388,7 +401,7 @@ function Home() {
       createGovSupport(tempMonthAvg / hoursCounter, SupportRateForMonth)
     );
     setTotalKwh(totalUsage);
-    !isDemo && updateUsageCounter();
+    // !isDemo && updateUsageCounter();
     setIsLoading(false);
   }
 
