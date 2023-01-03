@@ -227,7 +227,7 @@ function Home() {
               "Feil i filen - kunne ikke analysere - Vennligst bruk rapportfeilknappen øverst til høyre for å sende oss en melding og filen (hvis du ønsker) slik at vi kan analysere den og gi deg tilbakemelding. Takk skal du ha :)"
             );
             return console.log("Could not work");
-            // return reloadPage();
+            return reloadPage();
           }
           extractCurrentMonth(newResult.data);
         },
@@ -288,14 +288,14 @@ function Home() {
         alert(
           `Vi har ikke pris informasjon for ${wholeYear} , Vi kan kun estimere fakturaer fra og med januar 2022`
         );
-        // reloadPage();
+        reloadPage();
         return;
       }
       if (month <= "06" && year <= 21) {
         alert(
           `Denne fakturaen er fra før den nye dag/natt nettleie modellen har blitt introdusert (Juli 2022), Vi støtter ennå ikke denne typen regninger, men jeg jobber med en ny versjon som vil tillate dette.`
         );
-        // return reloadPage();
+        return reloadPage();
       }
 
       const SupportRateForMonth = supportMonthObj[year][month];
@@ -307,7 +307,7 @@ function Home() {
       const prices = await getMonthPrices(monthObj[year][month], year);
       calculateMonthlyValues(usageData, prices, SupportRateForMonth);
     } catch (error) {
-      // return reloadPage();
+      return reloadPage();
     }
   };
 
