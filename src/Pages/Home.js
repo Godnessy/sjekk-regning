@@ -397,8 +397,8 @@ function Home() {
       <>
         <div className="d-flex align-content-center ">
           <h1>
-            Nettsiden er nede for en viktig reparasjon, kommer tilbake innen en
-            time (ca kl. 13:00) Du kan ta kontakt på godnessy@gmail.com{" "}
+            Nettsiden er nede for en viktig reparasjon, kommer tilbake så snart
+            som mulig Du kan ta kontakt på godnessy@gmail.com{" "}
           </h1>
         </div>
       </>
