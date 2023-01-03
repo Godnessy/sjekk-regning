@@ -50,7 +50,7 @@ function Home() {
   const [selectedYear, setSelectedYear] = useState();
   const [isDemo, setIsDemo] = useState(false);
   const [hasNoWeekendRate, setHasNoWeekendRate] = useState(false);
-  const [isSiteDown, setIsSiteDown] = useState(false);
+  const [isSiteDown, setIsSiteDown] = useState(true);
   const checkboxRef = useRef();
 
   const fileRef = ref(storage, file.name);
