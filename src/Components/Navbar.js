@@ -11,7 +11,7 @@ function Navbar({ uploadFailedFile, file, handleCsvFile }) {
         <img src={logo} alt="SjekkRegning.no" className="logo ms-4" />
         <div className="fb-logo-navbar-container">
           <a href="https://www.facebook.com/groups/561110268888888">
-            <img src={fb} alt="FB-logo-navbar" />
+            <img src={fb} className="fb-logo-navbar" alt="FB-logo-navbar" />
           </a>
         </div>
       </a>
