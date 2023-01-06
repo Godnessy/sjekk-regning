@@ -7,14 +7,14 @@ import fb from "../Resources/images/fb.png";
 function Navbar({ uploadFailedFile, file, handleCsvFile }) {
   return (
     <nav className="navbar navbar-expand-lg navbar-light d-flex flex-row bg-light justify-content-left">
-      <a className="navbar-brand d-flex flex-row" href="#">
+      <div className="navbar-brand d-flex flex-row" href="#">
         <img src={logo} alt="SjekkRegning.no" className="logo ms-4" />
         <div className="fb-logo-navbar-container">
           <a href="https://www.facebook.com/groups/561110268888888">
             <img src={fb} alt="FB-logo-navbar" />
           </a>
         </div>
-      </a>
+      </div>
       <div className="report-div">
         {
           <ReportError

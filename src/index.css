@@ -475,6 +475,18 @@ body {
   font-weight: 500;
   color: red;
 }
+
+.day-max {
+  border: solid black 1px;
+  margin-left: 5%;
+  font-size: 1.35em;
+  padding: 3px;
+  padding-bottom: 0px;
+}
+
+.day-max-title {
+  position: relative;
+}
 @media screen and (max-width: 2500px) {
   .report {
     width: 10%;
@@ -497,6 +509,12 @@ body {
   }
   .report {
     top: 15%;
+  }
+
+  .day-max-title {
+    position: relative;
+    top: 5px;
+    font-size: 1.1em;
   }
 }
 
@@ -639,6 +657,9 @@ body {
     left: -3%;
     top: 15%;
   }
+  .day-max-title {
+    font-size: 1.1em;
+  }
 }
 
 @media screen and (max-width: 639px) {
@@ -677,6 +698,9 @@ body {
     right: 3%;
   }
   .table {
+    font-size: 0.9em;
+  }
+  .day-max-title {
     font-size: 0.9em;
   }
 }
@@ -850,6 +874,14 @@ body {
   .results-example-txt {
     font-size: 0.6em;
     vertical-align: middle;
+  }
+
+  .day-max {
+    font-size: 0.8em;
+  }
+  .day-max-title {
+    top: 0;
+    font-size: 0.85em;
   }
 }
 @media screen and (max-width: 400px) {

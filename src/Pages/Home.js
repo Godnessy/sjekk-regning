@@ -18,8 +18,6 @@ import ReportError from "../Components/ReportError.js";
 const storage = getStorage();
 
 const allowedExtensions = ["csv"];
-const dagTimer = [];
-const nattHelgTimer = [];
 
 function Home() {
   const [error, setError] = useState("");
@@ -51,6 +49,8 @@ function Home() {
   const [isDemo, setIsDemo] = useState(false);
   const [hasNoWeekendRate, setHasNoWeekendRate] = useState(false);
   const [isSiteDown, setIsSiteDown] = useState(false);
+  const [threeBiggestCapacityNumbers, setThreeBiggestCapacityNumbers] =
+    useState([]);
   const checkboxRef = useRef();
 
   const fileRef = ref(storage, file.name);
@@ -352,7 +352,26 @@ function Home() {
     const sortedCapacityarr = capacityArr.sort((a, b) => a > b);
   }
 
+  const set3BiggestUsagesForMonth = (usageForHour, maxHoursArray) => {
+    let [firstMax, secondMax, thirdMax] = maxHoursArray;
+    if (usageForHour > firstMax) {
+      thirdMax = secondMax;
+      secondMax = firstMax;
+      firstMax = usageForHour;
+      return (maxHoursArray = [firstMax, secondMax, thirdMax]);
+    } else if (usageForHour > secondMax) {
+      thirdMax = secondMax;
+      secondMax = usageForHour;
+      return (maxHoursArray = [firstMax, secondMax, thirdMax]);
+    } else if (usageForHour > thirdMax) {
+      thirdMax = usageForHour;
+      return (maxHoursArray = [firstMax, secondMax, thirdMax]);
+    }
+    maxHoursArray = [firstMax, secondMax, thirdMax];
+    return maxHoursArray;
+  };
   function calculateMonthlyValues(usageData, prices, SupportRateForMonth) {
+    let threeBiggestUsageHours = [0, 0, 0];
     setSurcharge(surcharge);
     const dataForHour = usageData.map((hour, idx) => {
       const values = hour.Fra.split(" ");
@@ -363,7 +382,10 @@ function Home() {
       capacitySet.add(usage);
       const isHourInWeekend = checkIsWeekend(date);
       extractDifferentRates(time, usage, !hasNoWeekendRate && isHourInWeekend);
-
+      threeBiggestUsageHours = set3BiggestUsagesForMonth(
+        usage,
+        threeBiggestUsageHours
+      );
       const dayPrices = collectDayPrices(prices, date);
       const selectedZonePrices = createSelectedPriceZone(
         selectedKommune.value,
@@ -388,9 +410,11 @@ function Home() {
         totalPricePrHour,
       };
     });
+    console.log("Array in the end:" + threeBiggestUsageHours);
     const totalMonthPrice = dataForHour.reduce((result, item) => {
       return result + item.totalPricePrHour;
     }, 0);
+    setThreeBiggestCapacityNumbers(threeBiggestUsageHours);
     setCapacityRates(capacitySet);
     setUsageDayHours(dayNightHoursCounter.day);
     setUsageNightHours(dayNightHoursCounter.night);
@@ -522,6 +546,7 @@ function Home() {
                 otherFees={otherFees}
                 isDemo={isDemo}
                 hasNoWeekendRate={hasNoWeekendRate}
+                threeBiggestCapacityNumbers={threeBiggestCapacityNumbers}
               />
             )}
 

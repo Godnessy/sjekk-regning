@@ -26,6 +26,7 @@ function Results({
   otherFees,
   isDemo,
   hasNoWeekendRate,
+  threeBiggestCapacityNumbers,
 }) {
   const [finalDayRate, setFinalDayRate] = useState(0);
   const [finalNightRate, setFinalNightRate] = useState(0);
@@ -209,7 +210,14 @@ function Results({
                 </tr>
               </tbody>
             </table>
-
+            <div className="d-flex flex-row">
+              <h4 className="day-max-title">Døgnmakser (3 høyeste kWh):</h4>
+              <div className="d-flex flex-row">
+                {threeBiggestCapacityNumbers.map((val) => {
+                  return <h4 className="day-max d-flex flex-row">{val}</h4>;
+                })}
+              </div>
+            </div>
             <div className="Totals-table mt-1 ms-1">
               <table
                 className="table 
