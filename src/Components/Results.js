@@ -213,8 +213,12 @@ function Results({
             <div className="d-flex flex-row">
               <h4 className="day-max-title">Døgnmakser (3 høyeste kWh):</h4>
               <div className="d-flex flex-row">
-                {threeBiggestCapacityNumbers.map((val) => {
-                  return <h4 className="day-max d-flex flex-row">{val}</h4>;
+                {threeBiggestCapacityNumbers.map((val, idx) => {
+                  return (
+                    <h4 className="day-max d-flex flex-row" key={idx}>
+                      {val}
+                    </h4>
+                  );
                 })}
               </div>
             </div>

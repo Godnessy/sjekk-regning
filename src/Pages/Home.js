@@ -14,7 +14,6 @@ import InputsForm from "../Components/InputsForm.js";
 import BioLink from "../Components/BioLink.js";
 import MonthlyChart from "../Components/MonthlyChart.js";
 import Loading from "../Components/Loading.js";
-import ReportError from "../Components/ReportError.js";
 const storage = getStorage();
 
 const allowedExtensions = ["csv"];
@@ -52,7 +51,6 @@ function Home() {
   const [threeBiggestCapacityNumbers, setThreeBiggestCapacityNumbers] =
     useState([]);
   const checkboxRef = useRef();
-
   const fileRef = ref(storage, file.name);
   let capacitySet = new Set();
   let tempMonthPrice = 0;
@@ -226,7 +224,6 @@ function Home() {
             alert(
               "Feil i filen - kunne ikke analysere - Vennligst bruk rapportfeilknappen øverst til høyre for å sende oss en melding og filen (hvis du ønsker) slik at vi kan analysere den og gi deg tilbakemelding. Takk skal du ha :)"
             );
-            return console.log("Could not work");
             return reloadPage();
           }
           extractCurrentMonth(newResult.data);
@@ -393,7 +390,6 @@ function Home() {
       );
       totalUsage = totalUsage + usage;
       hoursCounter++;
-      console.log(date, time);
       const priceForHour = createPriceForHour(selectedZonePrices, time);
       if (!isNaN(priceForHour)) {
         avgPriceTimesUsage = avgPriceTimesUsage + priceForHour * usage;
