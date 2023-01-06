@@ -64,7 +64,11 @@ function Results({
     );
   }, [totalMonthPrice]);
   const calculateGovSupport = () => {
-    return (totalUsage * govSupport) / 100;
+    if (totalUsage > 5000) {
+      return (5000 * govSupport) / 100;
+    } else {
+      return (totalUsage * govSupport) / 100;
+    }
   };
 
   useEffect(() => {
@@ -317,7 +321,11 @@ function Results({
                       <th scope="row">
                         Strømstøtte {supportRateForMonth * 100}%:
                       </th>
-                      <td>{totalUsagedisplay}</td>
+                      <td>
+                        {Number(totalUsagedisplay) > 5000
+                          ? 5000
+                          : totalUsagedisplay}
+                      </td>
                       <td>{isGovSupport ? govSupport.toFixed(2) : 0}</td>
                       <td>øre</td>
                       <td>-{getPersonalGovSupport(isGovSupport).toFixed(2)}</td>
