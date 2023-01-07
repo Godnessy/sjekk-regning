@@ -148,6 +148,7 @@ export default function InputsForm({
     fee && setValuealueToLocalStorage("SJEKK_REGNING_FEE", fee);
     otherFees &&
       setValuealueToLocalStorage("SJEKK_REGNING_OTHER_FEES", otherFees);
+    //part of the code for remembering user kommune
     // selectedKommune &&
     //   setValuealueToLocalStorage(
     //     "SJEKK_REGNING_KOMMUNE_NAME",
@@ -178,6 +179,8 @@ export default function InputsForm({
     const otherFeesFromStorage = localStorage.getItem(
       "SJEKK_REGNING_OTHER_FEES"
     );
+
+    //part of the code for remembering user kommune
     // const selectedKommuneName = localStorage.getItem(
     //   "SJEKK_REGNING_KOMMUNE_NAME"
     // );
@@ -238,6 +241,7 @@ export default function InputsForm({
     checkboxRef.current.disabled = !hasFixedPrice;
   }, [hasFixedPrice]);
 
+  //part of the code for remembering user kommune
   const setDisplayValueForDropDown = () => {
     // if (selectedKommune) {
     //   console.log(selectedKommune);
@@ -449,9 +453,7 @@ export default function InputsForm({
                 <>
                   <div className="network-help d-flex flex-column">
                     {" "}
-                    {/* <div className="network-help-header"> */}
                     <h5>{`<-`}Her Skriver du Nettleie elementer</h5>
-                    {/* </div> */}
                     <h5 className="example-capacity">
                       1. Kapasitet ledd - avhenger av dine 3 høyeste brukstimer
                       - Se fakturaen din for riktige sum.

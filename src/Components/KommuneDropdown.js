@@ -15,6 +15,7 @@ function KommuneDropdown({
     dropDownValues.push({ label: kommuneName, value: areaCode })
   );
 
+  //working on remembering user choice of kommune
   // useEffect(() => {}, [displayValue]);
 
   return (
