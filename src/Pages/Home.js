@@ -462,6 +462,10 @@ function Home() {
               Her kan du sjekke om strømregningen du fikk stemmer og estimere
               regningen for denne måneden.
             </h4>
+            <h5 className="text-light align-self-center ms-2 me-2 w-75">
+              Korrigerte strømstøtte satser for 2023 , vennligst rapporter flere
+              feil hvis du finner noen!
+            </h5>
           </div>
           <div className="d-flex flex-column container justify-content-center">
             <div className="d-flex justify-content-center my-5">
