@@ -1,10 +1,7 @@
 # SjekkRegning
 
-![SjekkRegning_logo]([https://ibb.co/g4XVX1c](https://i.ibb.co/qJ454G2/sjekk-Regning.png))
+![SjekkRegning_logo](https://i.ibb.co/qJ454G2/sjekk-Regning.png)
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/{username}/SjekkRegning)
-![GitHub All Releases](https://img.shields.io/github/downloads/{username}/SjekkRegning/total)
-![GitHub](https://img.shields.io/github/license/{username}/SjekkRegning)
 
 ## About
 **SjekkRegning** is a innovative, user-friendly Norwegian website that makes checking your electrical bill as easy as pie. No longer will you have to struggle with deciphering intricate invoices from your electrical company. Our tool will do the heavy lifting for you. It simplifies understanding your bills, saving you time and ensuring you only pay what you owe.
