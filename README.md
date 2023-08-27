@@ -1,6 +1,6 @@
 # SjekkRegning
 
-![SjekkRegning_logo](https://ibb.co/g4XVX1c)
+![SjekkRegning_logo]([https://ibb.co/g4XVX1c](https://i.ibb.co/qJ454G2/sjekk-Regning.png))
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/{username}/SjekkRegning)
 ![GitHub All Releases](https://img.shields.io/github/downloads/{username}/SjekkRegning/total)
