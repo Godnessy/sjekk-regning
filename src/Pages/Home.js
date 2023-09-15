@@ -462,11 +462,20 @@ function Home() {
               Her kan du sjekke om strømregningen du fikk stemmer og estimere
               regningen for denne måneden.
             </h4>
-            <h5 className="text-light align-self-center ms-2 me-2 w-75">
+            <h5 className="text-light align-self-center ms-5 me-3 w-75">
               Korrigerte strømstøtte satser for 2023 , vennligst rapporter flere
               feil hvis du finner noen!
             </h5>
           </div>
+          <h5 className="align-self-center ms-2 me-3 w-50">
+            <span>
+              På grunn av lite bruk vil SjekkRegning.no slutte å fungere fra
+            </span>
+            <h3 className="text-danger d-inline">15.10.23</h3>. <br></br>
+            Hvis du ønsker tilgang til nettsiden eller funksjonene etter denne
+            datoen, send meg en e-post på godnessy@gmail.com eller bruk den røde
+            Rapporter feil-knappen øverst til høyre for å sende meg en melding
+          </h5>
           <div className="d-flex flex-column container justify-content-center">
             <div className="d-flex justify-content-center my-5">
               <InputsForm
