@@ -468,13 +468,14 @@ function Home() {
             </h5>
           </div>
           <h5 className="align-self-center ms-2 me-3 w-50">
-            <span>
-              På grunn av lite bruk vil SjekkRegning.no slutte å fungere fra
-            </span>
-            <h3 className="text-danger d-inline">15.10.23</h3>. <br></br>
-            Hvis du ønsker tilgang til nettsiden eller funksjonene etter denne
-            datoen, send meg en e-post på godnessy@gmail.com eller bruk den røde
-            Rapporter feil-knappen øverst til høyre for å sende meg en melding
+            Fra den 15.10.23 skal addressen til Sjekkregning bli endret til:
+            <br></br>
+            <a
+              href="https://sjekkregning.netlify.app/"
+              className="text-warning"
+            >
+              https://sjekkregning.netlify.app/
+            </a>
           </h5>
           <div className="d-flex flex-column container justify-content-center">
             <div className="d-flex justify-content-center my-5">
