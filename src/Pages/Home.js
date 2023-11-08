@@ -516,9 +516,6 @@ function Home() {
                 setHasNoWeekendRate={setHasNoWeekendRate}
               />
             </div>
-            <div className="bio-link d-flex mt-5 justify-content-center">
-              <BioLink></BioLink>
-            </div>
           </div>
         </div>
       </>
