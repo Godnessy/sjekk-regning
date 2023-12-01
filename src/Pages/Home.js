@@ -88,6 +88,20 @@ function Home() {
       11: 0.9,
       12: 0.9,
     },
+    23: {
+      "01": 0.9,
+      "02": 0.9,
+      "03": 0.9,
+      "04": 0.9,
+      "05": 0.9,
+      "06": 0.9,
+      "07": 0.9,
+      "08": 0.9,
+      "09": 0.9,
+      10: 0.9,
+      11: 0.9,
+      12: 0.9,
+    },
   };
   const monthObj = {
     22: {
@@ -105,6 +119,20 @@ function Home() {
       12: "December",
     },
     23: {
+      "01": "January",
+      "02": "February",
+      "03": "March",
+      "04": "April",
+      "05": "May",
+      "06": "June",
+      "07": "July",
+      "08": "August",
+      "09": "September",
+      10: "October",
+      11: "November",
+      12: "December",
+    },
+    24: {
       "01": "January",
       "02": "February",
       "03": "March",
@@ -462,20 +490,11 @@ function Home() {
               Her kan du sjekke om strømregningen du fikk stemmer og estimere
               regningen for denne måneden.
             </h4>
-            <h5 className="text-light align-self-center ms-5 me-3 w-75">
-              Korrigerte strømstøtte satser for 2023 , vennligst rapporter flere
-              feil hvis du finner noen!
-            </h5>
           </div>
           <h5 className="align-self-center ms-2 me-3 w-50">
-            Fra den 15.10.23 skal addressen til Sjekkregning bli endret til:
-            <br></br>
-            <a
-              href="https://sjekkregning.netlify.app/"
-              className="text-warning"
-            >
-              https://sjekkregning.netlify.app/
-            </a>
+            Jeg jobber med å fikse strømstøtte til å vise time for time støtte
+            (fra September 2023 og videre), strømsøtte satser blir 90% for hele
+            2024.
           </h5>
           <div className="d-flex flex-column container justify-content-center">
             <div className="d-flex justify-content-center my-5">
