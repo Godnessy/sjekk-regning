@@ -50,6 +50,7 @@ function Home() {
   const [isSiteDown, setIsSiteDown] = useState(false);
   const [threeBiggestCapacityNumbers, setThreeBiggestCapacityNumbers] =
     useState([]);
+  const [isNewModel, setIsNewModel] = useState(false);
   const checkboxRef = useRef();
   const fileRef = ref(storage, file.name);
   let capacitySet = new Set();
@@ -182,12 +183,10 @@ function Home() {
   };
 
   const getMonthPrices = async (month, year) => {
-    console.log(month, year);
     const monthRef = doc(db, "price-history", `${month}-${year}`);
     try {
       const docSnap = await getDoc(monthRef);
       if (docSnap.exists()) {
-        console.log("got month");
         return docSnap.data();
       } else {
         console.log("Doc does not exist");
@@ -275,349 +274,463 @@ function Home() {
 
   const createPriceForHour = (zonePrices, time) => {
     if (zonePrices) {
-      const basePrice = Number(zonePrices[time]);
-      tempMonthAvg = tempMonthAvg + basePrice;
-      const calculatedPrice = basePrice;
-      return calculatedPrice;
-    } else {
-      return 0;
+      return Number(zonePrices[time]) ? Number(zonePrices[time]) : 0;
     }
-  };
-  const createTotalPricePrHour = (usage, priceForHour) => {
-    if (priceForHour) {
-      const basePrice = hasFixedPrice ? fixedPrice : priceForHour;
-      const totalPrice = (basePrice / 100) * Number(usage);
-      tempMonthPrice = tempMonthPrice += totalPrice;
 
-      return totalPrice;
-    }
-    return 0;
-  };
+    const createTotalPricePrHour = (usage, priceForHour) => {
+      if (priceForHour) {
+        const basePrice = hasFixedPrice ? fixedPrice : priceForHour;
+        const totalPrice = (basePrice / 100) * Number(usage);
+        tempMonthPrice = tempMonthPrice += totalPrice;
 
-  const createGovSupport = (monthlyAvg, SupportRateForMonth) => {
-    const govSupportBoolean = monthlyAvg > 70;
-    setIsGovSupport(govSupportBoolean);
-    const calculation = (monthlyAvg - 87.5) * SupportRateForMonth;
-    return govSupportBoolean ? calculation : 0;
-  };
-
-  useEffect(() => {}, [selectedKommune]);
-  useEffect(() => {}, [totalMonthPrice]);
-
-  const extractCurrentMonth = async (usageData) => {
-    try {
-      const wholeYear = usageData[0].Fra.split(".")[2].split(" ")[0];
-      const year = wholeYear.split("0")[1];
-      const month = usageData[0].Fra.split(".")[1];
-      if (year <= 21) {
-        alert(
-          `Vi har ikke pris informasjon for ${wholeYear} , Vi kan kun estimere fakturaer fra og med januar 2022`
-        );
-        reloadPage();
-        return;
+        return totalPrice;
       }
-      if (month <= "06" && year <= 21) {
-        alert(
-          `Denne fakturaen er fra før den nye dag/natt nettleie modellen har blitt introdusert (Juli 2022), Vi støtter ennå ikke denne typen regninger, men jeg jobber med en ny versjon som vil tillate dette.`
+      return 0;
+    };
+
+    const createGovSupForHour = (priceForHour) => {
+      if (priceForHour) {
+        console.log(
+          `Price pr hour: ${priceForHour} , end: ${
+            (priceForHour - 0.73) * 0.9 * 1.25
+          }`
         );
+        return (priceForHour - 0.73) * 0.9 * 1.25;
+        //(Spotpris uten mva. pr time i ditt prisområde - 73 øre) x 0,90 (strømstøtte i prosent) x 1,25 (mva.)
+      }
+    };
+
+    const createGovSupport = (monthlyAvg, SupportRateForMonth) => {
+      const govSupportBoolean = monthlyAvg > 73;
+      setIsGovSupport(govSupportBoolean);
+      const calculation = (monthlyAvg - 87.5) * SupportRateForMonth;
+      return govSupportBoolean ? calculation : 0;
+    };
+
+    useEffect(() => {}, [selectedKommune]);
+    useEffect(() => {}, [totalMonthPrice]);
+
+    const extractCurrentMonth = async (usageData) => {
+      try {
+        const wholeYear = usageData[0].Fra.split(".")[2].split(" ")[0];
+        const year = wholeYear.split("0")[1];
+        const month = usageData[0].Fra.split(".")[1];
+        if (year <= 21) {
+          alert(
+            `Vi har ikke pris informasjon for ${wholeYear} , Vi kan kun estimere fakturaer fra og med januar 2022`
+          );
+          reloadPage();
+          return;
+        }
+        if (month <= "06" && year <= 21) {
+          alert(
+            `Denne fakturaen er fra før den nye dag/natt nettleie modellen har blitt introdusert (Juli 2022), Vi støtter ennå ikke denne typen regninger, men jeg jobber med en ny versjon som vil tillate dette.`
+          );
+          return reloadPage();
+        }
+
+        const SupportRateForMonth = supportMonthObj[year][month];
+        const selecetedMonth = monthObj[year][month];
+
+        setSupportRateForMonth(SupportRateForMonth);
+        setSelectedMonth(selecetedMonth);
+        setSelectedYear(wholeYear);
+        const prices = await getMonthPrices(monthObj[year][month], year);
+        calculateMonthlyValues(usageData, prices, SupportRateForMonth);
+      } catch (error) {
         return reloadPage();
       }
+    };
 
-      const SupportRateForMonth = supportMonthObj[year][month];
-      const selecetedMonth = monthObj[year][month];
+    const isMonthSeptemberOrAfter = (month) => {
+      console.log(month);
+      return (
+        month === "September" ||
+        month === "October" ||
+        month == "November" ||
+        month === "December"
+      );
+    };
 
-      setSupportRateForMonth(SupportRateForMonth);
-      setSelectedMonth(selecetedMonth);
-      setSelectedYear(wholeYear);
-      const prices = await getMonthPrices(monthObj[year][month], year);
-      calculateMonthlyValues(usageData, prices, SupportRateForMonth);
-    } catch (error) {
-      return reloadPage();
-    }
-  };
+    useEffect(() => {
+      if (
+        selectedYear > 2023 ||
+        (selectedYear == 2023 && isMonthSeptemberOrAfter(selectedMonth))
+      ) {
+        console.log(selectedYear, selectedMonth);
+        console.log(isMonthSeptemberOrAfter(selectedMonth));
+        setIsNewModel(true);
+      }
+    }, [selectedYear, selectedMonth]);
 
-  const extractDifferentRates = (hour, usageForhour, isWeekend) => {
-    const extractNumberFromHour = Number(hour.split(":")[0]);
-    const nightHours = dayNightHoursCounter.night;
-    const dayHours = dayNightHoursCounter.day;
-    if (isWeekend) {
-      dayNightHoursCounter.night = nightHours + usageForhour;
-    } else {
-      if (extractNumberFromHour >= 22 || extractNumberFromHour <= 5) {
+    const extractDifferentRates = (hour, usageForhour, isWeekend) => {
+      const extractNumberFromHour = Number(hour.split(":")[0]);
+      const nightHours = dayNightHoursCounter.night;
+      const dayHours = dayNightHoursCounter.day;
+      if (isWeekend) {
         dayNightHoursCounter.night = nightHours + usageForhour;
       } else {
-        dayNightHoursCounter.day = dayHours + usageForhour;
+        if (extractNumberFromHour >= 22 || extractNumberFromHour <= 5) {
+          dayNightHoursCounter.night = nightHours + usageForhour;
+        } else {
+          dayNightHoursCounter.day = dayHours + usageForhour;
+        }
       }
+    };
+    const checkIsWeekend = (date, time, usage) => {
+      var days = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ];
+      var d = new Date(date.split(".").reverse().join("/"));
+      if (days[d.getDay()] == "Sunday" || days[d.getDay()] == "Saturday") {
+        return true;
+      } else return false;
+    };
+
+    //Needed because Norwegians write floats with a comma instead of a dot and it messes the math up in JS.
+    const fixComma = (str) => {
+      const fixed = str.replace(",", ".");
+      return Number(fixed);
+    };
+
+    function setCapacityRates(capacitySet) {
+      const capacityArr = Array.from(capacitySet);
+      const sortedCapacityarr = capacityArr.sort((a, b) => a > b);
+    }
+
+    const set3BiggestUsagesForMonth = (usageForHour, maxHoursArray) => {
+      let [firstMax, secondMax, thirdMax] = maxHoursArray;
+      if (usageForHour > firstMax) {
+        thirdMax = secondMax;
+        secondMax = firstMax;
+        firstMax = usageForHour;
+        return (maxHoursArray = [firstMax, secondMax, thirdMax]);
+      } else if (usageForHour > secondMax) {
+        thirdMax = secondMax;
+        secondMax = usageForHour;
+        return (maxHoursArray = [firstMax, secondMax, thirdMax]);
+      } else if (usageForHour > thirdMax) {
+        thirdMax = usageForHour;
+        return (maxHoursArray = [firstMax, secondMax, thirdMax]);
+      }
+      maxHoursArray = [firstMax, secondMax, thirdMax];
+      return maxHoursArray;
+    };
+    function calculateMonthlyValues(usageData, prices, SupportRateForMonth) {
+      let threeBiggestUsageHours = [0, 0, 0];
+      setSurcharge(surcharge);
+      const dataForHour = usageData.map((hour, idx) => {
+        const values = hour.Fra.split(" ");
+        const date = values[0];
+        idx == usageData.length - 1 && setLastDay(date);
+        const time = values[1];
+        const usage = Number(hour["KWH 60 Forbruk"]);
+        capacitySet.add(usage);
+        const isHourInWeekend = checkIsWeekend(date);
+        extractDifferentRates(
+          time,
+          usage,
+          !hasNoWeekendRate && isHourInWeekend
+        );
+        threeBiggestUsageHours = set3BiggestUsagesForMonth(
+          usage,
+          threeBiggestUsageHours
+        );
+        const dayPrices = collectDayPrices(prices, date);
+        const selectedZonePrices = createSelectedPriceZone(
+          selectedKommune.value,
+          dayPrices
+        );
+        totalUsage = totalUsage + usage;
+        hoursCounter++;
+        const priceForHour = createPriceForHour(selectedZonePrices, time);
+        if (!isNaN(priceForHour)) {
+          avgPriceTimesUsage = avgPriceTimesUsage + priceForHour * usage;
+        }
+        const totalPricePrHour = createTotalPricePrHour(usage, priceForHour);
+        const govSupportForHour = createGovSupForHour(priceForHour);
+        return {
+          values,
+          date,
+          time,
+          usage,
+          dayPrices,
+          selectedZonePrices,
+          priceForHour,
+          totalPricePrHour,
+        };
+      });
+      // console.log("Array in the end:" + threeBiggestUsageHours);
+      const totalMonthPrice = dataForHour.reduce((result, item) => {
+        return result + item.totalPricePrHour;
+      }, 0);
+      setThreeBiggestCapacityNumbers(threeBiggestUsageHours);
+      setCapacityRates(capacitySet);
+      setUsageDayHours(dayNightHoursCounter.day);
+      setUsageNightHours(dayNightHoursCounter.night);
+      setTotalMonthPrice(totalMonthPrice);
+      setUsageData(dataForHour);
+      setAvgMonthly(tempMonthAvg / hoursCounter);
+      setGovSupport(
+        createGovSupport(tempMonthAvg / hoursCounter, SupportRateForMonth)
+      );
+      setTotalKwh(totalUsage);
+      !isDemo && updateUsageCounter();
+      setIsLoading(false);
+    }
+
+    if (isSiteDown) {
+      return (
+        <>
+          <div className="d-flex align-content-center ">
+            <h1>
+              Nettsiden er nede for en viktig reparasjon, kommer tilbake så
+              snart som mulig Du kan ta kontakt på godnessy@gmail.com{" "}
+            </h1>
+          </div>
+        </>
+      );
+    }
+    if (isLoading) {
+      return (
+        <>
+          <Loading isLoading={isLoading} />
+        </>
+      );
+    }
+    if (!usageData) {
+      return (
+        <>
+          <Navbar
+            uploadFailedFile={uploadFailedFile}
+            file={file}
+            handleCsvFile={handleCsvFile}
+          />
+          <div className="start-container d-flex flex-column ">
+            <div className="site-descrip d-flex flex-column align-self-center mt-4">
+              {" "}
+              <h2 className="description-text-header align-self-center ms-2 me-2">
+                Velkommen til SjekkRegning.no!
+              </h2>
+              <h4 className="description-text align-self-center ms-2 me-2">
+                Her kan du sjekke om strømregningen du fikk stemmer og estimere
+                regningen for denne måneden.
+              </h4>
+            </div>
+            <h5 className="align-self-center ms-2 me-3 w-50">
+              Jeg jobber med å fikse strømstøtte til å vise time for time støtte
+              (fra September 2023 og videre), strømsøtte satser blir 90% for
+              hele 2024.
+            </h5>
+            <div className="d-flex flex-column container justify-content-center">
+              <div className="d-flex justify-content-center my-5">
+                <InputsForm
+                  handleCsvFile={handleCsvFile}
+                  selectedMonth={selectedMonth}
+                  setSelectedMonth={setSelectedMonth}
+                  kommuneList={kommuneList}
+                  setSelectedKommune={setSelectedKommune}
+                  selectedKommune={selectedKommune}
+                  error={error}
+                  surcharge={surcharge}
+                  setSurcharge={setSurcharge}
+                  fee={fee}
+                  setFile={setFile}
+                  setFee={setFee}
+                  setFixedPrice={setFixedPrice}
+                  parseCsvJson={parseCsvJson}
+                  fixedPrice={fixedPrice}
+                  hasFixedPrice={hasFixedPrice}
+                  checkboxRef={checkboxRef}
+                  setHasFixedPrice={setHasFixedPrice}
+                  fixComma={fixComma}
+                  networkNightOrWeekendtPrice={networkNightOrWeekendtPrice}
+                  setNetworkNightOrWeekendtPrice={
+                    setNetworkNightOrWeekendtPrice
+                  }
+                  networkDayPrice={networkDayPrice}
+                  setNetworkDayPrice={setNetworkDayPrice}
+                  capacityPrice={capacityPrice}
+                  setCapacityPrice={setCapacityPrice}
+                  extractCurrentMonth={extractCurrentMonth}
+                  formatCSVFile={formatCSVFile}
+                  isDemo={isDemo}
+                  setIsDemo={setIsDemo}
+                  otherFees={otherFees}
+                  setOtherFees={setOtherFees}
+                  file={file}
+                  hasNoWeekendRate={hasNoWeekendRate}
+                  setHasNoWeekendRate={setHasNoWeekendRate}
+                />
+              </div>
+            </div>
+          </div>
+        </>
+      );
+    } else if (!isNewModel) {
+      return (
+        <>
+          <Navbar />
+
+          <div className="page-container">
+            <div className="inputs-container justify-content-center my-2 d-flex flex-column">
+              {totalMonthPrice && (
+                <oldModelResults
+                  totalMonthPrice={totalMonthPrice}
+                  fee={fee}
+                  totalUsage={totalKwh}
+                  month={selectedMonth}
+                  surcharge={surcharge}
+                  selectedMonth={selectedMonth}
+                  hasFixedPrice={hasFixedPrice}
+                  fixedPrice={fixedPrice}
+                  avgPrice={avgMonthly}
+                  govSupport={govSupport}
+                  isGovSupport={isGovSupport}
+                  lastDay={lastDay}
+                  zone={selectedKommune.value}
+                  networkDayPrice={networkDayPrice}
+                  networkNightOrWeekendtPrice={networkNightOrWeekendtPrice}
+                  UsageDayHours={usageDayHours}
+                  UsageNightHours={usageNightHours}
+                  capacityPrice={capacityPrice}
+                  setCapacityPrice={setCapacityPrice}
+                  selectedYear={selectedYear}
+                  supportRateForMonth={supportRateForMonth}
+                  otherFees={otherFees}
+                  isDemo={isDemo}
+                  hasNoWeekendRate={hasNoWeekendRate}
+                  threeBiggestCapacityNumbers={threeBiggestCapacityNumbers}
+                />
+              )}
+
+              <button
+                className="reset-btn calculate-after w-25 align-self-center btn btn-danger ms-5 my-3"
+                onClick={() => {
+                  reloadPage();
+                }}
+              >
+                Ny regning
+              </button>
+              <div className="results-d-flex">
+                <div className="align-self-center chart">
+                  <MonthlyChart usageData={usageData} />
+                </div>
+              </div>
+
+              <div className="usage-price-container my-2 d-flex ">
+                <div className="daily-prices me-4">
+                  {usageData && (
+                    <DailyPrices
+                      dataForHour={usageData}
+                      totalMonthPrice={totalMonthPrice}
+                      hasFixedPrice={hasFixedPrice}
+                      fixedPrice={fixedPrice}
+                      govSupport={govSupport}
+                    />
+                  )}
+                </div>
+                <div className=" hourly-prices">
+                  {usageData && (
+                    <HourlyPrices
+                      dataForHour={usageData}
+                      hasFixedPrice={hasFixedPrice}
+                      fixedPrice={fixedPrice}
+                      govSupport={govSupport}
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <Navbar />
+
+          <div className="page-container">
+            <div className="inputs-container justify-content-center my-2 d-flex flex-column">
+              {totalMonthPrice && (
+                <oldModelResults
+                  totalMonthPrice={totalMonthPrice}
+                  fee={fee}
+                  totalUsage={totalKwh}
+                  month={selectedMonth}
+                  surcharge={surcharge}
+                  selectedMonth={selectedMonth}
+                  hasFixedPrice={hasFixedPrice}
+                  fixedPrice={fixedPrice}
+                  avgPrice={avgMonthly}
+                  govSupport={govSupport}
+                  isGovSupport={isGovSupport}
+                  lastDay={lastDay}
+                  zone={selectedKommune.value}
+                  networkDayPrice={networkDayPrice}
+                  networkNightOrWeekendtPrice={networkNightOrWeekendtPrice}
+                  UsageDayHours={usageDayHours}
+                  UsageNightHours={usageNightHours}
+                  capacityPrice={capacityPrice}
+                  setCapacityPrice={setCapacityPrice}
+                  selectedYear={selectedYear}
+                  supportRateForMonth={supportRateForMonth}
+                  otherFees={otherFees}
+                  isDemo={isDemo}
+                  hasNoWeekendRate={hasNoWeekendRate}
+                  threeBiggestCapacityNumbers={threeBiggestCapacityNumbers}
+                />
+              )}
+
+              <button
+                className="reset-btn calculate-after w-25 align-self-center btn btn-danger ms-5 my-3"
+                onClick={() => {
+                  reloadPage();
+                }}
+              >
+                Ny regning
+              </button>
+              <div className="results-d-flex">
+                <div className="align-self-center chart">
+                  {/* <MonthlyChart usageData={usageData} /> */}
+                </div>
+              </div>
+
+              <div className="usage-price-container my-2 d-flex ">
+                {/* <div className="daily-prices me-4">
+        {usageData && (
+          <DailyPrices
+            dataForHour={usageData}
+            totalMonthPrice={totalMonthPrice}
+            hasFixedPrice={hasFixedPrice}
+            fixedPrice={fixedPrice}
+            govSupport={govSupport}
+          />
+        )}
+      </div> */}
+                {/* <div className=" hourly-prices">
+        {usageData && (
+          <HourlyPrices
+            dataForHour={usageData}
+            hasFixedPrice={hasFixedPrice}
+            fixedPrice={fixedPrice}
+            govSupport={govSupport}
+          />
+        )}
+      </div> */}
+              </div>
+            </div>
+          </div>
+        </>
+      );
     }
   };
-  const checkIsWeekend = (date, time, usage) => {
-    var days = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ];
-    var d = new Date(date.split(".").reverse().join("/"));
-    if (days[d.getDay()] == "Sunday" || days[d.getDay()] == "Saturday") {
-      return true;
-    } else return false;
-  };
-
-  //Needed because Norwegians write floats with a comma instead of a dot and it messes the math up in JS.
-  const fixComma = (str) => {
-    const fixed = str.replace(",", ".");
-    return Number(fixed);
-  };
-
-  function setCapacityRates(capacitySet) {
-    const capacityArr = Array.from(capacitySet);
-    const sortedCapacityarr = capacityArr.sort((a, b) => a > b);
-  }
-
-  const set3BiggestUsagesForMonth = (usageForHour, maxHoursArray) => {
-    let [firstMax, secondMax, thirdMax] = maxHoursArray;
-    if (usageForHour > firstMax) {
-      thirdMax = secondMax;
-      secondMax = firstMax;
-      firstMax = usageForHour;
-      return (maxHoursArray = [firstMax, secondMax, thirdMax]);
-    } else if (usageForHour > secondMax) {
-      thirdMax = secondMax;
-      secondMax = usageForHour;
-      return (maxHoursArray = [firstMax, secondMax, thirdMax]);
-    } else if (usageForHour > thirdMax) {
-      thirdMax = usageForHour;
-      return (maxHoursArray = [firstMax, secondMax, thirdMax]);
-    }
-    maxHoursArray = [firstMax, secondMax, thirdMax];
-    return maxHoursArray;
-  };
-  function calculateMonthlyValues(usageData, prices, SupportRateForMonth) {
-    let threeBiggestUsageHours = [0, 0, 0];
-    setSurcharge(surcharge);
-    const dataForHour = usageData.map((hour, idx) => {
-      const values = hour.Fra.split(" ");
-      const date = values[0];
-      idx == usageData.length - 1 && setLastDay(date);
-      const time = values[1];
-      const usage = Number(hour["KWH 60 Forbruk"]);
-      capacitySet.add(usage);
-      const isHourInWeekend = checkIsWeekend(date);
-      extractDifferentRates(time, usage, !hasNoWeekendRate && isHourInWeekend);
-      threeBiggestUsageHours = set3BiggestUsagesForMonth(
-        usage,
-        threeBiggestUsageHours
-      );
-      const dayPrices = collectDayPrices(prices, date);
-      const selectedZonePrices = createSelectedPriceZone(
-        selectedKommune.value,
-        dayPrices
-      );
-      totalUsage = totalUsage + usage;
-      hoursCounter++;
-      const priceForHour = createPriceForHour(selectedZonePrices, time);
-      if (!isNaN(priceForHour)) {
-        avgPriceTimesUsage = avgPriceTimesUsage + priceForHour * usage;
-      }
-      const totalPricePrHour = createTotalPricePrHour(usage, priceForHour);
-      return {
-        values,
-        date,
-        time,
-        usage,
-        dayPrices,
-        selectedZonePrices,
-        priceForHour,
-        totalPricePrHour,
-      };
-    });
-    console.log("Array in the end:" + threeBiggestUsageHours);
-    const totalMonthPrice = dataForHour.reduce((result, item) => {
-      return result + item.totalPricePrHour;
-    }, 0);
-    setThreeBiggestCapacityNumbers(threeBiggestUsageHours);
-    setCapacityRates(capacitySet);
-    setUsageDayHours(dayNightHoursCounter.day);
-    setUsageNightHours(dayNightHoursCounter.night);
-    setTotalMonthPrice(totalMonthPrice);
-    setUsageData(dataForHour);
-    setAvgMonthly(tempMonthAvg / hoursCounter);
-    setGovSupport(
-      createGovSupport(tempMonthAvg / hoursCounter, SupportRateForMonth)
-    );
-    setTotalKwh(totalUsage);
-    !isDemo && updateUsageCounter();
-    setIsLoading(false);
-  }
-
-  if (isSiteDown) {
-    return (
-      <>
-        <div className="d-flex align-content-center ">
-          <h1>
-            Nettsiden er nede for en viktig reparasjon, kommer tilbake så snart
-            som mulig Du kan ta kontakt på godnessy@gmail.com{" "}
-          </h1>
-        </div>
-      </>
-    );
-  }
-  if (isLoading) {
-    return (
-      <>
-        <Loading isLoading={isLoading} />
-      </>
-    );
-  }
-  if (!usageData) {
-    return (
-      <>
-        <Navbar
-          uploadFailedFile={uploadFailedFile}
-          file={file}
-          handleCsvFile={handleCsvFile}
-        />
-        <div className="start-container d-flex flex-column ">
-          <div className="site-descrip d-flex flex-column align-self-center mt-4">
-            {" "}
-            <h2 className="description-text-header align-self-center ms-2 me-2">
-              Velkommen til SjekkRegning.no!
-            </h2>
-            <h4 className="description-text align-self-center ms-2 me-2">
-              Her kan du sjekke om strømregningen du fikk stemmer og estimere
-              regningen for denne måneden.
-            </h4>
-          </div>
-          <h5 className="align-self-center ms-2 me-3 w-50">
-            Jeg jobber med å fikse strømstøtte til å vise time for time støtte
-            (fra September 2023 og videre), strømsøtte satser blir 90% for hele
-            2024.
-          </h5>
-          <div className="d-flex flex-column container justify-content-center">
-            <div className="d-flex justify-content-center my-5">
-              <InputsForm
-                handleCsvFile={handleCsvFile}
-                selectedMonth={selectedMonth}
-                setSelectedMonth={setSelectedMonth}
-                kommuneList={kommuneList}
-                setSelectedKommune={setSelectedKommune}
-                selectedKommune={selectedKommune}
-                error={error}
-                surcharge={surcharge}
-                setSurcharge={setSurcharge}
-                fee={fee}
-                setFile={setFile}
-                setFee={setFee}
-                setFixedPrice={setFixedPrice}
-                parseCsvJson={parseCsvJson}
-                fixedPrice={fixedPrice}
-                hasFixedPrice={hasFixedPrice}
-                checkboxRef={checkboxRef}
-                setHasFixedPrice={setHasFixedPrice}
-                fixComma={fixComma}
-                networkNightOrWeekendtPrice={networkNightOrWeekendtPrice}
-                setNetworkNightOrWeekendtPrice={setNetworkNightOrWeekendtPrice}
-                networkDayPrice={networkDayPrice}
-                setNetworkDayPrice={setNetworkDayPrice}
-                capacityPrice={capacityPrice}
-                setCapacityPrice={setCapacityPrice}
-                extractCurrentMonth={extractCurrentMonth}
-                formatCSVFile={formatCSVFile}
-                isDemo={isDemo}
-                setIsDemo={setIsDemo}
-                otherFees={otherFees}
-                setOtherFees={setOtherFees}
-                file={file}
-                hasNoWeekendRate={hasNoWeekendRate}
-                setHasNoWeekendRate={setHasNoWeekendRate}
-              />
-            </div>
-          </div>
-        </div>
-      </>
-    );
-  } else {
-    return (
-      <>
-        <Navbar />
-
-        <div className="page-container">
-          <div className="inputs-container justify-content-center my-2 d-flex flex-column">
-            {totalMonthPrice && (
-              <Results
-                totalMonthPrice={totalMonthPrice}
-                fee={fee}
-                totalUsage={totalKwh}
-                month={selectedMonth}
-                surcharge={surcharge}
-                selectedMonth={selectedMonth}
-                hasFixedPrice={hasFixedPrice}
-                fixedPrice={fixedPrice}
-                avgPrice={avgMonthly}
-                govSupport={govSupport}
-                isGovSupport={isGovSupport}
-                lastDay={lastDay}
-                zone={selectedKommune.value}
-                networkDayPrice={networkDayPrice}
-                networkNightOrWeekendtPrice={networkNightOrWeekendtPrice}
-                UsageDayHours={usageDayHours}
-                UsageNightHours={usageNightHours}
-                capacityPrice={capacityPrice}
-                setCapacityPrice={setCapacityPrice}
-                selectedYear={selectedYear}
-                supportRateForMonth={supportRateForMonth}
-                otherFees={otherFees}
-                isDemo={isDemo}
-                hasNoWeekendRate={hasNoWeekendRate}
-                threeBiggestCapacityNumbers={threeBiggestCapacityNumbers}
-              />
-            )}
-
-            <button
-              className="reset-btn calculate-after w-25 align-self-center btn btn-danger ms-5 my-3"
-              onClick={() => {
-                reloadPage();
-              }}
-            >
-              Ny regning
-            </button>
-            <div className="results-d-flex">
-              <div className="align-self-center chart">
-                <MonthlyChart usageData={usageData} />
-              </div>
-            </div>
-
-            <div className="usage-price-container my-2 d-flex ">
-              <div className="daily-prices me-4">
-                {usageData && (
-                  <DailyPrices
-                    dataForHour={usageData}
-                    totalMonthPrice={totalMonthPrice}
-                    hasFixedPrice={hasFixedPrice}
-                    fixedPrice={fixedPrice}
-                    govSupport={govSupport}
-                  />
-                )}
-              </div>
-              <div className=" hourly-prices">
-                {usageData && (
-                  <HourlyPrices
-                    dataForHour={usageData}
-                    hasFixedPrice={hasFixedPrice}
-                    fixedPrice={fixedPrice}
-                    govSupport={govSupport}
-                  />
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </>
-    );
-  }
 }
 
 export default Home;
