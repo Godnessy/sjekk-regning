@@ -16,6 +16,5 @@
 ## Getting Started :rocket:
 To get started [Visit SjekkRegning](https://www.sjekkregning.no) and follow the instructions on the main page (numbers 1 and onwards)
 There are pictures step by step instructions regarding how to fetch the CSV file needed from Elhub.no available by clicking on "Vet ikke hva CSV fil er? Klikk her for Elhub veiledning."
-For any help need you can email me at Godnessy@gmail.com
 
 ###
